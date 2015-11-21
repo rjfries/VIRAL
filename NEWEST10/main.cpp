@@ -126,13 +126,13 @@ int main(int argc, char* argv[])
 	{
 	
 #ifdef RK1	 
-		FirstOrder(HydroGrid, ts, tau);
+		FirstOrder(HydroGrid, tau, ts);
 #endif		
 #ifdef RK2	 
-		TVDRK2(HydroGrid, ts, tau);
+		TVDRK2(HydroGrid, tau, ts);
 #endif		
 #ifdef RK3	 
-		TVDRK3(HydroGrid, ts, tau);
+		TVDRK3(HydroGrid, tau, ts);
 #endif		
 
 #ifdef BJORKEN

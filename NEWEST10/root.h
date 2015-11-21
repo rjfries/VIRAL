@@ -402,15 +402,7 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 			
 		
 		double g = 1.0/sqrt(1-vx*vx-vy*vy-tau*tau*ve*ve);
-		
 
-	 
-		//save previous 4vel to find tau derivative in next step..
-		
-		HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][k].u[0];
-		HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][k].u[1];
-		HydroGrid[i][j][k].prevu[2] = HydroGrid[i][j][k].u[2];
-		HydroGrid[i][j][k].prevu[3] = HydroGrid[i][j][k].u[3];
 		
 		
 		HydroGrid[i][j][k].u[0] = g;
@@ -421,27 +413,6 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		HydroGrid[i][j][k].Vx = vx;
 		HydroGrid[i][j][k].Vy = vy;
 		HydroGrid[i][j][k].Ve = ve;
-
-#ifdef GUBSER		
-		 //~ double q=1;
-		//~ double kappa = atanh(  (2*q*q*tau*r)  / ( 1 + q*q*tau*tau + q*q*r*r)  );						
-		//~ 
-		//~ if( fabs(r) > 1e-6)
-		//~ {
-			//~ HydroGrid[i][j][k].Vx   = ( X*tanh(kappa) )/ (r);
-			//~ HydroGrid[i][j][k].Vy   = ( Y*tanh(kappa) )/ (r);
-			//~ HydroGrid[i][j][k].u[1] = ( X*sinh(kappa) )/ (r);
-			//~ HydroGrid[i][j][k].u[2] = ( Y*sinh(kappa) )/ (r);
-			//~ 
-		//~ }
-		//~ else
-		//~ {
-			//~ HydroGrid[i][j][k].Vx   = 0;
-			//~ HydroGrid[i][j][k].Vy   = 0;	
-			//~ HydroGrid[i][j][k].u[1] = 0;
-			//~ HydroGrid[i][j][k].u[2] = 0;
-		//~ } 
-#endif
 
 	
 	if(quit)

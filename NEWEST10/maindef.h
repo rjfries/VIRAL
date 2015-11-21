@@ -177,7 +177,7 @@ typedef struct
 	double Var[SVAR],  Result[SVAR],  PartialResult[SVAR];
 	
 //For time integration
-	double Var1[SVAR],  Var2[SVAR],  Var3[SVAR];
+	double Var0[SVAR], Var1[SVAR],  Var2[SVAR],  Var3[SVAR];
 	double L0[SVAR],  L1[SVAR],  L2[SVAR];
 	
 	
