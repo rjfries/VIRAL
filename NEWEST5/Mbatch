@@ -1,0 +1,14 @@
+#BSUB -J hydro
+#BSUB -o stdout
+#BSUB -P 082858712092
+#BSUB -L /bin/bash
+#BSUB -W 720 
+#BSUB -n 1
+#BSUB -u sidharthsp@gmail.com
+
+#BSUB -R 'span[ptile=1]'
+
+# load intel toolchain
+module load Mathematica
+
+math < adaeigen.m
