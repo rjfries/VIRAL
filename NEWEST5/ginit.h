@@ -1026,9 +1026,9 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Vy=VY;
 		HydroGrid[i][j][k].Ve=VE;
 		HydroGrid[i][j][k].u[0] = 1.0/sqrt(1.0 - VX*VX - VY*VY - tau0*tau0*VE*VE);
-		HydroGrid[i][j][k].u[1] = u0*VX;
-		HydroGrid[i][j][k].u[2] = u0*VY;
-		HydroGrid[i][j][k].u[3] = u0*VE;
+		HydroGrid[i][j][k].u[1] = HydroGrid[i][j][k].u[0]*VX;
+		HydroGrid[i][j][k].u[2] = HydroGrid[i][j][k].u[0]*VY;
+		HydroGrid[i][j][k].u[3] = HydroGrid[i][j][k].u[0]*VE;
 		
 		DECLePPIa;
 		DECLu4;

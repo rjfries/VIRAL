@@ -1,7 +1,7 @@
 void hydroExplicit(GRID HydroGrid, double tau, double taustep);
-void fvX(GRID HydroGrid, double taustep, double tau);
-void fvY(GRID HydroGrid,  double taustep, double tau);
-void fvZ(GRID HydroGrid,  double taustep, double tau);
+void fvX(GRID HydroGrid, double tau);
+void fvY(GRID HydroGrid, double tau);
+void fvZ(GRID HydroGrid, double tau);
 
 
 #define WENOP 2
@@ -12,6 +12,76 @@ int method;
 int type;
 
 
+
+void CalcCentreFlux(GRID HydroGrid, double tau)
+{
+	int i,j,k;
+	
+	for(i=0;i<XCM;i++)
+	for(j=0;j<YCM;j++)
+	for(k=0;k<ZCM;k++)
+	{
+		DECLp5u4;
+		DECLePPIa;
+
+#if defined CON			
+		HydroGrid[i][j][k].Fx[0] =  tau*(       p2 + u1*u0*(e+P-PI)       );
+		HydroGrid[i][j][k].Fx[1] =  tau*( HydroGrid[i][j][k].T10*u1/u0    );
+		HydroGrid[i][j][k].Fx[2] =  tau*( HydroGrid[i][j][k].T20*u1/u0    );
+		HydroGrid[i][j][k].Fx[3] =  tau*( HydroGrid[i][j][k].T30*u1/u0    );
+#else
+		HydroGrid[i][j][k].Fx[0] =  tau*(  A2 + u1*u0*(e+P-PI)            );
+		HydroGrid[i][j][k].Fx[1] =  tau*(  p1 + (P-PI) + u1*u1*(e+P-PI)   );
+		HydroGrid[i][j][k].Fx[2] =  tau*(  p3 + u1*u2*(e+P-PI)            );
+		HydroGrid[i][j][k].Fx[3] =  tau*(  p4 + u1*u3*(e+P-PI)            );
+#endif
+
+        HydroGrid[i][j][k].Fx[4]=  (p1*u1)/u0;
+        HydroGrid[i][j][k].Fx[5]=  (p2*u1)/u0;
+        HydroGrid[i][j][k].Fx[6]=  (p3*u1)/u0;
+        HydroGrid[i][j][k].Fx[7]=  (p4*u1)/u0;
+        HydroGrid[i][j][k].Fx[8]=  (p5*u1)/u0;
+        HydroGrid[i][j][k].Fx[9]=  (PI*u1)/u0;
+#if  defined CON
+		HydroGrid[i][j][k].Fy[0] =  tau*(    p3 + u2*u0*(e+P-PI)            );
+		HydroGrid[i][j][k].Fy[1] =  tau*(  HydroGrid[i][j][k].T10*u2/u0      );
+		HydroGrid[i][j][k].Fy[2] =  tau*(  HydroGrid[i][j][k].T20*u2/u0      );
+		HydroGrid[i][j][k].Fy[3] =  tau*(  HydroGrid[i][j][k].T30*u2/u0      );
+#else
+		HydroGrid[i][j][k].Fy[0] =  tau*(  A3 + u2*u0*(e+P-PI)            );
+		HydroGrid[i][j][k].Fy[1] =  tau*(  p3 + u2*u1*(e+P-PI)            );
+		HydroGrid[i][j][k].Fy[2] =  tau*(  p2 + (P-PI) + u2*u2*(e+P-PI)   );
+		HydroGrid[i][j][k].Fy[3] =  tau*(  p5 + u2*u3*(e+P-PI)            );
+#endif
+
+		HydroGrid[i][j][k].Fy[4]=  (p1*u2)/u0;
+        HydroGrid[i][j][k].Fy[5]=  (p2*u2)/u0;
+        HydroGrid[i][j][k].Fy[6]=  (p3*u2)/u0;
+        HydroGrid[i][j][k].Fy[7]=  (p4*u2)/u0;
+        HydroGrid[i][j][k].Fy[8]=  (p5*u2)/u0;
+        HydroGrid[i][j][k].Fy[9]=  (PI*u2)/u0;
+
+
+#if defined CON			
+		HydroGrid[i][j][k].Fz[0] =  tau*(  p4 + u3*u0*(e+P-PI)                );
+		HydroGrid[i][j][k].Fz[1] =  tau*(  HydroGrid[i][j][k].T10*u3/u0       );
+		HydroGrid[i][j][k].Fz[2] =  tau*(  HydroGrid[i][j][k].T20*u3/u0       );
+		HydroGrid[i][j][k].Fz[3] =  tau*(  HydroGrid[i][j][k].T30*u3/u0       );	
+#else	
+		
+  		HydroGrid[i][j][k].Fz[0] =  tau*(  A4 + u3*u0*(e+P-PI)                     );
+		HydroGrid[i][j][k].Fz[1] =  tau*(  p4 + u3*u1*(e+P-PI)                     );
+		HydroGrid[i][j][k].Fz[2] =  tau*(  p5 + u3*u2*(e+P-PI)                     );
+		HydroGrid[i][j][k].Fz[3] =  tau*(  A5 + ((P-PI)/(tau*tau)) + u3*u3*(e+P-PI)     );	
+#endif
+		HydroGrid[i][j][k].Fz[4]=  (p1*u3)/u0;
+        HydroGrid[i][j][k].Fz[5]=  (p2*u3)/u0;
+        HydroGrid[i][j][k].Fz[6]=  (p3*u3)/u0;
+        HydroGrid[i][j][k].Fz[7]=  (p4*u3)/u0;
+        HydroGrid[i][j][k].Fz[8]=  (p5*u3)/u0;
+        HydroGrid[i][j][k].Fz[9]=  (PI*u3)/u0;
+	}	
+}
 
 
 #define GMMX(VAR )\
@@ -242,7 +312,7 @@ GMMZ(Az );
 		
 
 		
-void FindEigenValuesX(GRID HydroGrid, double tau, double taustep)
+void FindEigenValuesX(GRID HydroGrid, double tau)
 {
 
 	int i,j,k;
@@ -277,7 +347,7 @@ void FindEigenValuesX(GRID HydroGrid, double tau, double taustep)
 	}
 }
 		
-void FindEigenValuesY(GRID HydroGrid, double tau, double taustep)
+void FindEigenValuesY(GRID HydroGrid, double tau)
 {
 	int i,j,k;
 	
@@ -308,7 +378,7 @@ void FindEigenValuesY(GRID HydroGrid, double tau, double taustep)
 }
 
 			
-void FindEigenValuesZ(GRID HydroGrid, double tau, double taustep)
+void FindEigenValuesZ(GRID HydroGrid, double tau)
 {
 
 	int i,j,k;
@@ -342,7 +412,7 @@ void FindEigenValuesZ(GRID HydroGrid, double tau, double taustep)
 #define VLRTYPE  1	
 #define WENOTYPE 2
 	
-void Reconstruct(GRID HydroGrid, double tau, double taustep)
+void Reconstruct(GRID HydroGrid)
 {
 	//~ int type = GMMTYPE;
 	//~ int type = VLRTYPE;
@@ -401,7 +471,7 @@ void Reconstruct(GRID HydroGrid, double tau, double taustep)
 	
 }
 		
-void FindMaxEigenValueXYZ(GRID HydroGrid, double tau, double taustep)
+void FindMaxEigenValueXYZ(GRID HydroGrid)
 {
 	int i,j,k,l;
 	
@@ -478,31 +548,30 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	ClearResultVariable( HydroGrid);
 	CopyPrimaryVariablesToVar( HydroGrid , tau);
 	
-	FindEigenValuesX(HydroGrid, tau,  taustep);
-	FindEigenValuesY(HydroGrid, tau,  taustep);
+	FindEigenValuesX(HydroGrid, tau);
+	FindEigenValuesY(HydroGrid, tau);
 
 #if !defined LBI
-	FindEigenValuesZ(HydroGrid, tau,  taustep);
+	FindEigenValuesZ(HydroGrid, tau);
 #endif
 
 
-	Reconstruct(HydroGrid, tau ,  taustep);
+	Reconstruct(HydroGrid);
 	
 
-	FindMaxEigenValueXYZ(HydroGrid, tau ,  taustep);
+	FindMaxEigenValueXYZ(HydroGrid);
 	
 	
-	fvX( HydroGrid,  tau ,  taustep);
+	fvX( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);
 	
-	fvY( HydroGrid, tau ,  taustep);
+	fvY( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);
 	
 
 #if !defined LBI
-	fvZ( HydroGrid,  tau ,  taustep);
-	AddPartialResultToFinalResult( HydroGrid);
-	
+	fvZ( HydroGrid, tau);
+	AddPartialResultToFinalResult( HydroGrid);	
 #endif
 	
 	//~ CFL(HydroGrid, tau ,  taustep);
@@ -514,7 +583,7 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 //The actual hydro code
 
 
-void fvX(GRID HydroGrid, double tau, double taustep)
+void fvX(GRID HydroGrid, double tau)
 {
 
 	int i,j,k,l;
@@ -532,11 +601,11 @@ void fvX(GRID HydroGrid, double tau, double taustep)
 	for( j=jl;j<jr;j++)
 	for( k=kl;k<kr;k++)
 	for( i=il;i<ir;i++)
-		HydroGrid[i][j][k].PartialResult[l] =  -(taustep/XS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i-1][j][k].fluxT[l]);
+		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/XS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i-1][j][k].fluxT[l]);
 
 }
 
-void fvY(GRID HydroGrid, double tau, double taustep)
+void fvY(GRID HydroGrid, double tau)
 {
 	int i,j,k,l;	
  
@@ -553,11 +622,11 @@ void fvY(GRID HydroGrid, double tau, double taustep)
 	for( i=il; i< ir;  i++)
 	for( k=kl; k< kr;  k++)
 	for( j=jl; j<jr; j++)
-		HydroGrid[i][j][k].PartialResult[l] =  -(taustep/YS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j-1][k].fluxT[l]);
+		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/YS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j-1][k].fluxT[l]);
 
 }
 
-void fvZ(GRID HydroGrid,  double tau, double taustep)
+void fvZ(GRID HydroGrid,  double tau)
 {
 	int i,j,k,l;	
  
@@ -574,5 +643,5 @@ void fvZ(GRID HydroGrid,  double tau, double taustep)
 	for( i=il; i< ir; i++)
 	for( j=jl; j< jr; j++)
 	for( k=kl; k< kr; k++)
-		HydroGrid[i][j][k].PartialResult[l] =  -(taustep/ZS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j][k-1].fluxT[l]);
+		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j][k-1].fluxT[l]);
 }

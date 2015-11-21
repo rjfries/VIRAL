@@ -176,9 +176,14 @@ typedef struct
 //Common For all hydro schemes
 	double Var[SVAR],  Result[SVAR],  PartialResult[SVAR];
 	
+//For time integration
+	double Var0[SVAR], Var1[SVAR],  Var2[SVAR],  Var3[SVAR];
+	double L0[SVAR],  L1[SVAR],  L2[SVAR];
+	
 	
 #if defined SHAS || defined ZAL
 	double UTD,Ubar,A,Ac;
+	double NVx[SVAR],NVy[SVAR],NVz[SVAR];
 #endif
 	
 
@@ -194,15 +199,18 @@ typedef struct
 	double VarLY[SVAR], VarRY[SVAR];
 	double VarLZ[SVAR], VarRZ[SVAR];
 	
+ 
 	double Ax[EVAR],Ay[EVAR],Az[EVAR];//all or 2 of the center eigen values
 	
 	double AxLX[EVAR], AxRX[EVAR]; //reconstruct all of the center eigen values
 	double AyLY[EVAR], AyRY[EVAR]; //reconstruct all of the center eigen values
 	double AzLZ[EVAR], AzRZ[EVAR]; //reconstruct all of the center eigen values
  
+	
 	double AxLXMAX, AxRXMAX;
 	double AyLYMAX, AyRYMAX;
-	double AzLZMAX, AzRZMAX;	
+	double AzLZMAX, AzRZMAX;
+	
 	
 	double fluxT[SVAR];	
 #endif

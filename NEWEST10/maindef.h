@@ -213,8 +213,6 @@ typedef struct
 	
 	
 	double fluxT[SVAR];	
-	
-
 #endif
 
 }cell;

@@ -4,8 +4,79 @@ void shastaY(GRID HydroGrid,  double taustep);
 void shastaZ(GRID HydroGrid,  double taustep);
 
 
+
+void CalcNumVel(GRID HydroGrid, double tau)
+{
+	int i,j,k,l;
+	for(l=0;l<SVAR;l++)
+	for(i=0;i<XCM;i++)
+	for(j=0;j<YCM;j++)
+	for(k=0;k<ZCM;k++)
+	{
+		DECLp5u4;
+		DECLePPIa;
+		
+		if(l==0)
+		{
+			HydroGrid[i][j][k].NVx[l] = ( A2 + u1*u0*(e+P-PI) )/HydroGrid[i][j][k].T00;
+			HydroGrid[i][j][k].NVy[l] = ( A3 + u2*u0*(e+P-PI) )/HydroGrid[i][j][k].T00;
+			HydroGrid[i][j][k].NVz[l] = ( A4 + u3*u0*(e+P-PI) )/HydroGrid[i][j][k].T00;		
+		}
+		else
+		{
+			HydroGrid[i][j][k].NVx[l] = u1/u0; 
+			HydroGrid[i][j][k].NVy[l] = u2/u0;
+			HydroGrid[i][j][k].NVz[l] = u3/u0;		
+		}
+	}
+}
+
+
+void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
+{
+	int i,j,k,l;
+
+	for( int i=0; i<XCM ; i++)
+	for( int j=0; j<YCM ; j++)
+	for( int k=0; k<ZCM ; k++)
+	{
+		HydroGrid[i][j][k].Var[0]= tau*HydroGrid[i][j][k].T00;
+		HydroGrid[i][j][k].Var[1]= tau*HydroGrid[i][j][k].T10;
+		HydroGrid[i][j][k].Var[2]= tau*HydroGrid[i][j][k].T20;
+		HydroGrid[i][j][k].Var[3]= tau*HydroGrid[i][j][k].T30;
+		
+		for(int l=0;l<Npi;l++)
+			HydroGrid[i][j][k].Var[VARN+l]=  HydroGrid[i][j][k].pi[l];
+		
+		HydroGrid[i][j][k].Var[VARN+Npi]=  HydroGrid[i][j][k].PI;
+	}
+}
+
+
+void ClearResultVariable(GRID HydroGrid)
+{
+	int i,j,k,l;
+	for( int i=0; i<XCM ; i++)
+	for( int j=0; j<YCM ; j++)
+	for( int k=0; k<ZCM ; k++)
+	for( int l=0; l<SVAR; l++)
+		HydroGrid[i][j][k].Result[l] = 0;
+}
+
+void AddPartialResultToFinalResult(GRID HydroGrid)
+{
+	int i,j,k;
+	int l;
+	
+	for(l=0;l<SVAR;l++)
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+		HydroGrid[i][j][k].Result[l] += HydroGrid[i][j][k].PartialResult[l];
+}
+
 #define SHASTA 1
- 
+
 void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 {
 	
@@ -53,9 +124,12 @@ void shastaX(GRID HydroGrid, double taustep)
 		{
 			for( i=1; i<XCM-1;i++)
 			{
-				double Vx = HydroGrid[i][j][k].Vx;
-				double Vxp1 = HydroGrid[i+1][j][k].Vx;
-				double Vxm1 = HydroGrid[i-1][j][k].Vx;
+				double Vx,Vxp1,Vxm1;
+				
+				Vx = HydroGrid[i][j][k].NVx[l];
+				Vxp1 = HydroGrid[i+1][j][k].NVx[l];
+				Vxm1 = HydroGrid[i-1][j][k].NVx[l];
+								
 				Qplus  = (0.5 - Vx*lambdax ) /  ( 1.0 + (Vxp1- Vx)*lambdax);
  				Qminus = (0.5 + Vx*lambdax ) /  ( 1.0 - (Vxm1 - Vx)*lambdax);
 				
@@ -79,18 +153,16 @@ void shastaX(GRID HydroGrid, double taustep)
 
 				HydroGrid[i][j][k].A=signa*MAX(0,min);
 			}
-
+			
 			for(i=il;i<ir;i++)
-				HydroGrid[i][j][k].PartialResult[l] = ( -HydroGrid[i][j][k].Var[l] + HydroGrid[i][j][k].UTD 
-											- HydroGrid[i][j][k].A + HydroGrid[i-1][j][k].A );
+				HydroGrid[i][j][k].PartialResult[l] = ( -HydroGrid[i][j][k].Var[l] + HydroGrid[i][j][k].UTD - HydroGrid[i][j][k].A + HydroGrid[i-1][j][k].A )/taustep;
 		}
 	}
 }
 
 void shastaY(GRID HydroGrid, double taustep)
 {
-
-//counters
+ 
 	int i,j,k,l;
 
 	//
@@ -107,16 +179,19 @@ void shastaY(GRID HydroGrid, double taustep)
 	double signa,temp,term1,term3,min;
 	double factor = SHASTA;
 
-	for(l=0; l< VARN;l++)
+	for(l=0; l< SVAR;l++)
 	{		
 		for( i=il; i< ir; i++)
 		for( k=kl; k< kr; k++)
 		{
 			for( j=1; j<YCM-1;j++)
 			{
-				double Vy = HydroGrid[i][j][k].Vy;
-				double Vyp1 = HydroGrid[i][j+1][k].Vy;
-				double Vym1 = HydroGrid[i][j-1][k].Vy;
+				double Vy,Vyp1,Vym1;				
+				 
+				Vy = HydroGrid[i][j][k].NVy[l];
+				Vyp1 = HydroGrid[i][j+1][k].NVy[l];
+				Vym1 = HydroGrid[i][j-1][k].NVy[l];
+				 
 				
 				Qplus  = (0.5 - Vy*lambday) / ( 1.0 + (Vyp1 - Vy)*lambday);
 				Qminus = (0.5 + Vy*lambday) / ( 1.0 - (Vym1 - Vy)*lambday);
@@ -143,13 +218,9 @@ void shastaY(GRID HydroGrid, double taustep)
 			}
 		
 			for(j=jl;j<jr;j++)
-				HydroGrid[i][j][k].PartialResult[l] = ( -HydroGrid[i][j][k].Var[l] + HydroGrid[i][j][k].UTD 
-											- HydroGrid[i][j][k].A + HydroGrid[i][j-1][k].A );
+				HydroGrid[i][j][k].PartialResult[l] = ( -HydroGrid[i][j][k].Var[l] + HydroGrid[i][j][k].UTD - HydroGrid[i][j][k].A + HydroGrid[i][j-1][k].A )/taustep;
 		}
-
 	}
-
-
 }
 
 void shastaZ(GRID HydroGrid, double taustep)
@@ -167,7 +238,7 @@ void shastaZ(GRID HydroGrid, double taustep)
 	double signa,temp,term1,term3,min;
 	double factor = SHASTA;
 	
-	for(l=0; l< VARN;l++)
+	for(l=0; l< SVAR;l++)
 	{
 
 		for( i=il; i< ir; i++)
@@ -175,13 +246,13 @@ void shastaZ(GRID HydroGrid, double taustep)
 		{
 			for( k=1; k<ZCM-1;k++)
 			{
-				double Ve = HydroGrid[i][j][k].Ve;
-				double Vep1 = HydroGrid[i][j][k+1].Ve;
-				double Vem1 = HydroGrid[i][j][k-1].Ve;
+				double Vz = HydroGrid[i][j][k].NVz[l];
+				double Vzp1 = HydroGrid[i][j][k+1].NVz[l];
+				double Vzm1 = HydroGrid[i][j][k-1].NVz[l];
 				
 				
-				Qplus  = (0.5 - Ve*lambdaz) / ( 1.0 + (Vep1 - Ve)*lambdaz);
-				Qminus = (0.5 + Ve*lambdaz) / ( 1.0 - (Vem1 - Ve)*lambdaz);
+				Qplus  = (0.5 - Vz*lambdaz) / ( 1.0 + (Vzp1 - Vz)*lambdaz);
+				Qminus = (0.5 + Vz*lambdaz) / ( 1.0 - (Vzm1 - Vz)*lambdaz);
 				
 				HydroGrid[i][j][k].UTD	= 0.5 *( (Qplus*Qplus*(HydroGrid[i][j][k+1].Var[l]-HydroGrid[i][j][k].Var[l]))
 						+ (Qminus*Qminus*(HydroGrid[i][j][k-1].Var[l]-HydroGrid[i][j][k].Var[l]) ) ) 
@@ -206,8 +277,7 @@ void shastaZ(GRID HydroGrid, double taustep)
 			}
 		
 			for(k=kl;k<kr;k++)
-				HydroGrid[i][j][k].PartialResult[l] = ( -HydroGrid[i][j][k].Var[l] + HydroGrid[i][j][k].UTD 
-											- HydroGrid[i][j][k].A + HydroGrid[i][j][k-1].A );
+				HydroGrid[i][j][k].PartialResult[l] = ( -HydroGrid[i][j][k].Var[l] + HydroGrid[i][j][k].UTD - HydroGrid[i][j][k].A + HydroGrid[i][j][k-1].A )/taustep;
 		}
 	}
 }

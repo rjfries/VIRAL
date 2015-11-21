@@ -5,7 +5,7 @@
 #BSUB -W 59
 #BSUB -n 16
 #BSUB -u sidharthsp@gmail.com
-#BSUB -M 4000    
+#BSUB -M 2700    
 
 
 ## 20 cores/node

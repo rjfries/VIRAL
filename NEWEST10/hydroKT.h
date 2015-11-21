@@ -97,7 +97,7 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
         HydroGrid[i][j][k].Fz[13]=  (p10*u3)/u0;
         HydroGrid[i][j][k].Fz[14]=  (PI*u3)/u0;		
 	}	
-} 
+}
 
 
 #define GMMX(VAR )\
@@ -341,6 +341,7 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 		DECLePPIa;
 		DECLp10u4;
 		DECLTmu0;
+		
 
 #if defined CON
 		HydroGrid[i][j][k].Ax[0] = u1/u0;
@@ -351,6 +352,7 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 							(     ( (e+P-PI)*(u0*u0)*(-u0*u0 + a*(-1+u0*u0) )  )           )
 					   ) 
 					; 
+		
 #else
 		HydroGrid[i][j][k].Ax[0] = u1/u0;
 		continue;
@@ -450,6 +452,7 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 		gsl_matrix_free(matrix);
 		gsl_vector_complex_free(eig);
 #endif
+
 	}
 }
 		
@@ -824,7 +827,13 @@ void CFL(GRID HydroGrid, double tau, double taustep)
 			maxflowgrid = ttt;
 	}
 	
-	cout<<std::scientific<<"The time step based on CFL should be "<< XS/(4*maxflowgrid)<<endl;
+	double timesug = XS/(4*maxflowgrid);
+	double mintime;
+	
+    MPI_Reduce(&timesug, &mintime, 1, MPI_DOUBLE,MPI_MIN, 0, MPI_COMM_WORLD);
+    
+	if(!rank && mintime<TS)
+		cout<<std::scientific<<"The time step based on CFL should be "<<mintime<<endl;
 }
 			
 
@@ -897,12 +906,13 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	fvY( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);
 	
+
 #if !defined LBI
 	fvZ( HydroGrid, tau);
 	AddPartialResultToFinalResult( HydroGrid);	
 #endif
 	
-	//~ CFL(HydroGrid, tau ,  taustep);
+	CFL(HydroGrid, tau ,  taustep);
 }
 
 

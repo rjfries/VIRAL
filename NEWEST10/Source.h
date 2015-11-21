@@ -1,72 +1,5 @@
 
 
-//~ void UpdatePrimaryVariablesAtEndOfTimeStep(GRID HydroGrid, double tau, double ts)
-//~ {
-	//~ int i,j,k,l;
-//~ 
-//~ 
-//~ 
-	//~ for(i=il;i<ir;i++)
-	//~ for(j=jl;j<jr;j++)
-	//~ for(k=kl;k<kr;k++)
-	//~ {
-		//~ 
-		//~ HydroGrid[i][j][k].T00 =  (tau*HydroGrid[i][j][k].T00 
-								//~ + HydroGrid[i][j][k].Result[0]
-								//~ + HydroGrid[i][j][k].Source[0]*ts)/(tau+ts);
-								//~ 
-		//~ HydroGrid[i][j][k].T10 =  (tau*HydroGrid[i][j][k].T10 
-								//~ + HydroGrid[i][j][k].Result[1])/(tau+ts);
-								//~ 
-		//~ HydroGrid[i][j][k].T20 =  (tau*HydroGrid[i][j][k].T20 
-								//~ + HydroGrid[i][j][k].Result[2])/(tau+ts);
-								//~ 
-		//~ HydroGrid[i][j][k].T30 =  (tau*HydroGrid[i][j][k].T30 
-								//~ + HydroGrid[i][j][k].Result[3]
-								//~ + HydroGrid[i][j][k].Source[3]*ts)/(tau+ts);	
-//~ 
-		//~ for(l=0;l<Npi;l++)
-			//~ HydroGrid[i][j][k].pi[l] +=  ( HydroGrid[i][j][k].Result[VARN+l] + HydroGrid[i][j][k].Source[VARN+l]*ts);
-			//~ 
-		//~ 
-		//~ /* Fixes for pi's */
-		//~ DECLp10u4;
-		//~ DECLePPIa;
-		//~ double rhomax=1;
-		//~ double zeta0=0.1;
-		//~ 
-		//~ double piupCdown = p1*p1 - 2*p2*p2 -2*p3*p3+ p5*p5 + 2*p6*p6 + p8*p8 - 2*p4*p4*tau*tau  + 2*p7*p7*tau*tau + 2*p9*p9*tau*tau + p10*p10*tau*tau*tau*tau+1e-6;
-		//~ double trace = p1 - p5 - p8 - p10*tau*tau;
-		//~ double row0  = p1*u0 - p2*u1 - p3*u2 - p4*u3*tau*tau;
-		//~ double row1  = p2*u0 - p5*u1 - p6*u2 - p7*u3*tau*tau;
-		//~ double row2  = p3*u0 - p6*u1 - p8*u2 - p9*u3*tau*tau;
-		//~ double row3  = p4*u0 - p7*u1 - p9*u2 - p10*u3*tau*tau;
-		//~ 
-		//~ double r[6] = {
-						//~ sqrt(piupCdown)/(rhomax*sqrt(e*e+3*P*P) ),
-						//~ trace /(rhomax*zeta0*sqrt(piupCdown) ),
-						//~ row0 /(rhomax*zeta0*sqrt(piupCdown) ),
-						//~ row1 /(rhomax*zeta0*sqrt(piupCdown) ),
-						//~ row2 /(rhomax*zeta0*sqrt(piupCdown) ),
-						//~ row3 /(rhomax*zeta0*sqrt(piupCdown) ) 
-					  //~ };
-					  //~ 
-		//~ double rho=r[0];
-		//~ for(l=1;l<6;l++)
-			//~ if(r[l]>rho)
-				//~ rho=r[l];
-		//~ if(fabs(rho)<1e-5)
-			//~ rho=1;
-				//~ 
-		//~ for(l=0;l<Npi;l++)
-			//~ HydroGrid[i][j][k].pi[l] *=  tanh(rho)/rho;
-						//~ 
-			//~ 
-		//~ HydroGrid[i][j][k].PI += ( HydroGrid[i][j][k].Result[VARN+Npi] + HydroGrid[i][j][k].Source[VARN+Npi]*ts);
-	//~ }
-//~ }
-
-
 void CalcDer4Vel(GRID HydroGrid, double tau, double tstep)
 {
 	int i,j,k;
@@ -275,8 +208,6 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		double BU =  FZeta(  s, e, r);
 		double tPI= FtauPI(  BU, P, e, r);	
 		
-							   
-			   
 		 HydroGrid[i][j][k].Source[4]=  (  ( (-3*(2*p4*tau*u3 + p1*pow(tpi,-1))*pow(u0,-1) - 2*pow(tau,-1)*(2*p1 + pow(tpi,-1)*(SH - SH*pow(u0,2))) - 2*tau*(-6*p4*u0*u3 + (3*p1 + pow(tpi,-1)*(SH + 2*SH*pow(u0,2)))*pow(u3,2)))/3. )
 		+ ((-2*p1*(3*u0 + 2*pow(u0,-1)) + 4*SH*pow(tpi,-1)*(-2*u0 + pow(u0,-1) + pow(u0,3)))/3.)*(HydroGrid[i][j][k].du[0][0]) + (-(u1*(3*p1*(2 + pow(u0,-2)) - 4*SH*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[0][1]) + (-(u2*(3*p1*(2 + pow(u0,-2)) - 4*SH*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[0][2]) + (-(u3*(3*p1*(2 + pow(u0,-2)) - 4*SH*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[0][3])
 		+ ((2*(3*p2*u0 - 2*SH*u1*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[1][0]) + ((6*p2*u1 - p1*pow(u0,-1) - 2*SH*pow(tpi,-1)*(pow(u0,-1)*(1 + pow(u1,2)) + u0*(-1 + 2*pow(u1,2))))/3.)*(HydroGrid[i][j][k].du[1][1]) + ((2*u2*(3*p2 - SH*u1*pow(tpi,-1)*(2*u0 + pow(u0,-1))))/3.)*(HydroGrid[i][j][k].du[1][2]) + ((2*u3*(3*p2 - SH*u1*pow(tpi,-1)*(2*u0 + pow(u0,-1))))/3.)*(HydroGrid[i][j][k].du[1][3])
@@ -357,7 +288,6 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 {
 	int i,j,k;
 	double max1=0,min1=0;
-
 	double tau2 = tau*tau;	
 
 	CalcDer4Vel(HydroGrid, tau, ts); //du[4][4] is computed

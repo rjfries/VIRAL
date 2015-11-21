@@ -43,6 +43,10 @@
 #endif
 
 
+#ifdef SHAS
+	#define CON
+#endif
+
 using namespace std;
 
 #include "maindef.h"
@@ -72,6 +76,8 @@ using namespace std;
 #ifdef KT
 #include "hydroKT.h"
 #endif
+
+#include "time.h"
 
 void FirstOrder(GRID HydroGrid, double ts, double tau);
 void SecondOrder(GRID HydroGrid, double ts, double tau);
@@ -119,10 +125,17 @@ int main(int argc, char* argv[])
     
 	while(1)
 	{
-		 
-		//~ FirstOrder(HydroGrid, ts, tau);
-		SecondOrder(HydroGrid, ts, tau);
-		
+	
+#ifdef RK1	 
+		FirstOrder(HydroGrid, tau, ts);
+#endif		
+#ifdef RK2	 
+		TVDRK2(HydroGrid, tau, ts);
+#endif		
+#ifdef RK3	 
+		TVDRK3(HydroGrid, tau, ts);
+#endif		
+
 #ifdef BJORKEN
 		myfile<<tau<< "  "<< fmtoMev(FT(HydroGrid[XCM/2][YCM/2][ZCM/2].En , HydroGrid[XCM/2][YCM/2][ZCM/2].r))/1000<<endl;
 #endif
@@ -171,164 +184,3 @@ int main(int argc, char* argv[])
 		
 	MPI_Finalize();
  }
- 
- 
- 
-
-void FirstOrder(GRID HydroGrid, double ts, double tau)
-{
-	
-	CheckPhysics(HydroGrid, 0);
-	
-	CalcSource(HydroGrid, tau, ts);		//for entire grid	
-
-#ifdef KT
-	CalcCentreFlux(HydroGrid, tau);
-#endif
-
-
-	hydroExplicit(HydroGrid, tau, ts); 			//gets update for PV,pi and PI everywhere excluding boundary region
-	UpdatePrimaryVariablesAtEndOfTimeStep( HydroGrid, tau, ts); //update PV's, pi and PI to "tau+ts"	from "tau"
-	MultiRootSearchForEnVelUsingDerivatives(HydroGrid, tau+ts );	//Finds En,P,V's, 4vel, everywhere excluding boundary region
-	
-	DebugMSG(HydroGrid);
-	pack(HydroGrid);  //Exchanges En&Vel, pi and PI and updates P,4vel,Tmunu at the cell interfaces
-	boundary(HydroGrid);  // Outflowing boundary condition for everything
-}
-
-
-/*
- * 
- * 
- * SECOND ORDER
- * 
- * 
- */
-void SOBackUpPrimaryVariables(GRID HydroGrid);
-void SORestorePrimaryVariables(GRID HydroGrid);
-
-
-void SecondOrder(GRID HydroGrid, double ts, double tau)
-{
-	
-	CheckPhysics(HydroGrid, 0);
-	
-				
-	SOBackUpPrimaryVariables(HydroGrid);
-	
-	CalcSource(HydroGrid, tau, ts);	  //calculating source after a previous "ts" timestep at time "tau". "ts" needed for time derivative of 4 velocity	
-#ifdef KT		
-	CalcCentreFlux(HydroGrid, tau);  
-#endif
-	
-	hydroExplicit(HydroGrid, tau, ts/2); 	
-	
-	
-	UpdatePrimaryVariablesAtEndOfTimeStep( HydroGrid, tau, ts/2);		//update primary vars, pi and PI to "tau+ts/2"	from "tau"
-	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2);   // find en,vel at tau+ts/2and update 4 vel and Pressure. Before updating 4 vel save the current one (at tau) to prevu[4]
-    CheckPhysics(HydroGrid, 1);
-	/**************************************************************/
-	
-	pack(HydroGrid );    // update ghost cells
-	boundary(HydroGrid);	//implement boundary condition	
-	CalcSource(HydroGrid, tau+ts/2, ts/2);	//calculating source after a previous "ts/2" timestep now at time "tau+ts/2"
-#ifdef KT		
-	CalcCentreFlux(HydroGrid, tau+ts/2);  // calculate centrafluxes at the middle of time step. for second order accuracy in time integration
-#endif	
-	/**************************************************************/
-	
-	
-	SORestorePrimaryVariables(HydroGrid);	 // now revert back the PV, pi , PI , en, vel and 4 vel to tau
-	hydroExplicit(HydroGrid, tau, ts);	// now advance full time step using the middle of time step values of source terms and centra fluxes
-	UpdatePrimaryVariablesAtEndOfTimeStep( HydroGrid,tau, ts);  // //update primary vars, pi and PI to "tau+ts" from "tau"
-	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts); // find en,vel at tau+ts and update 4 vel and Pressure to "tau+ts". Before updating 4 vel save the current one (again at tau) to prevu[4].
-	CheckPhysics(HydroGrid, 2);
-	
-	/**************************************************************/
-
-	
-	pack(HydroGrid);
-	boundary(HydroGrid);	
-
-	DebugMSG(HydroGrid);
-}
-
-
-
-void SOBackUpPrimaryVariables(GRID HydroGrid)
-{
-	int i,j,k,l;
-	
-	
-	for(i=0;i<XCM;i++)
-	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCM;k++)
-	{
-		HydroGrid[i][j][k].BackUp[0] = HydroGrid[i][j][k].T00;
-		HydroGrid[i][j][k].BackUp[1] = HydroGrid[i][j][k].T10;
-		HydroGrid[i][j][k].BackUp[2] = HydroGrid[i][j][k].T20;
-		HydroGrid[i][j][k].BackUp[3] = HydroGrid[i][j][k].T30;
-		
-		HydroGrid[i][j][k].BackUp[4] = HydroGrid[i][j][k].En;
-		HydroGrid[i][j][k].BackUp[5] = HydroGrid[i][j][k].Vx;
-		HydroGrid[i][j][k].BackUp[6] = HydroGrid[i][j][k].Vy;
-		HydroGrid[i][j][k].BackUp[7] = HydroGrid[i][j][k].Ve;
-		
-		HydroGrid[i][j][k].BackUp[8] = HydroGrid[i][j][k].u[0];
-		HydroGrid[i][j][k].BackUp[9] = HydroGrid[i][j][k].u[1];
-		HydroGrid[i][j][k].BackUp[10] = HydroGrid[i][j][k].u[2];
-		HydroGrid[i][j][k].BackUp[11] = HydroGrid[i][j][k].u[3];
-		
-		HydroGrid[i][j][k].BackUp[12] = HydroGrid[i][j][k].prevu[0];
-		HydroGrid[i][j][k].BackUp[13] = HydroGrid[i][j][k].prevu[1];
-		HydroGrid[i][j][k].BackUp[14] = HydroGrid[i][j][k].prevu[2];
-		HydroGrid[i][j][k].BackUp[15] = HydroGrid[i][j][k].prevu[3];
-		
-		HydroGrid[i][j][k].BackUp[4*VARN] = HydroGrid[i][j][k].P;
-		
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].BackUp[4*VARN+1+l] = HydroGrid[i][j][k].pi[l];
-			
-		HydroGrid[i][j][k].BackUp[4*VARN+1+Npi] = HydroGrid[i][j][k].PI;
-	}
-}
-
-
-
-void SORestorePrimaryVariables(GRID HydroGrid)
-{
-	int i,j,k,l;
-	
-	
-	for(i=0;i<XCM;i++)
-	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCM;k++)
-	{
-		HydroGrid[i][j][k].T00 = HydroGrid[i][j][k].BackUp[0];
-		HydroGrid[i][j][k].T10 = HydroGrid[i][j][k].BackUp[1];
-		HydroGrid[i][j][k].T20 = HydroGrid[i][j][k].BackUp[2];
-		HydroGrid[i][j][k].T30 = HydroGrid[i][j][k].BackUp[3];
-		
-		HydroGrid[i][j][k].En = HydroGrid[i][j][k].BackUp[4];
-		HydroGrid[i][j][k].Vx = HydroGrid[i][j][k].BackUp[5];
-		HydroGrid[i][j][k].Vy = HydroGrid[i][j][k].BackUp[6];
-		HydroGrid[i][j][k].Ve = HydroGrid[i][j][k].BackUp[7];
-		
-		HydroGrid[i][j][k].u[0] = HydroGrid[i][j][k].BackUp[8];
-		HydroGrid[i][j][k].u[1] = HydroGrid[i][j][k].BackUp[9];
-		HydroGrid[i][j][k].u[2] = HydroGrid[i][j][k].BackUp[10];
-		HydroGrid[i][j][k].u[3] = HydroGrid[i][j][k].BackUp[11];
-		
-		HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][k].BackUp[12];
-		HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][k].BackUp[13];
-		HydroGrid[i][j][k].prevu[2] = HydroGrid[i][j][k].BackUp[14];
-		HydroGrid[i][j][k].prevu[3] = HydroGrid[i][j][k].BackUp[15];
-		
-		HydroGrid[i][j][k].P = HydroGrid[i][j][k].BackUp[4*VARN];
-		
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] = HydroGrid[i][j][k].BackUp[4*VARN+1+l];
-			
-		HydroGrid[i][j][k].PI  = HydroGrid[i][j][k].BackUp[4*VARN+1+Npi];
-	}
-}
