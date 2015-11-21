@@ -318,7 +318,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcCentreFlux(HydroGrid, tau+ts/2.0);  
 #endif	
 #ifdef SHAS
-	CalcNumVel(HydroGrid, tau+ts/2.0);
+	CalcNumVel(HydroGrid, tau+ts/2.0); 
 #endif
 	hydroExplicit(HydroGrid, tau+ts/2.0, ts/3.0);
 	CalcL2(HydroGrid);
