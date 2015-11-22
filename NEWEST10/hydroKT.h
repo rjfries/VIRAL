@@ -54,7 +54,6 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Fy[2] =  tau*(  HydroGrid[i][j][k].T20*u2/u0      );
 		HydroGrid[i][j][k].Fy[3] =  tau*(  HydroGrid[i][j][k].T30*u2/u0      );
 #else
-
 		HydroGrid[i][j][k].Fy[0] =  tau*(  p3 + u2*u0*(e+P-PI)            );
 		HydroGrid[i][j][k].Fy[1] =  tau*(  p6 + u2*u1*(e+P-PI)            );
 		HydroGrid[i][j][k].Fy[2] =  tau*(  p8 + (P-PI) + u2*u2*(e+P-PI)   );

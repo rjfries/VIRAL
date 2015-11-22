@@ -536,11 +536,58 @@ void CFL(GRID HydroGrid, double tau, double taustep)
 			maxflowgrid = ttt;
 	}
 	
-	cout<<std::scientific<<"The time step based on CFL should be "<< XS/(4*maxflowgrid)<<endl;
+	double timesug = XS/(4*maxflowgrid);
+	double mintime;
+	
+    MPI_Reduce(&timesug, &mintime, 1, MPI_DOUBLE,MPI_MIN, 0, MPI_COMM_WORLD);
+    
+	if(!rank && mintime<TS)
+		cout<<std::scientific<<"The time step based on CFL should be "<<mintime<<endl;
 }
 			
 
 
+
+void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
+{
+
+	for( int i=0; i<XCM ; i++)
+	for( int j=0; j<YCM ; j++)
+	for( int k=0; k<ZCM ; k++)
+	{
+		HydroGrid[i][j][k].Var[0]= tau*HydroGrid[i][j][k].T00;
+		HydroGrid[i][j][k].Var[1]= tau*HydroGrid[i][j][k].T10;
+		HydroGrid[i][j][k].Var[2]= tau*HydroGrid[i][j][k].T20;
+		HydroGrid[i][j][k].Var[3]= tau*HydroGrid[i][j][k].T30;
+		
+		for(int l=0;l<Npi;l++)
+			HydroGrid[i][j][k].Var[VARN+l]=  HydroGrid[i][j][k].pi[l];
+		
+		HydroGrid[i][j][k].Var[VARN+Npi]=  HydroGrid[i][j][k].PI;
+	}
+}
+
+
+void ClearResultVariable(GRID HydroGrid)
+{
+	for( int i=0; i<XCM ; i++)
+	for( int j=0; j<YCM ; j++)
+	for( int k=0; k<ZCM ; k++)
+	for( int l=0; l<SVAR; l++)
+		HydroGrid[i][j][k].Result[l] = 0;
+}
+
+void AddPartialResultToFinalResult(GRID HydroGrid)
+{
+	int i,j,k;
+	int l;
+	
+	for(l=0;l<SVAR;l++)
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+		HydroGrid[i][j][k].Result[l] += HydroGrid[i][j][k].PartialResult[l];
+}
 
 
 void hydroExplicit(GRID HydroGrid, double tau, double taustep)
@@ -574,7 +621,7 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	AddPartialResultToFinalResult( HydroGrid);	
 #endif
 	
-	//~ CFL(HydroGrid, tau ,  taustep);
+	CFL(HydroGrid, tau ,  taustep);
 }
 
 

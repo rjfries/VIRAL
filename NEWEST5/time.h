@@ -201,7 +201,7 @@ void FirstOrder(GRID HydroGrid, double tau, double ts)
 	CalcVar1( HydroGrid,ts);	
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts); //update PV's, pi and PI to "tau+ts"	from "tau"	
 	UpdatePrevU(HydroGrid);
-	RootSearchForEnVelUsingDerivatives(HydroGrid, tau+ts );	//Finds En,P,V's, 4vel, 3vel everywhere excluding boundary region
+	MultiRootSearchForEnVelUsingDerivatives(HydroGrid, tau+ts );	//Finds En,P,V's, 4vel, 3vel everywhere excluding boundary region
 	
 		
 	pack(HydroGrid);  //Exchanges En&Vel, pi and PI and updates P,4vel,Tmunu at the cell interfaces
@@ -233,7 +233,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts);  
 	UpdatePrevU(HydroGrid);
-	RootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
+	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
 	
 	
 	pack(HydroGrid );     
@@ -251,7 +251,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	
 	
 	UpdatePrimaryVariablesFromVar2(HydroGrid,  tau+ts);  
-    RootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 
 		
@@ -283,7 +283,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts);  
 	UpdatePrevU(HydroGrid);
-	RootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
+	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
 	
 	
 	
@@ -303,7 +303,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar2RK3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar2(HydroGrid,  tau+ts/2.0);  
-    RootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2.0); 
+    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2.0); 
     	
 
 
@@ -325,7 +325,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar3(HydroGrid,  tau+ts);  
-    RootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 		
 	pack(HydroGrid);

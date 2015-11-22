@@ -446,11 +446,6 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	
 		if(1)//status == GSL_SUCCESS)
 		{		
-			HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][k].u[0];
-			HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][k].u[1];
-			HydroGrid[i][j][k].prevu[2] = HydroGrid[i][j][k].u[2];
-			HydroGrid[i][j][k].prevu[3] = HydroGrid[i][j][k].u[3]; 
-			
 			HydroGrid[i][j][k].En = gsl_vector_get(result, 0);    //find the new energy from root finding algorithm
 			HydroGrid[i][j][k].u[1] = gsl_vector_get(result, 1);    //find the new u1 from root finding algorithm
 			HydroGrid[i][j][k].u[2] = gsl_vector_get(result, 2);    //find the new u2 from root finding algorithm
@@ -494,16 +489,15 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		double vy = u2/u0;
 		double ve = u3/u0;
 		
-		//~ if( sqrt(vx*vx+vy*vy+ve*ve) >= 1 || En <=0 )
-		//~ {
-			//~ cout<<" violations of SOL / -ve energy in multiroot.h -  2nd place"<<endl;
-			//~ cout<<"HELL BROKE LOOSE X "<<HydroGrid[i][j][k].X <<"  Y " << HydroGrid[i][j][k].Y<< "  E "<<HydroGrid[i][j][k].eta << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
-			//~ cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
-			//~ cout<<"HELL BROKE LOOSE Energy  "<<En<<endl;
-			//~ quit = 1;
-			//~ exit(quit);
-			//~ continue;
-		//~ }			 
+		if( sqrt(vx*vx+vy*vy+ve*ve) >= 1 || En <=0 )
+		{
+			 cout<<" violations of SOL / -ve energy in multiroot.h -  2nd place"<<endl;
+			 cout<<"HELL BROKE LOOSE X "<<HydroGrid[i][j][k].X <<"  Y " << HydroGrid[i][j][k].Y<< "  E "<<HydroGrid[i][j][k].eta << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
+			 cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
+			 cout<<"HELL BROKE LOOSE Energy  "<<En<<endl;
+			 quit = 1;
+		//	 exit(quit);
+		 }			 
 		
 		HydroGrid[i][j][k].Vx = vx;
 		HydroGrid[i][j][k].Vy = vy;
@@ -513,6 +507,6 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	}
 	
 	
-	//if(quit)
-	//	exit(quit);
+	if(quit)
+		exit(quit);
 }

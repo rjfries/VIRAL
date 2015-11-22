@@ -1,0 +1,208 @@
+	NOTE: As of 4/1/2015, MKLROOT defined in this module has been changed
+	From: /software/easybuild/software/imkl/11.1.3.174
+	  To: /software/easybuild/software/imkl/11.1.3.174/mkl
+
+The following have been reloaded with a version change:
+  1) icc/2013_sp1.3.174 => icc/2015.3.187-GCC-4.8.4
+  2) ifort/2013_sp1.3.174 => ifort/2015.3.187-GCC-4.8.4
+  3) imkl/11.1.3.174 => imkl/11.2.3.187-iimpi-7.3.5-GCC-4.8.4
+  4) impi/4.1.3.049 => impi/5.0.3.048-iccifort-2015.3.187-GCC-4.8.4
+
+	NOTE: As of 4/1/2015, MKLROOT defined in this module has been changed
+	From: /software/easybuild/software/imkl/11.1.3.174
+	  To: /software/easybuild/software/imkl/11.1.3.174/mkl
+
+The following have been reloaded with a version change:
+  1) icc/2015.3.187-GCC-4.8.4 => icc/2013_sp1.3.174
+  2) ifort/2015.3.187-GCC-4.8.4 => ifort/2013_sp1.3.174
+  3) imkl/11.2.3.187-iimpi-7.3.5-GCC-4.8.4 => imkl/11.1.3.174
+  4) impi/5.0.3.048-iccifort-2015.3.187-GCC-4.8.4 => impi/4.1.3.049
+
+From (-X,-Y,-Z)      == ( -15 , -15 , 0 )
+To   ( X, Y, Z)      == ( 14.95 , 14.95 , 0 )
+Number of Processors == ( 4 , 4 , 1 ) == 16
+Points in total      == ( 600 , 600 , 1 )
+Points per process   == ( 150 , 150 , 1 )
+XCM,YCM,ZCM          == ( 156 , 156 , 1 )
+(il,jl,kl).(ir,jr,kr)== ( 3 , 3 , 0 ).( 153 , 153 , 1 )
+
+
+
+k0 is  0
+Max vel ( -0.100000 , -0.700000 , 0.000000 ) & mag 0.707107 @ ( -0.200000 , -1.400000 , 0.000000 )in rank -> 5
+Max Energy ( 28.822403 ) @ ( 0.000000 , 0.000000 , 0.000000 )in rank -> 10
+Min Energy ( 0.000000 ) @ ( 0.000000 , 0.000000 , 0.000000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.000000e+00 	 0.000000e+00
+1 	 0.000000e+00 	 0.000000e+00
+2 	 0.000000e+00 	 0.000000e+00
+3 	 0.000000e+00 	 0.000000e+00
+4 	 0.000000e+00 	 0.000000e+00
+5 	 0.000000e+00 	 0.000000e+00
+6 	 0.000000e+00 	 0.000000e+00
+7 	 0.000000e+00 	 0.000000e+00
+8 	 0.000000e+00 	 0.000000e+00
+9 	 0.000000e+00 	 0.000000e+00
+
+
+ROOT CHECK EQN 1 -- MAX ROOT CHECK EQN 4 -- MAX 0.000000e+00 &     Avg 0.000000e+00
+ROOT CHECK EQN 2 -- MAX 4.263256e-14 &     Avg 1.082591e-16
+ROOT CHECK EQN 3 -- MAX 4.263256e-14 &     Avg 1.079590e-16
+8.526513e-14 &     Avg 4.001411e-16
+TRACE -- MAX 3.469447e-18 &    Avg 7.087516e-18
+Max vel ( -0.475589 , 0.525651 , 0.000000 ) & mag 0.708868 @ ( -0.950000 , 1.050000 , 0.000000 )in rank -> 6
+Max Energy ( 28.253089 ) @ ( 0.000000 , 0.100000 , 0.000000 )in rank -> 10
+Min Energy ( 0.000000 ) @ ( 0.000000 , 0.000000 , 0.000000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.000000e+00 	 -9.512301e+00
+1 	 0.000000e+00 	 0.000000e+00
+2 	 0.000000e+00 	 0.000000e+00
+3 	 0.000000e+00 	 0.000000e+00
+4 	 5.769281e+00 	 -1.253539e-02
+5 	 5.769281e+00 	 -1.253539e-02
+6 	 9.711504e-01 	 -9.711504e-01
+7 	 0.000000e+00 	 0.000000e+00
+8 	 0.000000e+00 	 0.000000e+00
+9 	 0.000000e+00 	 0.000000e+00
+
+
+ROOT CHECK EQN 1 -- MAX 7.105427e-15 &     Avg 1.510006e-17
+ROOT CHECK EQN 2 -- MAX 1.421085e-14 &     Avg 1.400248e-17
+ROOT CHECK EQN 3 -- MAX 1.421085e-14 &     Avg 1.396752e-17
+ROOT CHECK EQN 4 -- MAX 0.000000e+00 &     Avg 0.000000e+00
+TRACE -- MAX 6.938894e-18 &    Avg 7.579326e-18
+1108 mega bytes
+Time Step is 5.000000e-03 @ TAU -->1.0050000000000 This is tau step no. 1 at time 5.49000 seconds
+
+
+
+Max vel ( 0.549988 , 0.449990 , 0.000000 ) & mag 0.710618 @ ( 1.100000 , 0.900000 , 0.000000 )in rank -> 10
+Max Energy ( 27.697762 ) @ ( 0.100000 , 0.100000 , 0.000000 )in rank -> 10
+Min Energy ( 0.00000 ) @ ( 0.00000 , 0.00000 , 0.00000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.00000e+00 	 -9.32486e+00
+1 	 0.00000e+00 	 0.00000e+00
+2 	 0.00000e+00 	 0.00000e+00
+3 	 0.00000e+00 	 0.00000e+00
+4 	 5.64225e+00 	 -3.63949e-02
+5 	 5.64225e+00 	 -3.63949e-02
+6 	 9.56872e-01 	 -9.56872e-01
+7 	 0.00000e+00 	 0.00000e+00
+8 	 0.00000e+00 	 0.00000e+00
+9 	 0.00000e+00 	 0.00000e+00
+
+
+ROOT CHECK EQN 1 -- MAX 7.105427e-15 &     Avg 1.461567e-17
+ROOT CHECK EQN 2 -- MAX 1.065814e-14 &     Avg 1.380522e-17
+ROOT CHECK EQN 3 -- MAX 1.421085e-14 &     Avg 1.424290e-17
+ROOT CHECK EQN 4 -- MAX 0.00000e+00 &     Avg 0.00000e+00
+TRACE -- MAX 3.469447e-18 &    Avg 7.460215e-18
+1108 mega bytes
+Time Step is 5.00000e-03 @ TAU -->1.0100000000000 This is tau step no. 2 at time 9.06000 seconds
+
+
+
+Max vel ( -0.675797 , 0.225266 , 0.000000 ) & mag 0.712353 @ ( -1.350000 , 0.450000 , 0.000000 )in rank -> 6
+Max Energy ( 27.155967 ) @ ( -0.150000 , 0.100000 , 0.000000 )in rank -> 6
+Min Energy ( 0.00000 ) @ ( 0.00000 , 0.00000 , 0.00000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.00000e+00 	 -9.14203e+00
+1 	 0.00000e+00 	 0.00000e+00
+2 	 0.00000e+00 	 0.00000e+00
+3 	 0.00000e+00 	 0.00000e+00
+4 	 5.51790e+00 	 -5.85795e-02
+5 	 5.51790e+00 	 -5.85795e-02
+6 	 9.42798e-01 	 -9.42798e-01
+7 	 0.00000e+00 	 0.00000e+00
+8 	 0.00000e+00 	 0.00000e+00
+9 	 0.00000e+00 	 0.00000e+00
+
+
+ROOT CHECK EQN 1 -- MAX 7.105427e-15 &     Avg 1.395031e-17
+ROOT CHECK EQN 4 -- MAX ROOT CHECK EQN 2 -- MAX 1.421085e-14 &     Avg 1.421786e-17
+ROOT CHECK EQN 3 -- MAX 1.065814e-14 &     Avg 1.439232e-17
+0.00000e+00 &     Avg 0.00000e+00
+TRACE -- MAX 3.469447e-18 &    Avg 7.409506e-18
+1108 mega bytes
+Time Step is 5.00000e-03 @ TAU -->1.0150000000000 This is tau step no. 3 at time 12.64000 seconds
+
+
+
+Max vel ( -0.424440 , -0.574243 , 0.000000 ) & mag 0.714076 @ ( -0.850000 , -1.150000 , 0.000000 )in rank -> 5
+Max Energy ( 26.627442 ) @ ( 0.000000 , 0.200000 , 0.000000 )in rank -> 10
+Min Energy ( 0.00000 ) @ ( 0.00000 , 0.00000 , 0.00000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.00000e+00 	 -8.96364e+00
+1 	 0.00000e+00 	 0.00000e+00
+2 	 0.00000e+00 	 0.00000e+00
+3 	 0.00000e+00 	 0.00000e+00
+4 	 5.40178e+00 	 -7.91797e-02
+5 	 5.40178e+00 	 -7.91797e-02
+6 	 9.28775e-01 	 -9.28775e-01
+7 	 0.00000e+00 	 0.00000e+00
+8 	 0.00000e+00 	 0.00000e+00
+9 	 0.00000e+00 	 0.00000e+00
+
+
+ROOT CHECK EQN 1 -- MAX 7.105427e-15 &     Avg 1.426426e-17
+ROOT CHECK EQN 2 -- MAX 1.421085e-14 &     Avg 1.444949e-17
+ROOT CHECK EQN 3 -- MAX 1.421085e-14 &     Avg 1.447611e-17
+ROOT CHECK EQN 4 -- MAX 0.00000e+00 &     Avg 0.00000e+00
+TRACE -- MAX 3.469447e-18 &    Avg 7.129579e-18
+1108 mega bytes
+Time Step is 5.00000e-03 @ TAU -->1.0200000000000 This is tau step no. 4 at time 18.27000 seconds
+
+
+
+Max vel ( -0.649905 , -0.299956 , 0.000000 ) & mag 0.715786 @ ( -1.300000 , -0.600000 , 0.000000 )in rank -> 5
+Max Energy ( 26.111669 ) @ ( 0.100000 , 0.200000 , 0.000000 )in rank -> 10
+Min Energy ( 0.00000 ) @ ( 0.00000 , 0.00000 , 0.00000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.00000e+00 	 -8.78961e+00
+1 	 0.00000e+00 	 0.00000e+00
+2 	 0.00000e+00 	 0.00000e+00
+3 	 0.00000e+00 	 0.00000e+00
+4 	 5.28921e+00 	 -9.82814e-02
+5 	 5.28921e+00 	 -9.82814e-02
+6 	 9.15829e-01 	 -9.15829e-01
+7 	 0.00000e+00 	 0.00000e+00
+8 	 0.00000e+00 	 0.00000e+00
+9 	 0.00000e+00 	 0.00000e+00
+
+
+ROOT CHECK EQN 1 -- MAX 7.105427e-15 &     Avg 1.446188e-17
+ROOT CHECK EQN 2 -- MAX 1.421085e-14 &     Avg 1.418845e-17
+ROOT CHECK EQN 3 -- MAX 1.421085e-14 &     Avg 1.443427e-17
+ROOT CHECK EQN 4 -- MAX 0.00000e+00 &     Avg 0.00000e+00
+TRACE -- MAX 3.469447e-18 &    Avg 7.519229e-18
+1108 mega bytes
+Time Step is 5.00000e-03 @ TAU -->1.0250000000000 This is tau step no. 5 at time 25.44000 seconds
+
+
+
+Max vel ( 0.626007 , -0.350563 , 0.000000 ) & mag 0.717481 @ ( 1.250000 , -0.700000 , 0.000000 )in rank -> 9
+Max Energy ( 25.608308 ) @ ( -0.250000 , 0.000000 , 0.000000 )in rank -> 6
+Min Energy ( 0.00000 ) @ ( 0.00000 , 0.00000 , 0.00000 )in rank -> 0
+var 	 Max Source term 	 Min Source term
+0 	 0.00000e+00 	 -8.61971e+00
+1 	 0.00000e+00 	 0.00000e+00
+2 	 0.00000e+00 	 0.00000e+00
+3 	 0.00000e+00 	 0.00000e+00
+4 	 5.17869e+00 	 -1.15967e-01
+5 	 5.17869e+00 	 -1.15967e-01
+6 	 9.03010e-01 	 -9.03010e-01
+7 	 0.00000e+00 	 0.00000e+00
+8 	 0.00000e+00 	 0.00000e+00
+9 	 0.00000e+00 	 0.00000e+00
+
+
+ROOT CHECK EQN 1 -- MAX 1.065814e-14 &     Avg 1.479725e-17
+ROOT CHECK EQN 2 -- MAX 1.421085e-14 &     Avg 1.483838e-17
+ROOT CHECK EQN 3 -- MAX 1.421085e-14 &     Avg 1.456474e-17
+ROOT CHECK EQN 4 -- MAX 0.00000e+00 &     Avg 0.00000e+00
+1108 mega bytes
+Time Step is 5.00000e-03 @ TAU -->1.0300000000000 This is tau step no. TRACE -- MAX 6.938894e-18 &    Avg 6.933105e-18
+6 at time 32.62000 seconds
+
+
+
