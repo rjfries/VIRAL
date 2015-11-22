@@ -57,15 +57,15 @@ double tau;
 	#define TAUSTART 0.10
 	#define TS 0.002
 	#define XL 7
-	#define XS 0.025
+	#define XS 0.1
 	#define YL 7
-	#define YS 0.025
+	#define YS 0.1
 	#define ZL 0
 	#define ZS 0.1
 	
 	#define PFREQ 0.5	
 	#define FREQ ((int)2)
-	#define FREQZ ((int)1
+	#define FREQZ ((int)1)
 #endif
 
 
@@ -187,6 +187,9 @@ typedef struct
 #endif
 	
 
+#ifdef VORT
+	double Vort[Npi];
+#endif
 
 #if defined KT
 	double Fx[SVAR], Fy[SVAR], Fz[SVAR];  //centered fluxes

@@ -77,6 +77,67 @@ void CalcDer4Vel(GRID HydroGrid, double tau, double tstep)
 #endif
 }
 
+#ifdef VORT
+
+void AddVorticity(GRID HydroGrid, double tau)
+{
+	int i,j,k,l;
+	
+	double tau2 = tau*tau;	
+	double tau3 = tau*tau2;	
+	double tau4 = tau2*tau2;	
+	double tau5 = tau2*tau3;	
+	double tau6 = tau3*tau3;	
+		   
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	{
+		
+		DECLp5u4; 
+		DECLePPIa;
+	
+
+		 HydroGrid[i][j][k].Vort[0]=  (  ( -2*p4*tau*u1*u3 + 2*A2*tau*u1*pow(u0,-1)*pow(u3,2) )
+		+ (0)*(HydroGrid[i][j][k].du[0][0]) + (-(A2*u0) + p3*u2 + p4*tau2*u3 + A2*pow(u0,-1) + A2*pow(u0,-1)*pow(u1,2))*(HydroGrid[i][j][k].du[0][1]) + (-(p3*u1) + A2*u1*u2*pow(u0,-1))*(HydroGrid[i][j][k].du[0][2]) + (-(p4*u1) + A2*u1*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[0][3])
+		+ (-(A2*u0) + p3*u2 + p4*tau2*u3 + A2*pow(u0,-1) + A2*pow(u0,-1)*pow(u1,2))*(HydroGrid[i][j][k].du[1][0]) + (0)*(HydroGrid[i][j][k].du[1][1]) + (-(A2*u2) + p3*pow(u0,-1) + p4*tau2*u2*u3*pow(u0,-1) + p3*pow(u0,-1)*pow(u1,2) + p3*pow(u0,-1)*pow(u2,2))*(HydroGrid[i][j][k].du[1][2]) + (-(A2*u3) + p4*pow(u0,-1) + p3*u2*u3*pow(u0,-1) + p4*pow(u0,-1)*pow(u1,2) + p4*tau2*pow(u0,-1)*pow(u3,2))*(HydroGrid[i][j][k].du[1][3])
+		+ (-(p3*u1) + A2*u1*u2*pow(u0,-1))*(HydroGrid[i][j][k].du[2][0]) + (A2*u2 - p3*pow(u0,-1) - p4*tau2*u2*u3*pow(u0,-1) - p3*pow(u0,-1)*pow(u1,2) - p3*pow(u0,-1)*pow(u2,2))*(HydroGrid[i][j][k].du[2][1]) + (0)*(HydroGrid[i][j][k].du[2][2]) + (p4*u1*u2*pow(u0,-1) - p3*u1*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[2][3])
+		+ (-(p4*tau2*u1) + A2*tau2*u1*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[3][0]) + (A2*tau2*u3 - p4*tau2*pow(u0,-1) - p3*tau2*u2*u3*pow(u0,-1) - p4*tau2*pow(u0,-1)*pow(u1,2) - p4*tau4*pow(u0,-1)*pow(u3,2))*(HydroGrid[i][j][k].du[3][1]) + (-(p4*tau2*u1*u2*pow(u0,-1)) + p3*tau2*u1*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[3][2]) + (0)*(HydroGrid[i][j][k].du[3][3])  );
+		       
+		 HydroGrid[i][j][k].Vort[1]=  (  ( -2*p5*tau*u2*u3 + 2*A3*tau*u2*pow(u0,-1)*pow(u3,2) )
+		+ (0)*(HydroGrid[i][j][k].du[0][0]) + (-(p3*u2) + A3*u1*u2*pow(u0,-1))*(HydroGrid[i][j][k].du[0][1]) + (-(A3*u0) + p3*u1 + p5*tau2*u3 + A3*pow(u0,-1) + A3*pow(u0,-1)*pow(u2,2))*(HydroGrid[i][j][k].du[0][2]) + (-(p5*u2) + A3*u2*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[0][3])
+		+ (-(p3*u2) + A3*u1*u2*pow(u0,-1))*(HydroGrid[i][j][k].du[1][0]) + (0)*(HydroGrid[i][j][k].du[1][1]) + (A3*u1 - p3*pow(u0,-1) - p5*tau2*u1*u3*pow(u0,-1) - p3*pow(u0,-1)*pow(u1,2) - p3*pow(u0,-1)*pow(u2,2))*(HydroGrid[i][j][k].du[1][2]) + (p5*u1*u2*pow(u0,-1) - p3*u2*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[1][3])
+		+ (-(A3*u0) + p3*u1 + p5*tau2*u3 + A3*pow(u0,-1) + A3*pow(u0,-1)*pow(u2,2))*(HydroGrid[i][j][k].du[2][0]) + (-(A3*u1) + p3*pow(u0,-1) + p5*tau2*u1*u3*pow(u0,-1) + p3*pow(u0,-1)*pow(u1,2) + p3*pow(u0,-1)*pow(u2,2))*(HydroGrid[i][j][k].du[2][1]) + (0)*(HydroGrid[i][j][k].du[2][2]) + (-(A3*u3) + p5*pow(u0,-1) + p3*u1*u3*pow(u0,-1) + p5*pow(u0,-1)*pow(u2,2) + p5*tau2*pow(u0,-1)*pow(u3,2))*(HydroGrid[i][j][k].du[2][3])
+		+ (-(p5*tau2*u2) + A3*tau2*u2*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[3][0]) + (-(p5*tau2*u1*u2*pow(u0,-1)) + p3*tau2*u2*u3*pow(u0,-1))*(HydroGrid[i][j][k].du[3][1]) + (A3*tau2*u3 - p5*tau2*pow(u0,-1) - p3*tau2*u1*u3*pow(u0,-1) - p5*tau2*pow(u0,-1)*pow(u2,2) - p5*tau4*pow(u0,-1)*pow(u3,2))*(HydroGrid[i][j][k].du[3][2]) + (0)*(HydroGrid[i][j][k].du[3][3])  );
+		       
+		 HydroGrid[i][j][k].Vort[2]=  (  ( -(p5*tau*u1*u3) - p4*tau*u2*u3 + A3*tau*u1*pow(u0,-1)*pow(u3,2) + A2*tau*u2*pow(u0,-1)*pow(u3,2) )
+		+ (0)*(HydroGrid[i][j][k].du[0][0]) + (-(A3*u0)/2. - (p1*u2)/2. + (p2*u2)/2. + (p5*tau2*u3)/2. + (A3*pow(u0,-1))/2. + (A2*u1*u2*pow(u0,-1))/2. + (A3*pow(u0,-1)*pow(u1,2))/2.)*(HydroGrid[i][j][k].du[0][1]) + (-(A2*u0)/2. + (p1*u1)/2. - (p2*u1)/2. + (p4*tau2*u3)/2. + (A2*pow(u0,-1))/2. + (A3*u1*u2*pow(u0,-1))/2. + (A2*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[0][2]) + (-(p5*u1)/2. - (p4*u2)/2. + (A3*u1*u3*pow(u0,-1))/2. + (A2*u2*u3*pow(u0,-1))/2.)*(HydroGrid[i][j][k].du[0][3])
+		+ (-(A3*u0)/2. - (p1*u2)/2. + (p2*u2)/2. + (p5*tau2*u3)/2. + (A3*pow(u0,-1))/2. + (A2*u1*u2*pow(u0,-1))/2. + (A3*pow(u0,-1)*pow(u1,2))/2.)*(HydroGrid[i][j][k].du[1][0]) + (0)*(HydroGrid[i][j][k].du[1][1]) + ((A2*u1)/2. - (A3*u2)/2. - (p1*pow(u0,-1))/2. + (p2*pow(u0,-1))/2. - (p4*tau2*u1*u3*pow(u0,-1))/2. + (p5*tau2*u2*u3*pow(u0,-1))/2. - (p1*pow(u0,-1)*pow(u1,2))/2. + (p2*pow(u0,-1)*pow(u1,2))/2. - (p1*pow(u0,-1)*pow(u2,2))/2. + (p2*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[1][2]) + (-(A3*u3)/2. + (p5*pow(u0,-1))/2. + (p4*u1*u2*pow(u0,-1))/2. - (p1*u2*u3*pow(u0,-1))/2. + (p2*u2*u3*pow(u0,-1))/2. + (p5*pow(u0,-1)*pow(u1,2))/2. + (p5*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[1][3])
+		+ (-(A2*u0)/2. + (p1*u1)/2. - (p2*u1)/2. + (p4*tau2*u3)/2. + (A2*pow(u0,-1))/2. + (A3*u1*u2*pow(u0,-1))/2. + (A2*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[2][0]) + (-(A2*u1)/2. + (A3*u2)/2. + (p1*pow(u0,-1))/2. - (p2*pow(u0,-1))/2. + (p4*tau2*u1*u3*pow(u0,-1))/2. - (p5*tau2*u2*u3*pow(u0,-1))/2. + (p1*pow(u0,-1)*pow(u1,2))/2. - (p2*pow(u0,-1)*pow(u1,2))/2. + (p1*pow(u0,-1)*pow(u2,2))/2. - (p2*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[2][1]) + (0)*(HydroGrid[i][j][k].du[2][2]) + (-(A2*u3)/2. + (p4*pow(u0,-1))/2. + (p5*u1*u2*pow(u0,-1))/2. + (p1*u1*u3*pow(u0,-1))/2. - (p2*u1*u3*pow(u0,-1))/2. + (p4*pow(u0,-1)*pow(u2,2))/2. + (p4*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[2][3])
+		+ (-(p5*tau2*u1)/2. - (p4*tau2*u2)/2. + (A3*tau2*u1*u3*pow(u0,-1))/2. + (A2*tau2*u2*u3*pow(u0,-1))/2.)*(HydroGrid[i][j][k].du[3][0]) + ((A3*tau2*u3)/2. - (p5*tau2*pow(u0,-1))/2. - (p4*tau2*u1*u2*pow(u0,-1))/2. + (p1*tau2*u2*u3*pow(u0,-1))/2. - (p2*tau2*u2*u3*pow(u0,-1))/2. - (p5*tau2*pow(u0,-1)*pow(u1,2))/2. - (p5*tau4*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][1]) + ((A2*tau2*u3)/2. - (p4*tau2*pow(u0,-1))/2. - (p5*tau2*u1*u2*pow(u0,-1))/2. - (p1*tau2*u1*u3*pow(u0,-1))/2. + (p2*tau2*u1*u3*pow(u0,-1))/2. - (p4*tau2*pow(u0,-1)*pow(u2,2))/2. - (p4*tau4*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][2]) + (0)*(HydroGrid[i][j][k].du[3][3])  );
+		       
+		 HydroGrid[i][j][k].Vort[3]=  (  ( -(A5*tau*u1*u3) - A2*u0*u3*pow(tau,-1) + p1*u1*u3*pow(tau,-1) + p3*u2*u3*pow(tau,-1) + A2*u3*pow(tau,-1)*pow(u0,-1) + A4*tau*u1*pow(u0,-1)*pow(u3,2) + A2*tau*pow(u0,-1)*pow(u3,3) )
+		+ (0)*(HydroGrid[i][j][k].du[0][0]) + (-(A4*u0)/2. + (p5*u2)/2. - (p1*u3)/2. + (A5*tau2*u3)/2. + (A4*pow(u0,-1))/2. + (A2*u1*u3*pow(u0,-1))/2. + (A4*pow(u0,-1)*pow(u1,2))/2.)*(HydroGrid[i][j][k].du[0][1]) + (-(p5*u1)/2. - (p3*u3)/2. + (A4*u1*u2*pow(u0,-1))/2. + (A2*u2*u3*pow(u0,-1))/2.)*(HydroGrid[i][j][k].du[0][2]) + (-(A5*u1)/2. - (A2*u0*pow(tau,-2))/2. + (p1*u1*pow(tau,-2))/2. + (p3*u2*pow(tau,-2))/2. + (A4*u1*u3*pow(u0,-1))/2. + (A2*pow(tau,-2)*pow(u0,-1))/2. + (A2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[0][3])
+		+ (-(A4*u0)/2. + (p5*u2)/2. - (p1*u3)/2. + (A5*tau2*u3)/2. + (A4*pow(u0,-1))/2. + (A2*u1*u3*pow(u0,-1))/2. + (A4*pow(u0,-1)*pow(u1,2))/2.)*(HydroGrid[i][j][k].du[1][0]) + (0)*(HydroGrid[i][j][k].du[1][1]) + (-(A4*u2)/2. + (p5*pow(u0,-1))/2. + (p3*u1*u3*pow(u0,-1))/2. - (p1*u2*u3*pow(u0,-1))/2. + (A5*tau2*u2*u3*pow(u0,-1))/2. + (p5*pow(u0,-1)*pow(u1,2))/2. + (p5*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[1][2]) + (-(A4*u3)/2. + (A2*u1*pow(tau,-2))/2. + (A5*pow(u0,-1))/2. + (p5*u2*u3*pow(u0,-1))/2. - (p1*pow(tau,-2)*pow(u0,-1))/2. - (p3*u1*u2*pow(tau,-2)*pow(u0,-1))/2. + (A5*pow(u0,-1)*pow(u1,2))/2. - (p1*pow(tau,-2)*pow(u0,-1)*pow(u1,2))/2. - (p1*pow(u0,-1)*pow(u3,2))/2. + (A5*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[1][3])
+		+ (-(p5*u1)/2. - (p3*u3)/2. + (A4*u1*u2*pow(u0,-1))/2. + (A2*u2*u3*pow(u0,-1))/2.)*(HydroGrid[i][j][k].du[2][0]) + ((A4*u2)/2. - (p5*pow(u0,-1))/2. - (p3*u1*u3*pow(u0,-1))/2. + (p1*u2*u3*pow(u0,-1))/2. - (A5*tau2*u2*u3*pow(u0,-1))/2. - (p5*pow(u0,-1)*pow(u1,2))/2. - (p5*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[2][1]) + (0)*(HydroGrid[i][j][k].du[2][2]) + ((A2*u2*pow(tau,-2))/2. + (A5*u1*u2*pow(u0,-1))/2. - (p5*u1*u3*pow(u0,-1))/2. - (p3*pow(tau,-2)*pow(u0,-1))/2. - (p1*u1*u2*pow(tau,-2)*pow(u0,-1))/2. - (p3*pow(tau,-2)*pow(u0,-1)*pow(u2,2))/2. - (p3*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[2][3])
+		+ (-(A2*u0)/2. + (p1*u1)/2. - (A5*tau2*u1)/2. + (p3*u2)/2. + (A2*pow(u0,-1))/2. + (A4*tau2*u1*u3*pow(u0,-1))/2. + (A2*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][0]) + (-(A2*u1)/2. + (A4*tau2*u3)/2. + (p1*pow(u0,-1))/2. - (A5*tau2*pow(u0,-1))/2. + (p3*u1*u2*pow(u0,-1))/2. - (p5*tau2*u2*u3*pow(u0,-1))/2. + (p1*pow(u0,-1)*pow(u1,2))/2. - (A5*tau2*pow(u0,-1)*pow(u1,2))/2. + (p1*tau2*pow(u0,-1)*pow(u3,2))/2. - (A5*tau4*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][1]) + (-(A2*u2)/2. + (p3*pow(u0,-1))/2. + (p1*u1*u2*pow(u0,-1))/2. - (A5*tau2*u1*u2*pow(u0,-1))/2. + (p5*tau2*u1*u3*pow(u0,-1))/2. + (p3*pow(u0,-1)*pow(u2,2))/2. + (p3*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][2]) + (0)*(HydroGrid[i][j][k].du[3][3])  );
+		       
+		 HydroGrid[i][j][k].Vort[4]=  (  ( -(A5*tau*u2*u3) - A3*u0*u3*pow(tau,-1) + p3*u1*u3*pow(tau,-1) + p2*u2*u3*pow(tau,-1) + A3*u3*pow(tau,-1)*pow(u0,-1) + A4*tau*u2*pow(u0,-1)*pow(u3,2) + A3*tau*pow(u0,-1)*pow(u3,3) )
+		+ (0)*(HydroGrid[i][j][k].du[0][0]) + (-(p4*u2)/2. - (p3*u3)/2. + (A4*u1*u2*pow(u0,-1))/2. + (A3*u1*u3*pow(u0,-1))/2.)*(HydroGrid[i][j][k].du[0][1]) + (-(A4*u0)/2. + (p4*u1)/2. - (p2*u3)/2. + (A5*tau2*u3)/2. + (A4*pow(u0,-1))/2. + (A3*u2*u3*pow(u0,-1))/2. + (A4*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[0][2]) + (-(A5*u2)/2. - (A3*u0*pow(tau,-2))/2. + (p3*u1*pow(tau,-2))/2. + (p2*u2*pow(tau,-2))/2. + (A4*u2*u3*pow(u0,-1))/2. + (A3*pow(tau,-2)*pow(u0,-1))/2. + (A3*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[0][3])
+		+ (-(p4*u2)/2. - (p3*u3)/2. + (A4*u1*u2*pow(u0,-1))/2. + (A3*u1*u3*pow(u0,-1))/2.)*(HydroGrid[i][j][k].du[1][0]) + (0)*(HydroGrid[i][j][k].du[1][1]) + ((A4*u1)/2. - (p4*pow(u0,-1))/2. + (p2*u1*u3*pow(u0,-1))/2. - (A5*tau2*u1*u3*pow(u0,-1))/2. - (p3*u2*u3*pow(u0,-1))/2. - (p4*pow(u0,-1)*pow(u1,2))/2. - (p4*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[1][2]) + ((A3*u1*pow(tau,-2))/2. + (A5*u1*u2*pow(u0,-1))/2. - (p4*u2*u3*pow(u0,-1))/2. - (p3*pow(tau,-2)*pow(u0,-1))/2. - (p2*u1*u2*pow(tau,-2)*pow(u0,-1))/2. - (p3*pow(tau,-2)*pow(u0,-1)*pow(u1,2))/2. - (p3*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[1][3])
+		+ (-(A4*u0)/2. + (p4*u1)/2. - (p2*u3)/2. + (A5*tau2*u3)/2. + (A4*pow(u0,-1))/2. + (A3*u2*u3*pow(u0,-1))/2. + (A4*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[2][0]) + (-(A4*u1)/2. + (p4*pow(u0,-1))/2. - (p2*u1*u3*pow(u0,-1))/2. + (A5*tau2*u1*u3*pow(u0,-1))/2. + (p3*u2*u3*pow(u0,-1))/2. + (p4*pow(u0,-1)*pow(u1,2))/2. + (p4*pow(u0,-1)*pow(u2,2))/2.)*(HydroGrid[i][j][k].du[2][1]) + (0)*(HydroGrid[i][j][k].du[2][2]) + (-(A4*u3)/2. + (A3*u2*pow(tau,-2))/2. + (A5*pow(u0,-1))/2. + (p4*u1*u3*pow(u0,-1))/2. - (p2*pow(tau,-2)*pow(u0,-1))/2. - (p3*u1*u2*pow(tau,-2)*pow(u0,-1))/2. + (A5*pow(u0,-1)*pow(u2,2))/2. - (p2*pow(tau,-2)*pow(u0,-1)*pow(u2,2))/2. - (p2*pow(u0,-1)*pow(u3,2))/2. + (A5*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[2][3])
+		+ (-(A3*u0)/2. + (p3*u1)/2. + (p2*u2)/2. - (A5*tau2*u2)/2. + (A3*pow(u0,-1))/2. + (A4*tau2*u2*u3*pow(u0,-1))/2. + (A3*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][0]) + (-(A3*u1)/2. + (p3*pow(u0,-1))/2. + (p2*u1*u2*pow(u0,-1))/2. - (A5*tau2*u1*u2*pow(u0,-1))/2. + (p4*tau2*u2*u3*pow(u0,-1))/2. + (p3*pow(u0,-1)*pow(u1,2))/2. + (p3*tau2*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][1]) + (-(A3*u2)/2. + (A4*tau2*u3)/2. + (p2*pow(u0,-1))/2. - (A5*tau2*pow(u0,-1))/2. + (p3*u1*u2*pow(u0,-1))/2. - (p4*tau2*u1*u3*pow(u0,-1))/2. + (p2*pow(u0,-1)*pow(u2,2))/2. - (A5*tau2*pow(u0,-1)*pow(u2,2))/2. + (p2*tau2*pow(u0,-1)*pow(u3,2))/2. - (A5*tau4*pow(u0,-1)*pow(u3,2))/2.)*(HydroGrid[i][j][k].du[3][2]) + (0)*(HydroGrid[i][j][k].du[3][3])  );
+	}
+	
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	for(l=0;l<Npi;l++)
+		  HydroGrid[i][j][k].Source[VARN+l] += HydroGrid[i][j][k].Vort[l];
+		  
+}
+
+#endif
 
 void CalcSource(GRID HydroGrid, double tau, double ts)
 {
@@ -245,6 +306,11 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		HydroGrid[i][j][k].Source[9]= 0;
 		
 	}
+	
+		
+#ifdef VORT
+	AddVorticity(HydroGrid,tau);
+#endif 
 }
 
  

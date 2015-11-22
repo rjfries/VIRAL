@@ -879,7 +879,6 @@ void AddPartialResultToFinalResult(GRID HydroGrid)
 		HydroGrid[i][j][k].Result[l] += HydroGrid[i][j][k].PartialResult[l];
 }
 
-
 void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 {
 	ClearResultVariable( HydroGrid);

@@ -1,5 +1,3 @@
-
-
 #ifdef GUBSER
 	#define PRINTVAR (4+10+1)
 #else

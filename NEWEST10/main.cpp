@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 		
 		
 #ifdef GUBSER
-		if(tau>11)
+		if(tau>9)
 			break;
 #endif
 		if(tau>25.3)
