@@ -589,6 +589,68 @@ void AddPartialResultToFinalResult(GRID HydroGrid)
 		HydroGrid[i][j][k].Result[l] += HydroGrid[i][j][k].PartialResult[l];
 }
 
+void Rescalepi(GRID HydroGrid, double tau)
+{
+	
+	int i,j,k,l;
+ 
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	{
+		DECLp5u4;
+		DECLePPIa;
+		double T[4][4];
+		double pi[4][4] = {{A1,A2,A3,A4},{A2,p1,p3,p4},{A3,p3,p2,p5},{A4,p4,p5,A5}};
+		T[0][0] = -P + ((e + P)*u0*u0);
+		T[0][1] = ((e + P)*u0*u1);
+		T[0][2] = ((e + P)*u0*u2);
+		T[0][3] = ((e + P)*u0*u3);
+		
+		T[1][0] = T[0][1];
+		T[1][1] = P + ((e + P)*u1*u1);
+		T[1][2] = ((e + P)*u1*u2);
+		T[1][3] = ((e + P)*u1*u3);
+		
+		T[2][0] = T[0][2];;
+		T[2][1] = ((e + P)*u2*u1);
+		T[2][2] = P + ((e + P)*u2*u2);
+		T[2][3] = ((e + P)*u2*u3); 
+	
+		T[3][0] = T[0][3]; 
+		T[3][1] = T[1][3]; 
+		T[3][2] = T[2][3]; 
+		T[3][3] = ((e + P)*u3*u3 + P/(tau*tau) ); 
+	
+		double maxpi=0,maxT=0;
+		
+        for (int m = 0; m < 4; m++)
+        for (int n= 0; n < 4; n++)
+			if(fabs(pi[m][n])>maxpi) maxpi=fabs(pi[m][n]);
+			
+
+        for (int m = 0; m < 4; m++)
+        for (int n= 0; n < 4; n++)
+			if(fabs(T[m][n])>maxT) maxT=fabs(T[m][n]);
+			
+			maxT=fmax( maxT , P + (e+P)*(u1*u1+u2*u2+u3*u3) );
+
+		if (maxT / maxpi < 1.0) 
+		{ 
+			HydroGrid[i][j][k].pi[0] = 0.1*p1*maxT/maxpi;
+			HydroGrid[i][j][k].pi[1] = 0.1*p2*maxT/maxpi;
+			HydroGrid[i][j][k].pi[2] = 0.1*p3*maxT/maxpi;
+			HydroGrid[i][j][k].pi[3] = 0.1*p4*maxT/maxpi;
+			HydroGrid[i][j][k].pi[4] = 0.1*p5*maxT/maxpi;
+		}
+		 
+		if (fabs(PI) > P) 
+		{
+			if (PI != 0.) HydroGrid[i][j][k].PI=0.1 * PI/fabs(PI)*P;
+		}
+	 }
+
+}
 
 void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 {

@@ -343,7 +343,7 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		s = gsl_root_fdfsolver_alloc (T);		
 		gsl_root_fdfsolver_set (s, &FDF, guess);
 		
-		int iter = 0, max_iter = 2000;
+		int iter = 0, max_iter = 5000;
 		
 		do
 	    {
@@ -351,7 +351,7 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 			status = gsl_root_fdfsolver_iterate (s);
 			double r0 = r;
 			r = gsl_root_fdfsolver_root (s);
-			status = gsl_root_test_delta (r, r0, 0, 1e-25);
+			status = gsl_root_test_delta (r, r0, 0, 1e-30);
 	                                       
 			if(status != GSL_SUCCESS && status != GSL_CONTINUE )
 			{	
@@ -394,7 +394,7 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		if(vx*vx+vy*vy+ve*ve >= 1 || (e <= 0) )
 		{
 			cout<<"HELL BROKE LOOSE vx "<<vx <<"  vy " << vy<< "  ve "<<ve << " & B--> "<<vx*vx+vy*vy+ve*ve<<endl;
-			cout<<"HELL BROKE LOOSE Energy "<<e<<endl;
+			cout<<std::scientific<<"HELL BROKE LOOSE Energy "<<e<<endl;
 			cout<<"HELL BROKE LOOSE X "<<X<<"  Y " << Y<< "  E "<<eta<< "  "<<endl;
 			quit=1;
 			continue;

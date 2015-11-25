@@ -243,11 +243,12 @@ void WENOX_##VAR(GRID HydroGrid , int NVAR  ){\
 		if(i==1){qm2=qm1; qp2=HydroGrid[i+2][j][k].VAR[l];}\
 		else if(i==XCM-2){qm2=HydroGrid[i-2][j][k].VAR[l]; qp2=qp1;}\
 		else {qm2=HydroGrid[i-2][j][k].VAR[l]; qp2=HydroGrid[i+2][j][k].VAR[l];}\
-		HydroGrid[i][j][k].VAR##LX[l] = genWENOL(qm2,qm1,qc,qp1,qp2);\
-		HydroGrid[i-1][j][k].VAR##RX[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+		HydroGrid[i][j][k].VAR##LX[l] = genWENOL(qm2,qm1,qc,qp1,qp2);HydroGrid[i-1][j][k].VAR##RX[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
 	}\
 } 
-
+//if(l==0 && !strcmp( #VAR, "Var")){double der = genLOGWENOder(qm2,qm1,qc,qp1,qp2,XS);HydroGrid[i][j][k].VAR##LX[l] = qc+der*XS/2.0;	HydroGrid[i-1][j][k].VAR##RX[l] = qc-der*XS/2.0;}
+//if(l==0 && !strcmp( #VAR, "Var")){double der = genLOGWENOder(qm2,qm1,qc,qp1,qp2,YS);HydroGrid[i][j][k].VAR##LY[l] = qc+der*YS/2.0;	HydroGrid[i][j-1][k].VAR##RY[l] = qc-der*YS/2.0;}
+				
 #define WENOY(VAR )\
 void WENOY_##VAR(GRID HydroGrid , int NVAR  ){\
 	double w[3], q[3], d[3], alpha[3];\
@@ -264,8 +265,7 @@ void WENOY_##VAR(GRID HydroGrid , int NVAR  ){\
 		if(j==1){qm2=qm1; qp2=HydroGrid[i][j+2][k].VAR[l];}\
 		else if(j==YCM-2){qm2=HydroGrid[i][j-2][k].VAR[l]; qp2=qp1;}\
 		else {qm2=HydroGrid[i][j-2][k].VAR[l]; qp2=HydroGrid[i][j+2][k].VAR[l];}\
-		HydroGrid[i][j][k].VAR##LY[l] = genWENOL(qm2,qm1,qc,qp1,qp2);\
-		HydroGrid[i][j-1][k].VAR##RY[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+		HydroGrid[i][j][k].VAR##LY[l] = genWENOL(qm2,qm1,qc,qp1,qp2);	HydroGrid[i][j-1][k].VAR##RY[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
 	}\
 } 
 		
@@ -791,10 +791,10 @@ void FindMaxEigenValueXYZ(GRID HydroGrid)
 				
 				
 			if(fabs(HydroGrid[i][j][k].AzLZ[l]) > maxly)
-				maxly = fabs(HydroGrid[i][j][k].AzLZ[l]);
+				maxlz = fabs(HydroGrid[i][j][k].AzLZ[l]);
 			
 			if(fabs(HydroGrid[i][j][k].AzRZ[l]) > maxry)
-				maxry = fabs(HydroGrid[i][j][k].AzRZ[l]);
+				maxrz = fabs(HydroGrid[i][j][k].AzRZ[l]);
 		}
 				
 		HydroGrid[i][j][k].AxLXMAX = maxlx;
@@ -903,7 +903,6 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	
 	fvY( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);
-	
 
 #if !defined LBI
 	fvZ( HydroGrid, tau);

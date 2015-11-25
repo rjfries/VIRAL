@@ -369,10 +369,18 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		+ ((2*(3*p10*tau2*u3 - 2*SH*pow(tpi,-1)*(u3 + tau2*pow(u3,3))))/3.)*(HydroGrid[i][j][k].du[3][0]) + ((2*u1*pow(u0,-1)*(3*p10*tau2*u3 - 2*SH*pow(tpi,-1)*(u3 + tau2*pow(u3,3))))/3.)*(HydroGrid[i][j][k].du[3][1]) + ((2*u2*pow(u0,-1)*(3*p10*tau2*u3 - 2*SH*pow(tpi,-1)*(u3 + tau2*pow(u3,3))))/3.)*(HydroGrid[i][j][k].du[3][2]) + ((pow(u0,-1)*(-p10 - 4*SH*pow(tau,-2)*pow(tpi,-1) + (6*p10*tau2 - 8*SH*pow(tpi,-1))*pow(u3,2) - 4*SH*tau2*pow(tpi,-1)*pow(u3,4)))/3.)*(HydroGrid[i][j][k].du[3][3])  
 		);
 			   
+#ifdef BULK
+		 HydroGrid[i][j][k].Source[14]=  ( (-((3*PI*tau + 3*BU*u0 + 4*PI*tPI*u0)*pow(tau,-1)*pow(tPI,-1)*pow(u0,-1))/3. )
+		+ (-((3*BU + 4*PI*tPI)*pow(tPI,-1)*pow(u0,-1))/3.)*(HydroGrid[i][j][k].du[0][0]) + (-(PI*u1*pow(u0,-2)))*(HydroGrid[i][j][k].du[0][1]) + (-(PI*u2*pow(u0,-2)))*(HydroGrid[i][j][k].du[0][2]) + (-(PI*u3*pow(u0,-2)))*(HydroGrid[i][j][k].du[0][3])
+		+ (0)*(HydroGrid[i][j][k].du[1][0]) + (-((3*BU + PI*tPI)*pow(tPI,-1)*pow(u0,-1))/3.)*(HydroGrid[i][j][k].du[1][1]) + (0)*(HydroGrid[i][j][k].du[1][2]) + (0)*(HydroGrid[i][j][k].du[1][3])
+		+ (0)*(HydroGrid[i][j][k].du[2][0]) + (0)*(HydroGrid[i][j][k].du[2][1]) + (-((3*BU + PI*tPI)*pow(tPI,-1)*pow(u0,-1))/3.)*(HydroGrid[i][j][k].du[2][2]) + (0)*(HydroGrid[i][j][k].du[2][3])
+		+ (0)*(HydroGrid[i][j][k].du[3][0]) + (0)*(HydroGrid[i][j][k].du[3][1]) + (0)*(HydroGrid[i][j][k].du[3][2]) + (-((3*BU + PI*tPI)*pow(tPI,-1)*pow(u0,-1))/3.)*(HydroGrid[i][j][k].du[3][3]));
+#else	        
 		HydroGrid[i][j][k].Source[14]= 0;
-		
+#endif
+
+
 	}
-	
 		
 #ifdef VORT
 	AddVorticity(HydroGrid,tau);

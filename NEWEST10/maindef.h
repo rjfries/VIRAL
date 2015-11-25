@@ -56,14 +56,14 @@ double tau;
 
 	#define TAUSTART 0.10
 	#define TS 0.002
-	#define XL 7
+	#define XL 10
 	#define XS 0.1
-	#define YL 7
+	#define YL 10
 	#define YS 0.1
 	#define ZL 0
 	#define ZS 0.1
 	
-	#define PFREQ 0.5	
+	#define PFREQ 0.05	
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
 #endif
@@ -271,8 +271,8 @@ inline double fmtoMev(double temp)
 	return 1000*ret;	
 }
 
-#define DECLTmu0      double T00 = HydroGrid[i][j][k].T00;double T10 = HydroGrid[i][j][k].T10;double T20 = HydroGrid[i][j][k].T20;double T30 = HydroGrid[i][j][k].T30
-#define DECLePPIa     double e = HydroGrid[i][j][k].En;double P = HydroGrid[i][j][k].P;double PI = HydroGrid[i][j][k].PI;double a = DPDE(HydroGrid[i][j][k].P,HydroGrid[i][j][k].r)
+#define DECLTmu0      double T00 = HydroGrid[i][j][k].T00;  double T10 = HydroGrid[i][j][k].T10;double T20 = HydroGrid[i][j][k].T20;double T30 = HydroGrid[i][j][k].T30
+#define DECLePPIa     double e = HydroGrid[i][j][k].En;  double P = HydroGrid[i][j][k].P;double PI = HydroGrid[i][j][k].PI;double a = DPDE(HydroGrid[i][j][k].P,HydroGrid[i][j][k].r)
 #define DECLp10u4     double p1 = HydroGrid[i][j][k].pi[0];double p2 = HydroGrid[i][j][k].pi[1];double p3 = HydroGrid[i][j][k].pi[2];double p4 = HydroGrid[i][j][k].pi[3];double p5 = HydroGrid[i][j][k].pi[4];double p6 = HydroGrid[i][j][k].pi[5];double p7 = HydroGrid[i][j][k].pi[6];double p8 = HydroGrid[i][j][k].pi[7];double p9 = HydroGrid[i][j][k].pi[8];double p10 = HydroGrid[i][j][k].pi[9];double u0 = HydroGrid[i][j][k].u[0];double u1 = HydroGrid[i][j][k].u[1];double u2 = HydroGrid[i][j][k].u[2];double u3 = HydroGrid[i][j][k].u[3]
 #define DECLp10       double p1 = HydroGrid[i][j][k].pi[0];double p2 = HydroGrid[i][j][k].pi[1];double p3 = HydroGrid[i][j][k].pi[2];double p4 = HydroGrid[i][j][k].pi[3];double p5 = HydroGrid[i][j][k].pi[4];double p6 = HydroGrid[i][j][k].pi[5];double p7 = HydroGrid[i][j][k].pi[6];double p8 = HydroGrid[i][j][k].pi[7];double p9 = HydroGrid[i][j][k].pi[8];double p10 = HydroGrid[i][j][k].pi[9]
 #define DECLu4        double u0 = HydroGrid[i][j][k].u[0]; double u1 = HydroGrid[i][j][k].u[1]; double u2 = HydroGrid[i][j][k].u[2];double u3 = HydroGrid[i][j][k].u[3]
