@@ -27,7 +27,11 @@ inline double EOS(double en , double r)
 	double ret;
 	
 	ret = (en/3.0);//*WOODSAXON(r, 0.5, 18); 
-		
+	
+#ifdef S95P
+	ret = s95p_p(en);
+#endif
+
 	return(ret);
 }
 
@@ -36,6 +40,10 @@ inline double DPDE(double en , double r)
 	double ret;
 	
 	ret = (1.0/3.0);//*WOODSAXON(r, 0.5, 18);
+
+#ifdef S95P
+	ret = s95p_a(en);
+#endif
 		
 	return(ret);
 }
@@ -45,7 +53,8 @@ inline double FEnFromTemp(double temp)
 	double ret;
 	
 	ret = FACTOR*temp*temp*temp*temp;
-	
+
+ 
 	return ret;
 }
 
@@ -54,6 +63,10 @@ inline double FT(double en , double r)
 	double ret;
 	
 	ret = pow(en/FACTOR,0.25);//*WOODSAXON(r, 0.5, 18);
+
+#ifdef S95P
+	ret = s95p_T(en);
+#endif		
 		
 	return(ret);
 }
@@ -65,6 +78,10 @@ inline double FS( double en, double Pr, double T)
 	double ret;
 	
 	ret = ((en+Pr)*pow(T,-1));// * WOODSAXON(r, width, loc);
+	
+#ifdef S95P
+	ret = s95p_s(en);
+#endif		
 		
 	return(ret);
 }

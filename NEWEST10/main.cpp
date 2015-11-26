@@ -76,6 +76,10 @@ using namespace std;
 #include "hydroKT.h"
 #endif
 
+#ifdef S95P
+#include "s95p.h"
+#endif
+
 #include "time.h"
 
 void FirstOrder(GRID HydroGrid, double ts, double tau);
