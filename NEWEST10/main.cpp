@@ -48,6 +48,10 @@
 using namespace std;
 
 #include "maindef.h"
+
+#ifdef S95P
+#include "s95p.h"
+#endif
 #include "thermo.h"
 #include "alloc.h"
 #include "init.h"
@@ -76,9 +80,7 @@ using namespace std;
 #include "hydroKT.h"
 #endif
 
-#ifdef S95P
-#include "s95p.h"
-#endif
+
 
 #include "time.h"
 

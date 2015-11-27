@@ -49,16 +49,16 @@ double tau;
 
 #if defined(GINIT) && defined(LBI) 
 	#define NOS  6 //per side	
-	#define NPX  4
-	#define NPY  4
+	#define NPX  1
+	#define NPY  1
 	#define NPZ  1
 	#define NP (NPX*NPY*NPZ)
 
 	#define TAUSTART 0.10
 	#define TS 0.002
-	#define XL 10
+	#define XL 40
 	#define XS 0.1
-	#define YL 10
+	#define YL 40
 	#define YS 0.1
 	#define ZL 0
 	#define ZS 0.1

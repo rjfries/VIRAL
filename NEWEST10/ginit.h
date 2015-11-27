@@ -7,7 +7,7 @@
 
 
 typedef double (*ARRXY) [YCM + 2*NOS*BORDER];
-ARRXY mu1,mu2,mmu1mu2;
+ARRXY mu1,mu2,mu1mu2;
 ARRXY Dxmu1mu2,Dymu1mu2;
 ARRXY Dxmu1,Dxmu2;
 ARRXY Dymu1,Dymu2;
@@ -536,7 +536,7 @@ void StoreVars()
 
 	AllocateXYArray(&mu1);
 	AllocateXYArray(&mu2);
-	AllocateXYArray(&mmu1mu2);
+	AllocateXYArray(&mu1mu2);
 	AllocateXYArray(&Dxmu1mu2);
 	AllocateXYArray(&Dymu1mu2);
 	AllocateXYArray(&Dxmu1);
@@ -571,7 +571,7 @@ void RemoveVars()
 {
 	ReleaseXYArray(&mu1);
 	ReleaseXYArray(&mu2);
-	ReleaseXYArray(&mmu1mu2);
+	ReleaseXYArray(&mu1mu2);
 	ReleaseXYArray(&Dxmu1mu2);
 	ReleaseXYArray(&Dymu1mu2);
 	ReleaseXYArray(&Dxmu1);
@@ -865,24 +865,59 @@ void ginit(GRID HydroGrid, double tau)
 		gsl_integration_qag(&f, 0, 250, 0, 1e-13, 1000, GSL_INTEG_GAUSS61, w, &mu2[i][j], &abserr);
 		mu2[i][j] *= (2*fac);
 
-		eps[i][j] = mu1[i][j]*mu2[i][j];
+
+		mu1mu2[i][j] = mu1[i][j]*mu2[i][j];
 		gsl_integration_workspace_free (w);
 	}
 	
 	
-
 	
-	if(AtStart)
-	{		
-		WriteXY(mu1,"mu1.bin");	
-		WriteXY(mu2,"mu2.bin");
-		WriteXY(eps,"eps.bin");
+	double mu1mu2max=0;
+	for(i=0;i<xt;i++)
+	for(j=0;j<yt;j++)
+	{
+		if(mu1mu2[i][j]>mu1mu2max)
+			mu1mu2max=mu1mu2[i][j];
 	}
+	double globmu1mu2max;
+	MPI_Allreduce( &mu1mu2max, &globmu1mu2max, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	
+	
+	
+	
+	double Tmax = 0.4*GEVFM;  //0.4GeV @ 0.6 fm/c converted to fm inverse
+	double Emaxguess  =   FEnFromTemp(Tmax); 	
+	double e0;	
+	while( fabs(  s95p_T(Emaxguess) -  Tmax)>1e-10)
+	{
+		e0 = Emaxguess;
+		Emaxguess = e0 - (s95p_T(e0) - Tmax) / (6.608681233 * pow(e0, -0.25));	
+	}
+	double Emax = Emaxguess*pow( tau/0.6,-4./3.);
+	
+	//~ cout<<Emax<<endl;
+	//~ cout<<Emax/GEVFM<<endl;
+	//~ exit(1);
+	
+	double Norm = Emax/mu1mu2max;
+	
+	
+	for(i=0;i<xt;i++)
+	for(j=0;j<yt;j++)
+		eps[i][j] =  Norm*mu1mu2[i][j];
+	
+	
+	//~ if(AtStart)
+	//~ {		
+		//~ WriteXY(mu1,"mu1.bin");	
+		//~ WriteXY(mu2,"mu2.bin");
+		//~ WriteXY(eps,"eps.bin");
+	//~ }
 
 	
 	
-	weno_xylog_XDER(eps,Dxmu1mu2);
-	weno_xylog_YDER(eps,Dymu1mu2);
+	weno_xylog_XDER(mu1mu2,Dxmu1mu2);
+	weno_xylog_YDER(mu1mu2,Dymu1mu2);
 	
 	weno_xylog_XDER(mu1,Dxmu1);
 	weno_xylog_YDER(mu1,Dymu1);
@@ -894,15 +929,15 @@ void ginit(GRID HydroGrid, double tau)
 
 
 
-	if(AtStart)
-	{
-		WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
-		WriteXY(Dymu1mu2,"Dymu1mu2.bin");
-		WriteXY(Dxmu1,"Dxmu1.bin");	
-		WriteXY(Dxmu2,"Dxmu2.bin");
-		WriteXY(Dymu1,"Dymu1.bin");	
-		WriteXY(Dymu2,"Dymu2.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
+		//~ WriteXY(Dymu1mu2,"Dymu1mu2.bin");
+		//~ WriteXY(Dxmu1,"Dxmu1.bin");	
+		//~ WriteXY(Dxmu2,"Dxmu2.bin");
+		//~ WriteXY(Dymu1,"Dymu1.bin");	
+		//~ WriteXY(Dymu2,"Dymu2.bin");
+	//~ }
 
 
 
@@ -910,19 +945,19 @@ void ginit(GRID HydroGrid, double tau)
 	for(i=0;i<xt;i++)
 	for(j=0;j<yt;j++)
 	{
-		ax[i][j] = (-Dxmu1mu2[i][j]);
-		ay[i][j] = (-Dymu1mu2[i][j]);
-		bx[i][j] = (-Dxmu1[i][j]*mu2[i][j] + mu1[i][j]*Dxmu2[i][j]);
-		by[i][j] = (-Dymu1[i][j]*mu2[i][j] + mu1[i][j]*Dymu2[i][j]);
+		ax[i][j] = (-Norm*Dxmu1mu2[i][j]);
+		ay[i][j] = (-Norm*Dymu1mu2[i][j]);
+		bx[i][j] = Norm*(-Dxmu1[i][j]*mu2[i][j] + mu1[i][j]*Dxmu2[i][j]);
+		by[i][j] = Norm*(-Dymu1[i][j]*mu2[i][j] + mu1[i][j]*Dymu2[i][j]);
 	}
 
-	if(AtStart)
-	{
-		WriteXY(ax,"ax.bin");
-		WriteXY(ay,"ay.bin");
-		WriteXY(bx,"bx.bin");
-		WriteXY(by,"by.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(ax,"ax.bin");
+		//~ WriteXY(ay,"ay.bin");
+		//~ WriteXY(bx,"bx.bin");
+		//~ WriteXY(by,"by.bin");
+	//~ }
 	
 	
 	weno_xy_XDER(ax,Dxax);
@@ -930,13 +965,13 @@ void ginit(GRID HydroGrid, double tau)
 	weno_xy_YDER(ay,Dyay);
 	weno_xy_YDER(by,Dyby);
 
-	if(AtStart)
-	{	
-		WriteXY(Dxax,"Dxax.bin");
-		WriteXY(Dxbx,"Dxbx.bin");
-		WriteXY(Dyay,"Dyay.bin");
-		WriteXY(Dyby,"Dyby.bin");
-	}
+	//~ if(AtStart)
+	//~ {	
+		//~ WriteXY(Dxax,"Dxax.bin");
+		//~ WriteXY(Dxbx,"Dxbx.bin");
+		//~ WriteXY(Dyay,"Dyay.bin");
+		//~ WriteXY(Dyby,"Dyby.bin");
+	//~ }
 
 	for(i=0;i<xt;i++)
 	for(j=0;j<yt;j++)
@@ -945,11 +980,11 @@ void ginit(GRID HydroGrid, double tau)
 		DivB[i][j] = Dxbx[i][j]+Dyby[i][j];
 	}
 
-	if(AtStart)
-	{
-		WriteXY(DivA,"DivA.bin");
-		WriteXY(DivB,"DivB.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(DivA,"DivA.bin");
+		//~ WriteXY(DivB,"DivB.bin");
+	//~ }
 	
 
 
@@ -966,49 +1001,41 @@ void ginit(GRID HydroGrid, double tau)
 		
 		X =	HydroGrid[i][j][k].X;
 		Y = HydroGrid[i][j][k].Y;
-		double eta = HydroGrid[i][j][k].eta;
 		
 		int ii = i+NOS*BORDER;
 		int jj = j+NOS*BORDER;
 			
 		EV[0]=X;
 		EV[1]=Y;
-		EV[2]=eta;
+		EV[2]=0;
 		EV[3]=eps[ii][jj];
 
 		double ee = eps[ii][jj];
-		double dt = 80*ee;
+		double dt = 100*ee;
 		double AX = ax[ii][jj];
 		double AY = ay[ii][jj];
 		double BX = bx[ii][jj];
 		double BY = by[ii][jj];
-		double DA = DivA[ii][jj];
-		double DB = DivB[ii][jj];
-
-		double c1= cosh(eta);
-		double s1= sinh(eta);
-		double c2= cosh(2*eta);
-		double s2= sinh(2*eta);
+		double Le = -DivA[ii][jj];
+		double DB = DivB[ii][jj]; 
 		
-		Tmunu[0][0] =  ee + tau02*(-0.25*(dt+DA) + 0.125*dt*(c2) - 0.125*DB*(s2));
-		Tmunu[0][1] =  tau0*(AX*(c1) + BX*(s1));
-		Tmunu[0][2] =  tau0*(AY*(c1) + BY*(s1));
-		Tmunu[0][3] =  tau02*(0.125*dt*(s2) - 0.125*DB*(c2));
+		
+		Tmunu[0][0] =  ee - 0.125*tau02*(-2*Le+dt );
+		Tmunu[0][1] =  0.5*tau0*(AX );
+		Tmunu[0][2] =  0.5*tau0*(AY);
+		Tmunu[0][3] =  0.125*tau0*DB;
 		Tmunu[1][0] =  Tmunu[0][1];
-		Tmunu[1][1] =  ee - tau02*0.25*(dt+DA);
+		Tmunu[1][1] =  ee - 0.25*tau02*(-Le+dt);
 		Tmunu[1][2] =  0;
-		Tmunu[1][3] =  tau0*(AX*(s1) + BX*(c1));
+		Tmunu[1][3] =  0.5*(BX);
 		Tmunu[2][0] =  Tmunu[0][2];
-		Tmunu[2][1] =  0;
+		Tmunu[2][1] =  Tmunu[1][2];
 		Tmunu[2][2] =  Tmunu[1][1];
-		Tmunu[2][3] =  tau0*(AY*(s1) + BY*(c1));
+		Tmunu[2][3] =  0.5*(BY);
 		Tmunu[3][0] =  Tmunu[0][3];
 		Tmunu[3][1] =  Tmunu[1][3];
 		Tmunu[3][2] =  Tmunu[2][3];
-		Tmunu[3][3] =  -ee + tau02*( 0.25*(DA+dt) - 0.125*DB*(s2) + 0.125*dt*(c2) );
-
-
-		RotateTMuNu( Tmunu, eta, tau0);
+		Tmunu[3][3] =  -ee/tau02 + 0.125*(-2*Le+3*dt);
 
 		FindVar(Tmunu,EV,tau0);
 

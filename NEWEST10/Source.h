@@ -291,13 +291,21 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		DECLcoord;
 		DECLePPIa;
 		
-
 		double T = FT(e,r);	
 		double s = FS(e, P, T);
+		
 		double SH =   Feta(  s, e, r);
+		if(P==0)
+		{
+			cout<<std::scientific<<e<<"  *******  "<<s95p_p(e)<<endl;
+			cout<<"wtf"<<endl;
+		}
 		double tpi= Ftaupi(  SH, P, e, r);	
+   
+#ifdef BULK
 		double BU =  FZeta(  s, e, r);
 		double tPI= FtauPI(  BU, P, e, r);	
+#endif
 		
 		 HydroGrid[i][j][k].Source[4]=  (  ( (-3*(2*p4*tau*u3 + p1*pow(tpi,-1))*pow(u0,-1) - 2*pow(tau,-1)*(2*p1 + pow(tpi,-1)*(SH - SH*pow(u0,2))) - 2*tau*(-6*p4*u0*u3 + (3*p1 + pow(tpi,-1)*(SH + 2*SH*pow(u0,2)))*pow(u3,2)))/3. )
 		+ ((-2*p1*(3*u0 + 2*pow(u0,-1)) + 4*SH*pow(tpi,-1)*(-2*u0 + pow(u0,-1) + pow(u0,3)))/3.)*(HydroGrid[i][j][k].du[0][0]) + (-(u1*(3*p1*(2 + pow(u0,-2)) - 4*SH*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[0][1]) + (-(u2*(3*p1*(2 + pow(u0,-2)) - 4*SH*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[0][2]) + (-(u3*(3*p1*(2 + pow(u0,-2)) - 4*SH*pow(tpi,-1)*(-1 + pow(u0,2))))/3.)*(HydroGrid[i][j][k].du[0][3])

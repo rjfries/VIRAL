@@ -53,7 +53,6 @@ inline double FEnFromTemp(double temp)
 	double ret;
 	
 	ret = FACTOR*temp*temp*temp*temp;
-
  
 	return ret;
 }

@@ -339,8 +339,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CheckPhysics(HydroGrid, 0);		
 	
 			
-	
-	CalcSource(HydroGrid, tau, ts);	  	
+	CalcSource(HydroGrid, tau, ts);	 
 #ifdef KT		
 	CalcCentreFlux(HydroGrid, tau);  
 #endif
