@@ -297,8 +297,8 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		double SH =   Feta(  s, e, r);
 		if(P==0)
 		{
-			cout<<std::scientific<<e<<"  *******  "<<s95p_p(e)<<endl;
-			cout<<"wtf"<<endl;
+			cout<<std::scientific<<e<<" source.h *******  "<<s95p_p(e)<<endl;
+		//	cout<<"wtf"<<endl;
 		}
 		double tpi= Ftaupi(  SH, P, e, r);	
    

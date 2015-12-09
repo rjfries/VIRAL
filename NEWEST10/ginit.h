@@ -885,26 +885,41 @@ void ginit(GRID HydroGrid, double tau)
 	
 	
 	
-	double Tmax = 0.4*GEVFM;  //0.4GeV @ 0.6 fm/c converted to fm inverse
+	double Tmax = 0.4/GEVFM;  //0.4GeV @ 0.6 fm/c converted to fm inverse
 	double Emaxguess  =   FEnFromTemp(Tmax); 	
 	double e0;	
 	while( fabs(  s95p_T(Emaxguess) -  Tmax)>1e-10)
 	{
 		e0 = Emaxguess;
-		Emaxguess = e0 - (s95p_T(e0) - Tmax) / (6.608681233 * pow(e0, -0.25));	
+		Emaxguess = e0 - (s95p_T(e0) - Tmax) / (6.608681233 * pow(e0, -0.25));	//6.608681233 
+		//~ if(!rank)
+			//~ cout<<std::scientific<<"ITERATIVE:: "<< s95p_T(Emaxguess)*GEVFM<<endl;
 	}
 	double Emax = Emaxguess*pow( tau/0.6,-4./3.);
 	
-	//~ cout<<Emax<<endl;
-	//~ cout<<Emax/GEVFM<<endl;
+	//~ if(!rank)
+	//~ {
+		//~ cout<<Emax<<endl;
+		//~ cout<<Emax/GEVFM<<endl;
+	//~ }
 	//~ exit(1);
 	
-	double Norm = Emax/mu1mu2max;
+	double Norm = Emax/globmu1mu2max;
 	
-	
+	if(!rank && AtStart)
+	{
+		cout<<"@0.6:: emax-> "<<Emaxguess<<" & temp in Gev --> "<<s95p_TGev(Emaxguess)<<endl;
+		cout<<"@"<<tau<<":: emax-> "<<Emax<<" & temp in Gev --> "<<s95p_TGev(Emax)<<endl;
+		cout<<"Normalisation "<<Norm <<endl <<endl <<endl;
+	} 
+		
 	for(i=0;i<xt;i++)
 	for(j=0;j<yt;j++)
-		eps[i][j] =  Norm*mu1mu2[i][j];
+	{
+		eps[i][j] =  Norm*mu1mu2[i][j];//+ (Emax/1e8);
+		//~ if(eps[i][j] < 1e-8)
+			//~ eps[i][j]=1e-8;
+	} 
 	
 	
 	//~ if(AtStart)
@@ -993,12 +1008,15 @@ void ginit(GRID HydroGrid, double tau)
 	double Tmunu[NM][NM];
 	
 	
+	
+	double maxTrField=0;
+	double maxTrIFluid=0;
+	double maxTrPi=0;
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
 		double EV[NM];
-		
 		X =	HydroGrid[i][j][k].X;
 		Y = HydroGrid[i][j][k].Y;
 		
@@ -1035,8 +1053,14 @@ void ginit(GRID HydroGrid, double tau)
 		Tmunu[3][0] =  Tmunu[0][3];
 		Tmunu[3][1] =  Tmunu[1][3];
 		Tmunu[3][2] =  Tmunu[2][3];
-		Tmunu[3][3] =  -ee/tau02 + 0.125*(-2*Le+3*dt);
+		Tmunu[3][3] =  -ee/(tau*tau)+ 0.125*(-2*Le+3*dt);
 
+
+		double temp1 = Tmunu[0][0] - Tmunu[1][1] - Tmunu[2][2] - tau0*tau0*Tmunu[3][3];		
+		if(fabs(temp1)>maxTrField)
+			maxTrField= fabs(temp1);
+			
+			
 		FindVar(Tmunu,EV,tau0);
 
 		double eps,VX,VY,VE; 
@@ -1046,7 +1070,7 @@ void ginit(GRID HydroGrid, double tau)
 		VY = EV[2];
 		VE = EV[3];
 		
-
+		
 		HydroGrid[i][j][k].En = eps;
 		HydroGrid[i][j][k].P = EOS(eps, HydroGrid[i][j][k].r);
 		HydroGrid[i][j][k].Vx=VX;
@@ -1089,6 +1113,16 @@ void ginit(GRID HydroGrid, double tau)
 		
 		tid33 = ((e + P)*u3*u3 + P/(tau0*tau0) ); 
 
+
+
+
+		double temp2= tid00 - tid11 - tid22  - tau0*tau0*tid33;	
+			
+		if(fabs(temp2)>maxTrIFluid)
+			maxTrIFluid= fabs(temp2);
+			
+			
+			
 		HydroGrid[i][j][k].pi[0] = Tmunu[0][0] - tid00;
 		HydroGrid[i][j][k].pi[1] = Tmunu[0][1] - tid01;
 		HydroGrid[i][j][k].pi[2] = Tmunu[0][2] - tid02;
@@ -1099,8 +1133,19 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].pi[7] = Tmunu[2][2] - tid22;
 		HydroGrid[i][j][k].pi[8] = Tmunu[2][3] - tid23;
 		HydroGrid[i][j][k].pi[9] = Tmunu[3][3] - tid33;
+		
+		
 		DECLp10;	
 
+
+		double temp3= p1 - p5 - p8 - tau0*tau0*p10;	
+			
+		if(fabs(temp3)>maxTrPi)
+			maxTrPi= fabs(temp3);
+
+
+		if(fabs(X)<1e-5 && fabs(Y)<1e-5)
+			cout<<std::scientific<<"TEST:: "<< ee <<"   "<< eps<< "   "<< VX<<"  "<<VY<<"  "<< VE<< "   "<<p1-p5-p8-tau0*tau0*p10<< endl;
 		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
 		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
 		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
@@ -1118,30 +1163,19 @@ void ginit(GRID HydroGrid, double tau)
 	
 		return;
 	}
+	 
+	double gmaxTrField,gmaxTrIFluid,gmaxTrPi; 
+	MPI_Allreduce( &maxTrField, &gmaxTrField, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrIFluid, &gmaxTrIFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrPi, &gmaxTrPi, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
 	
-	double maxT=0;
-	
- 	for(i=0;i<XCM;i++)
-	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCM;k++)
+	if(!rank)
 	{
-		DECLp10u4;
-		double trace =  (p1 - p5 - p8 - p10*(tau0*tau0));
-		
-		if(maxT>trace)
-			maxT=trace;		
+		cout<<"Max TRACE"<<endl;
+		cout<<std::scientific<<"Field --> "<<gmaxTrField <<"  IdealFluid --> "<< gmaxTrIFluid <<"  Pi Matrix --> "<< gmaxTrPi<<endl;
 	}
 	
 	if(!rank)
-		cout<<"Max TRACE"<<endl;
-
-	MPI_Barrier(mpi_grid);
-	
-	cout<<maxT<<" --  rank ---"<<rank<<endl;
-
-	MPI_Barrier(mpi_grid);
-	
-	if(!rank)
 		cout<<endl<<"done with eigen value problem at TAUSTART"<<endl;
-		
+	
 }
