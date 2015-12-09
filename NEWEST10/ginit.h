@@ -16,7 +16,7 @@ ARRXY Dxax,Dyay,Dxbx,Dyby;
 ARRXY DivA,DivB;
 ARRXY enxy,vxxy,vyxy,vzxy;
 ARRXY p1xy,p2xy,p3xy,p4xy,p5xy;
-
+ARRXY TField[4][4];
 
 
 struct PAR{
@@ -534,6 +534,11 @@ void ReleaseXYArray(ARRXY* buf)
 void StoreVars()
 {
 
+	for(int i=0;i<4;i++)
+	for(int j=0;j<4;j++)
+		AllocateXYArray(&TField[i][j]);
+		
+	
 	AllocateXYArray(&mu1);
 	AllocateXYArray(&mu2);
 	AllocateXYArray(&mu1mu2);
@@ -569,6 +574,11 @@ void StoreVars()
 
 void RemoveVars()
 {
+	
+	for(int i=0;i<4;i++)
+	for(int j=0;j<4;j++)
+		ReleaseXYArray(&TField[i][j]);
+		
 	ReleaseXYArray(&mu1);
 	ReleaseXYArray(&mu2);
 	ReleaseXYArray(&mu1mu2);
@@ -1001,6 +1011,8 @@ void ginit(GRID HydroGrid, double tau)
 		//~ WriteXY(DivB,"DivB.bin");
 	//~ }
 	
+	
+	
 
 
 	double tau0 = tau;
@@ -1054,7 +1066,12 @@ void ginit(GRID HydroGrid, double tau)
 		Tmunu[3][1] =  Tmunu[1][3];
 		Tmunu[3][2] =  Tmunu[2][3];
 		Tmunu[3][3] =  -ee/(tau*tau)+ 0.125*(-2*Le+3*dt);
-
+		
+		
+		
+		for(int  a=0;a<4;a++)
+		for(int  b=0;b<4;b++)
+		TField[a][b][ii][jj] = Tmunu[a][b]; 
 
 		double temp1 = Tmunu[0][0] - Tmunu[1][1] - Tmunu[2][2] - tau0*tau0*Tmunu[3][3];		
 		if(fabs(temp1)>maxTrField)
@@ -1152,6 +1169,21 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + p4;
 	}
 	
+	
+	
+	if(AtStart)
+	{
+			WriteXY(TField[0][0],"t00.bin");
+			WriteXY(TField[0][1],"t01.bin");
+			WriteXY(TField[0][2],"t02.bin");
+			WriteXY(TField[0][3],"t03.bin");
+			WriteXY(TField[1][1],"t11.bin");
+			WriteXY(TField[1][2],"t12.bin");
+			WriteXY(TField[1][3],"t13.bin");
+			WriteXY(TField[2][2],"t22.bin");
+			WriteXY(TField[2][3],"t23.bin");
+			WriteXY(TField[3][3],"t33.bin");
+	}
 	
 	RemoveVars();
 	
