@@ -87,6 +87,30 @@ using namespace std;
 void FirstOrder(GRID HydroGrid, double ts, double tau);
 void SecondOrder(GRID HydroGrid, double ts, double tau);
 
+
+inline double MaxTemp(GRID HydroGrid)
+{
+	int i,j,k;
+	
+	double tmax=0;
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	{
+		DECLePPIa;
+		
+		double temp = s95p_TGev(e);
+		
+		if(temp>tmax)
+			tmax=temp;		
+	}	
+	
+	double globaltmax;
+	MPI_Allreduce( &tmax, &globaltmax, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 	
+	
+	return globaltmax;
+}
+
 int main(int argc, char* argv[])
 {
 #ifdef __unix__   
@@ -153,10 +177,12 @@ int main(int argc, char* argv[])
 		if(rank==root)
 			cout<<NP*sizeof(cell)*XCM*YCM*ZCM/(1024*1024) <<" mega bytes"<<endl;
 			
+		double tmax = MaxTemp(HydroGrid) ;
+		
 		if(rank==root)
 		{
 			cout<<"Time Step is "<<ts <<" @ "; 
-			cout<<std::fixed<<std::setprecision(13)<<"TAU -->"<<tau;
+			cout<<std::fixed<<std::setprecision(4)<<" TempMax is "<< 1000*tmax<<"MeV at TAU -->"<<tau;
 			cout<<std::fixed<<std::setprecision(5)<<" This is tau step no. "<<l;
 			clock_t now = clock();
 			cout<<std::fixed<<std::setw(5)<<std::setprecision(5)<<" at time "<< (((double)(now-start))/CLOCKS_PER_SEC)<< " seconds"<<endl<<endl<<endl<<endl; 	

@@ -56,9 +56,9 @@ double tau;
 
 	#define TAUSTART 0.2
 	#define TS 0.002
-	#define XL 8
+	#define XL 5
 	#define XS 0.1
-	#define YL 8
+	#define YL 5
 	#define YS 0.1
 	#define ZL 0
 	#define ZS 0.1
@@ -260,7 +260,6 @@ inline double ratio(double num, double denom)
 
 
 void CalcNS(GRID HydroGrid, double tau, double ts);
-
 
 inline double fmtoMev(double temp)
 {

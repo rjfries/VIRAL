@@ -914,7 +914,7 @@ void ginit(GRID HydroGrid, double tau)
 	//~ }
 	//~ exit(1);
 	
-	double Norm = Emax/globmu1mu2max;
+	double Norm = 2*Emax/globmu1mu2max;
 	
 	if(!rank && AtStart)
 	{
@@ -1023,7 +1023,9 @@ void ginit(GRID HydroGrid, double tau)
 	
 	double maxTrField=0;
 	double maxTrIFluid=0;
+	double maxTrPIFluid=0;
 	double maxTrPi=0;
+	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
@@ -1110,46 +1112,37 @@ void ginit(GRID HydroGrid, double tau)
 			continue;
 		}
 		
+		double tid[4][4];
+		double PImat[4][4];
+		double guu[4][4]={{1,0,0,0},{0,-1,0,0},{0,0,-1,0},{0,0,0,-1.0/(tau0*tau0)}};
+		double uup[4]={u0,u1,u2,u3};
 		
-		double tid00,tid01,tid02,tid03;
-		double tid11,tid12,tid13;
-		double tid22,tid23;
-		double tid33;
- 
-		tid00 = -P + ((e + P)*u0*u0);
-		tid01 = ((e + P)*u0*u1);
-		tid02 = ((e + P)*u0*u2);
-		tid03 = ((e + P)*u0*u3);
-		
-		tid11 = P + ((e + P)*u1*u1);
-		tid22 = P + ((e + P)*u2*u2);
-		tid12 = ((e + P)*u1*u2);
-		tid13 = ((e + P)*u1*u3);
-		
-		tid23 = ((e + P)*u2*u3); 
-		
-		tid33 = ((e + P)*u3*u3 + P/(tau0*tau0) ); 
-
-
-
-
-		double temp2= tid00 - tid11 - tid22  - tau0*tau0*tid33;	
+		for(int p=0;p<4;p++)
+		for(int q=0;q<4;q++)
+			tid[p][q]= (e+P)*uup[p]*uup[q] - P*guu[p][q];
+	
+		double temp2= tid[0][0] - tid[1][1] - tid[2][2] - tau0*tau0*tid[3][3];	
 			
-		if(fabs(temp2)>maxTrIFluid)
+		if(fabs(temp2) > maxTrIFluid)
 			maxTrIFluid= fabs(temp2);
 			
+		PI = -temp2/3.0;
 			
 			
-		HydroGrid[i][j][k].pi[0] = Tmunu[0][0] - tid00;
-		HydroGrid[i][j][k].pi[1] = Tmunu[0][1] - tid01;
-		HydroGrid[i][j][k].pi[2] = Tmunu[0][2] - tid02;
-		HydroGrid[i][j][k].pi[3] = Tmunu[0][3] - tid03;
-		HydroGrid[i][j][k].pi[4] = Tmunu[1][1] - tid11;
-		HydroGrid[i][j][k].pi[5] = Tmunu[1][2] - tid12;
-		HydroGrid[i][j][k].pi[6] = Tmunu[1][3] - tid13;
-		HydroGrid[i][j][k].pi[7] = Tmunu[2][2] - tid22;
-		HydroGrid[i][j][k].pi[8] = Tmunu[2][3] - tid23;
-		HydroGrid[i][j][k].pi[9] = Tmunu[3][3] - tid33;
+		for(int p=0;p<4;p++)
+		for(int q=0;q<4;q++)
+			PImat[p][q]= PI*( guu[p][q] - uup[p]*uup[q]);	
+			
+		HydroGrid[i][j][k].pi[0] = Tmunu[0][0] - tid[0][0] - PImat[0][0];
+		HydroGrid[i][j][k].pi[1] = Tmunu[0][1] - tid[0][1] - PImat[0][1];
+		HydroGrid[i][j][k].pi[2] = Tmunu[0][2] - tid[0][2] - PImat[0][2];
+		HydroGrid[i][j][k].pi[3] = Tmunu[0][3] - tid[0][3] - PImat[0][3];
+		HydroGrid[i][j][k].pi[4] = Tmunu[1][1] - tid[1][1] - PImat[1][1];
+		HydroGrid[i][j][k].pi[5] = Tmunu[1][2] - tid[1][2] - PImat[1][2];
+		HydroGrid[i][j][k].pi[6] = Tmunu[1][3] - tid[1][3] - PImat[1][3];
+		HydroGrid[i][j][k].pi[7] = Tmunu[2][2] - tid[2][2] - PImat[2][2];
+		HydroGrid[i][j][k].pi[8] = Tmunu[2][3] - tid[2][3] - PImat[2][3];
+		HydroGrid[i][j][k].pi[9] = Tmunu[3][3] - tid[3][3] - PImat[3][3];;
 		
 		
 		DECLp10;	
@@ -1161,8 +1154,8 @@ void ginit(GRID HydroGrid, double tau)
 			maxTrPi= fabs(temp3);
 
 
-		if(fabs(X)<1e-5 && fabs(Y)<1e-5)
-			cout<<std::scientific<<"TEST:: "<< ee <<"   "<< eps<< "   "<< VX<<"  "<<VY<<"  "<< VE<< "   "<<p1-p5-p8-tau0*tau0*p10<< endl;
+		//~ if(fabs(X)<1e-5 && fabs(Y)<1e-5)
+			//~ cout<<std::scientific<<"TEST:: "<< ee <<"   "<< eps<< "   "<< VX<<"  "<<VY<<"  "<< VE<< "   "<<p1-p5-p8-tau0*tau0*p10<< endl;
 		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
 		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
 		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
@@ -1171,19 +1164,19 @@ void ginit(GRID HydroGrid, double tau)
 	
 	
 	
-	if(AtStart)
-	{
-			WriteXY(TField[0][0],"t00.bin");
-			WriteXY(TField[0][1],"t01.bin");
-			WriteXY(TField[0][2],"t02.bin");
-			WriteXY(TField[0][3],"t03.bin");
-			WriteXY(TField[1][1],"t11.bin");
-			WriteXY(TField[1][2],"t12.bin");
-			WriteXY(TField[1][3],"t13.bin");
-			WriteXY(TField[2][2],"t22.bin");
-			WriteXY(TField[2][3],"t23.bin");
-			WriteXY(TField[3][3],"t33.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+			//~ WriteXY(TField[0][0],"t00.bin");
+			//~ WriteXY(TField[0][1],"t01.bin");
+			//~ WriteXY(TField[0][2],"t02.bin");
+			//~ WriteXY(TField[0][3],"t03.bin");
+			//~ WriteXY(TField[1][1],"t11.bin");
+			//~ WriteXY(TField[1][2],"t12.bin");
+			//~ WriteXY(TField[1][3],"t13.bin");
+			//~ WriteXY(TField[2][2],"t22.bin");
+			//~ WriteXY(TField[2][3],"t23.bin");
+			//~ WriteXY(TField[3][3],"t33.bin");
+	//~ }
 	
 	RemoveVars();
 	
@@ -1196,6 +1189,8 @@ void ginit(GRID HydroGrid, double tau)
 		return;
 	}
 	 
+	 
+	
 	double gmaxTrField,gmaxTrIFluid,gmaxTrPi; 
 	MPI_Allreduce( &maxTrField, &gmaxTrField, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
 	MPI_Allreduce( &maxTrIFluid, &gmaxTrIFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
