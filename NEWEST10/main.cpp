@@ -174,8 +174,8 @@ int main(int argc, char* argv[])
 
 		CheckRoot( HydroGrid ,  tau);
 		
-		if(rank==root)
-			cout<<NP*sizeof(cell)*XCM*YCM*ZCM/(1024*1024) <<" mega bytes"<<endl;
+		//~ if(rank==root)
+			//~ cout<<NP*sizeof(cell)*XCM*YCM*ZCM/(1024*1024) <<" mega bytes"<<endl;
 			
 		double tmax = MaxTemp(HydroGrid) ;
 		

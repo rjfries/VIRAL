@@ -914,7 +914,7 @@ void ginit(GRID HydroGrid, double tau)
 	//~ }
 	//~ exit(1);
 	
-	double Norm = 2*Emax/globmu1mu2max;
+	double Norm = 2.95*Emax/globmu1mu2max;
 	
 	if(!rank && AtStart)
 	{
@@ -1126,8 +1126,8 @@ void ginit(GRID HydroGrid, double tau)
 		if(fabs(temp2) > maxTrIFluid)
 			maxTrIFluid= fabs(temp2);
 			
-		PI = -temp2/3.0;
-			
+		HydroGrid[i][j][k].PI = -temp2/3.0;
+		PI = HydroGrid[i][j][k].PI;
 			
 		for(int p=0;p<4;p++)
 		for(int q=0;q<4;q++)
