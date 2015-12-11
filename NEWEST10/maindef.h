@@ -4,6 +4,8 @@ double tau;
 #define GEVFM 0.1973 
 
 #if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) 
+//~ #define NSINIT
+//~ #define ZEROINIT   
 	#define NPX  4
 	#define NPY  4
 	#define NPZ  1
@@ -26,6 +28,9 @@ double tau;
 
 
 #if defined(BJORKEN) 	
+//~ #define NSINIT
+//~ #define ZEROINIT
+
 	#define NPX  1
 	#define NPY  1
 	#define NPZ  1
@@ -52,8 +57,10 @@ double tau;
 	#define BULK
 	#define S95P
 	#define VORT
+	//~ #define NSINIT
+	//~ #define ZEROINIT
 	
-	
+	#define PEDESTAL 1E-8
 	
 	#define NOS  6 //per side	for ginit.h
 	#define NPX  4
@@ -70,7 +77,7 @@ double tau;
 	#define ZL 0
 	#define ZS 0.1
 	
-	#define PFREQ 0.05	
+	#define PFREQ 0.01	
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
 #endif
@@ -78,6 +85,8 @@ double tau;
 
 
 #if defined(GUBSER) 
+//~ #define NSINIT
+//~ #define ZEROINIT
 	#define LBI
 	
 	

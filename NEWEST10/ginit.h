@@ -1,7 +1,7 @@
 
 #define XPOSNUCLEI 2.5
 #define IMPACTPARAMETER (2*XPOSNUCLEI)
-
+ inline double genWENOder(double qm2, double qm1, double qc, double qp1, double qp2, double dx  );
 
 #define NM 4  
 
@@ -177,58 +177,15 @@ void weno_xy_XDER(ARRXY array,ARRXY result)
 		for(i=2;i<xt-2;i++)
 		{
 			double qm2,qm1,qc,qp1,qp2;
-			double left,right;
-			
+			double left,right; 
 				
 			qm2 = array[i-2][j];
 			qm1 = array[i-1][j];
 			qc  = array  [i][j];
 			qp1 = array[i+1][j];
 			qp2 = array[i+2][j];
-			
-			
-			beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-			beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-			beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-
-
-			q[0]= (2*qc  + 5*qp1 - 1*qp2)/6.0;
-			q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-			q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alpha[c];
-
-			for(c=0;c<3;c++)
-				w[c]= alpha[c]/sum;
-			
-			left=0;
-			for(c=0;c<3;c++)
-				left += w[c]*q[c];
-			
-			qt[0]= (11*qc - 7*qp1 + 2*qp2)/6.0;
-			qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-			qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-			
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alphat[c];
-			
-			for(c=0;c<3;c++)
-				wt[c]= alphat[c]/sum;
-			
-			right=0;
-			for(c=0;c<3;c++)
-				right += wt[c]*qt[c];
 				
-			result[i][j] = (right-left)/XS;			
+			result[i][j] = genWENOder(qm2,qm1,qc,qp1,qp2,XS);		
 		}
 	}
 }
@@ -256,59 +213,15 @@ void weno_xy_YDER(ARRXY array,ARRXY result)
 	{
 		
 		double qm2,qm1,qc,qp1,qp2;
-		double left,right;
-		
+		double left,right; 
 		
 		qm2 = array[i][j-2];
 		qm1 = array[i][j-1];
 		qc  = array[i][j];
 		qp1 = array[i][j+1];
-		qp2 = array[i][j+2];
-
-		
-		beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-		beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-		beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-		
-		q[0]= (2*qc + 5*qp1 - 1*qp2)/6.0;
-		q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-		q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alpha[c];
-
-		for(c=0;c<3;c++)
-			w[c]= alpha[c]/sum;
-		
-		left=0;
-		for(c=0;c<3;c++)
-			left+= w[c]*q[c];
-
-
-		
-		qt[0]= (11*qc   - 7 *qp1 + 2*qp2)/6.0;
-		qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-		qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-		
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alphat[c];
-		
-		for(c=0;c<3;c++)
-			wt[c]= alphat[c]/sum;
-		
-		right=0;
-		for(c=0;c<3;c++)
-			right += wt[c]*qt[c];
-			
-		result[i][j] = (right-left)/YS;
+		qp2 = array[i][j+2]; 
+		 
+		result[i][j] = genWENOder(qm2,qm1,qc,qp1,qp2,YS);
 	}
 }
 
@@ -343,50 +256,8 @@ void weno_xylog_XDER(ARRXY array,ARRXY result)
 			qp1 = log( array[i+1][j] );
 			qp2 = log( array[i+2][j] );
 			
-			double val = array[i][j] ;
-			
-			beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-			beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-			beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-
-
-			q[0]= (2*qc  + 5*qp1 - 1*qp2)/6.0;
-			q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-			q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alpha[c];
-
-			for(c=0;c<3;c++)
-				w[c]= alpha[c]/sum;
-			
-			left=0;
-			for(c=0;c<3;c++)
-				left += w[c]*q[c];
-			
-			qt[0]= (11*qc - 7*qp1 + 2*qp2)/6.0;
-			qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-			qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-			
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alphat[c];
-			
-			for(c=0;c<3;c++)
-				wt[c]= alphat[c]/sum;
-			
-			right=0;
-			for(c=0;c<3;c++)
-				right += wt[c]*qt[c];
-				
-			result[i][j] = val*(right-left)/XS;			
+			double var = array[i][j];
+			result[i][j] = var*genWENOder(qm2,qm1,qc,qp1,qp2,XS);				
 		}
 	}
 }
@@ -411,59 +282,16 @@ void weno_xylog_YDER(ARRXY array,ARRXY result)
 	{
 		
 		double qm2,qm1,qc,qp1,qp2;
-		double left,right;
-		
+		double left,right; 
 		
 		qm2 = log( array[i][j-2]);
 		qm1 = log( array[i][j-1]);
 		qc  = log( array[i][j]  );
 		qp1 = log( array[i][j+1]);
 		qp2 = log( array[i][j+2]);
-
-		double val = array[i][j] ;
-		beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-		beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-		beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-		
-		q[0]= (2*qc + 5*qp1 - 1*qp2)/6.0;
-		q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-		q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alpha[c];
-
-		for(c=0;c<3;c++)
-			w[c]= alpha[c]/sum;
-		
-		left=0;
-		for(c=0;c<3;c++)
-			left+= w[c]*q[c];
-
-
-		
-		qt[0]= (11*qc   - 7 *qp1 + 2*qp2)/6.0;
-		qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-		qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-		
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alphat[c];
-		
-		for(c=0;c<3;c++)
-			wt[c]= alphat[c]/sum;
-		
-		right=0;
-		for(c=0;c<3;c++)
-			right += wt[c]*qt[c];
-			
-		result[i][j] = val*(right-left)/YS;
+ 
+		double var = array[i][j];
+		result[i][j] = var*genWENOder(qm2,qm1,qc,qp1,qp2,YS);
 	}
 }
 
@@ -867,6 +695,7 @@ void ginit(GRID HydroGrid, double tau)
 		f.function=&WoodSaxon;	
 		gsl_integration_qag(&f, 0, 250, 0, 1e-13, 1000, GSL_INTEG_GAUSS61, w, &mu1[i][j], &abserr);
 		mu1[i][j] *= (2*fac);
+		//~ mu1[i][j] += (PEDESTAL);
 		
 		params.x=X;
 		params.y=Y;
@@ -875,6 +704,7 @@ void ginit(GRID HydroGrid, double tau)
 		f.function=&WoodSaxon;	
 		gsl_integration_qag(&f, 0, 250, 0, 1e-13, 1000, GSL_INTEG_GAUSS61, w, &mu2[i][j], &abserr);
 		mu2[i][j] *= (2*fac);
+		//~ mu2[i][j] += (PEDESTAL);
 
 
 		mu1mu2[i][j] = mu1[i][j]*mu2[i][j];
@@ -933,12 +763,12 @@ void ginit(GRID HydroGrid, double tau)
 	} 
 	
 	
-	//~ if(AtStart)
-	//~ {		
-		//~ WriteXY(mu1,"mu1.bin");	
-		//~ WriteXY(mu2,"mu2.bin");
-		//~ WriteXY(eps,"eps.bin");
-	//~ }
+	if(AtStart)
+	{		
+		WriteXY(mu1,"mu1.bin");	
+		WriteXY(mu2,"mu2.bin");
+		WriteXY(eps,"eps.bin");
+	}
 
 	
 	
@@ -955,15 +785,15 @@ void ginit(GRID HydroGrid, double tau)
 
 
 
-	//~ if(AtStart)
-	//~ {
-		//~ WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
-		//~ WriteXY(Dymu1mu2,"Dymu1mu2.bin");
-		//~ WriteXY(Dxmu1,"Dxmu1.bin");	
-		//~ WriteXY(Dxmu2,"Dxmu2.bin");
-		//~ WriteXY(Dymu1,"Dymu1.bin");	
-		//~ WriteXY(Dymu2,"Dymu2.bin");
-	//~ }
+	if(AtStart)
+	{
+		WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
+		WriteXY(Dymu1mu2,"Dymu1mu2.bin");
+		WriteXY(Dxmu1,"Dxmu1.bin");	
+		WriteXY(Dxmu2,"Dxmu2.bin");
+		WriteXY(Dymu1,"Dymu1.bin");	
+		WriteXY(Dymu2,"Dymu2.bin");
+	}
 
 
 
@@ -977,13 +807,13 @@ void ginit(GRID HydroGrid, double tau)
 		by[i][j] = Norm*(-Dymu1[i][j]*mu2[i][j] + mu1[i][j]*Dymu2[i][j]);
 	}
 
-	//~ if(AtStart)
-	//~ {
-		//~ WriteXY(ax,"ax.bin");
-		//~ WriteXY(ay,"ay.bin");
-		//~ WriteXY(bx,"bx.bin");
-		//~ WriteXY(by,"by.bin");
-	//~ }
+	if(AtStart)
+	{
+		WriteXY(ax,"ax.bin");
+		WriteXY(ay,"ay.bin");
+		WriteXY(bx,"bx.bin");
+		WriteXY(by,"by.bin");
+	}
 	
 	
 	weno_xy_XDER(ax,Dxax);
@@ -1085,7 +915,7 @@ void ginit(GRID HydroGrid, double tau)
 
 		double eps,VX,VY,VE; 
 		
-		eps = EV[0];
+		eps = EV[0]+PEDESTAL;
 		VX = EV[1];
 		VY = EV[2];
 		VE = EV[3];
