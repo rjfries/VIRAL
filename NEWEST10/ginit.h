@@ -3,7 +3,7 @@
 #define IMPACTPARAMETER (2*XPOSNUCLEI)
 
 
-#define NM 4
+#define NM 4  
 
 
 typedef double (*ARRXY) [YCM + 2*NOS*BORDER];
@@ -656,6 +656,7 @@ void WriteXY(ARRXY VAR, char name[30])
 	double *buf;
 
 	int f = FREQ;
+	//~ int f = 1;
 	
 	int chunk = YCMA/f;
 	
@@ -914,7 +915,7 @@ void ginit(GRID HydroGrid, double tau)
 	//~ }
 	//~ exit(1);
 	
-	double Norm = 2.95*Emax/globmu1mu2max;
+	double Norm = 2.92*Emax/globmu1mu2max;
 	
 	if(!rank && AtStart)
 	{
@@ -1024,7 +1025,7 @@ void ginit(GRID HydroGrid, double tau)
 	double maxTrField=0;
 	double maxTrIFluid=0;
 	double maxTrPIFluid=0;
-	double maxTrPi=0;
+	double maxTrpiFluid=0;
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
@@ -1067,15 +1068,15 @@ void ginit(GRID HydroGrid, double tau)
 		Tmunu[3][0] =  Tmunu[0][3];
 		Tmunu[3][1] =  Tmunu[1][3];
 		Tmunu[3][2] =  Tmunu[2][3];
-		Tmunu[3][3] =  -ee/(tau*tau)+ 0.125*(-2*Le+3*dt);
+		Tmunu[3][3] =  -ee/(tau02)+ 0.125*(-2*Le+3*dt);
 		
 		
 		
 		for(int  a=0;a<4;a++)
 		for(int  b=0;b<4;b++)
-		TField[a][b][ii][jj] = Tmunu[a][b]; 
+			TField[a][b][ii][jj] = Tmunu[a][b]; 
 
-		double temp1 = Tmunu[0][0] - Tmunu[1][1] - Tmunu[2][2] - tau0*tau0*Tmunu[3][3];		
+		double temp1 = Tmunu[0][0] - Tmunu[1][1] - Tmunu[2][2] - tau02*Tmunu[3][3];		
 		if(fabs(temp1)>maxTrField)
 			maxTrField= fabs(temp1);
 			
@@ -1095,7 +1096,7 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Vx=VX;
 		HydroGrid[i][j][k].Vy=VY;
 		HydroGrid[i][j][k].Ve=VE;
-		HydroGrid[i][j][k].u[0] = 1.0/sqrt(1.0 - VX*VX - VY*VY - tau0*tau0*VE*VE);
+		HydroGrid[i][j][k].u[0] = 1.0/sqrt(1.0 - VX*VX - VY*VY - tau02*VE*VE);
 		HydroGrid[i][j][k].u[1] = HydroGrid[i][j][k].u[0]*VX;
 		HydroGrid[i][j][k].u[2] = HydroGrid[i][j][k].u[0]*VY;
 		HydroGrid[i][j][k].u[3] = HydroGrid[i][j][k].u[0]*VE;
@@ -1108,13 +1109,12 @@ void ginit(GRID HydroGrid, double tau)
 			HydroGrid[i][j][k].prevu[1] = u1;
 			HydroGrid[i][j][k].prevu[2] = u2;
 			HydroGrid[i][j][k].prevu[3] = u3;
-			
 			continue;
 		}
 		
 		double tid[4][4];
 		double PImat[4][4];
-		double guu[4][4]={{1,0,0,0},{0,-1,0,0},{0,0,-1,0},{0,0,0,-1.0/(tau0*tau0)}};
+		double guu[4][4]={{1,0,0,0},{0,-1,0,0},{0,0,-1,0},{0,0,0,-1.0/(tau02)}};
 		double uup[4]={u0,u1,u2,u3};
 		
 		for(int p=0;p<4;p++)
@@ -1133,6 +1133,11 @@ void ginit(GRID HydroGrid, double tau)
 		for(int q=0;q<4;q++)
 			PImat[p][q]= PI*( guu[p][q] - uup[p]*uup[q]);	
 			
+		double temp3= PImat[0][0] - PImat[1][1] - PImat[2][2] - tau0*tau0*PImat[3][3];	
+		if(fabs(temp3) > maxTrPIFluid)
+			maxTrPIFluid= fabs(temp3);
+			
+				
 		HydroGrid[i][j][k].pi[0] = Tmunu[0][0] - tid[0][0] - PImat[0][0];
 		HydroGrid[i][j][k].pi[1] = Tmunu[0][1] - tid[0][1] - PImat[0][1];
 		HydroGrid[i][j][k].pi[2] = Tmunu[0][2] - tid[0][2] - PImat[0][2];
@@ -1148,10 +1153,10 @@ void ginit(GRID HydroGrid, double tau)
 		DECLp10;	
 
 
-		double temp3= p1 - p5 - p8 - tau0*tau0*p10;	
+		double temp4= p1 - p5 - p8 - tau0*tau0*p10;	
 			
-		if(fabs(temp3)>maxTrPi)
-			maxTrPi= fabs(temp3);
+		if(fabs(temp4)>maxTrpiFluid)
+			maxTrpiFluid= fabs(temp4);
 
 
 		//~ if(fabs(X)<1e-5 && fabs(Y)<1e-5)
@@ -1164,19 +1169,19 @@ void ginit(GRID HydroGrid, double tau)
 	
 	
 	
-	//~ if(AtStart)
-	//~ {
-			//~ WriteXY(TField[0][0],"t00.bin");
-			//~ WriteXY(TField[0][1],"t01.bin");
-			//~ WriteXY(TField[0][2],"t02.bin");
-			//~ WriteXY(TField[0][3],"t03.bin");
-			//~ WriteXY(TField[1][1],"t11.bin");
-			//~ WriteXY(TField[1][2],"t12.bin");
-			//~ WriteXY(TField[1][3],"t13.bin");
-			//~ WriteXY(TField[2][2],"t22.bin");
-			//~ WriteXY(TField[2][3],"t23.bin");
-			//~ WriteXY(TField[3][3],"t33.bin");
-	//~ }
+	if(AtStart)
+	{
+			WriteXY(TField[0][0],"t00.bin");
+			WriteXY(TField[0][1],"t01.bin");
+			WriteXY(TField[0][2],"t02.bin");
+			WriteXY(TField[0][3],"t03.bin");
+			WriteXY(TField[1][1],"t11.bin");
+			WriteXY(TField[1][2],"t12.bin");
+			WriteXY(TField[1][3],"t13.bin");
+			WriteXY(TField[2][2],"t22.bin");
+			WriteXY(TField[2][3],"t23.bin");
+			WriteXY(TField[3][3],"t33.bin");
+	}
 	
 	RemoveVars();
 	
@@ -1191,15 +1196,16 @@ void ginit(GRID HydroGrid, double tau)
 	 
 	 
 	
-	double gmaxTrField,gmaxTrIFluid,gmaxTrPi; 
+	double gmaxTrField,gmaxTrIFluid,gmaxTrPIFluid,gmaxTrpiFluid; 
 	MPI_Allreduce( &maxTrField, &gmaxTrField, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
 	MPI_Allreduce( &maxTrIFluid, &gmaxTrIFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
-	MPI_Allreduce( &maxTrPi, &gmaxTrPi, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrPIFluid, &gmaxTrPIFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrpiFluid, &gmaxTrpiFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
 	
 	if(!rank)
 	{
 		cout<<"Max TRACE"<<endl;
-		cout<<std::scientific<<"Field --> "<<gmaxTrField <<"  IdealFluid --> "<< gmaxTrIFluid <<"  Pi Matrix --> "<< gmaxTrPi<<endl;
+		cout<<std::scientific<<"Field --> "<<gmaxTrField <<"  IdealFluid --> "<< gmaxTrIFluid <<"  PI Matrix --> "<< gmaxTrPIFluid<<"  pi Matrix --> "<< gmaxTrpiFluid<<endl;
 	}
 	
 	if(!rank)

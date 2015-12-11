@@ -863,4 +863,25 @@ inline int IsIrreleventPoint(int i, int j, int k)
 }
 
 
-
+inline double MaxTempGev(GRID HydroGrid)
+{
+	int i,j,k;
+	
+	double tmax=0;
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	{
+		DECLePPIa;
+		
+		double temp = s95p_TGev(e);
+		
+		if(temp>tmax)
+			tmax=temp;		
+	}	
+	
+	double globaltmax;
+	MPI_Allreduce( &tmax, &globaltmax, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 	
+	
+	return globaltmax;
+}

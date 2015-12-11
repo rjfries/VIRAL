@@ -13,9 +13,9 @@
 double s95p_p(double e) //e in 1/fm^4
 {
 	double ret; 
-	//fix for very small eps by sid 		
-	if(  e < 5.5E-7 )
-		return 0.143375*e;
+	//fix for very small eps  ~~ sid 		
+	if(  e < 1E-5 )
+		return (0.143375*e ); //- 1.02493E-13
 	
 	e *= GEVFM; //e in gev/fm3
 	
@@ -33,10 +33,7 @@ double s95p_p(double e) //e in 1/fm^4
 	if(e>E3 && e<E4)
 		ret = (0.332*e - 0.3223*pow(e,0.4585) + 0.1167*pow(e,-1.233) - 0.003906*e*exp(-0.05697*e)  + 0.1436*e*exp(-0.9131*e) );
 	else
-		ret = (0.3327*e - 0.3223*pow(e,0.4585) - 0.003906*e*exp(-0.05697*e) );
-	
-	
-	
+		ret = (0.3327*e - 0.3223*pow(e,0.4585) - 0.003906*e*exp(-0.05697*e) ); 
 
 		
 	return (ret/GEVFM); //p returned in 1/fm^4
@@ -52,8 +49,8 @@ double s95p_p_gevfm3(double e) //e in 1/fm^4
 double s95p_a(double e) //speed of sound squared --- dp/de
 {
 	double ret;
-	//fix for very small eps by sid 		
-	if(  e < 5.5E-7 )
+	//fix for very small eps ~~ sid 		
+	if(  e < 1E-5  )
 		return 0.143375;
 		
 	e *= GEVFM; //e in gev/fm3
