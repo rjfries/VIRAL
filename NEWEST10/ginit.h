@@ -177,7 +177,6 @@ void weno_xy_XDER(ARRXY array,ARRXY result)
 		for(i=2;i<xt-2;i++)
 		{
 			double qm2,qm1,qc,qp1,qp2;
-			double left,right; 
 				
 			qm2 = array[i-2][j];
 			qm1 = array[i-1][j];
@@ -712,6 +711,7 @@ void ginit(GRID HydroGrid, double tau)
 	}
 	
 	
+
 	
 	double mu1mu2max=0;
 	for(i=0;i<xt;i++)
@@ -745,7 +745,7 @@ void ginit(GRID HydroGrid, double tau)
 	//~ }
 	//~ exit(1);
 	
-	double Norm = 2.92*Emax/globmu1mu2max;
+	double Norm = 0.58*Emax/globmu1mu2max;
 	
 	if(!rank && AtStart)
 	{
@@ -763,12 +763,12 @@ void ginit(GRID HydroGrid, double tau)
 	} 
 	
 	
-	if(AtStart)
-	{		
-		WriteXY(mu1,"mu1.bin");	
-		WriteXY(mu2,"mu2.bin");
-		WriteXY(eps,"eps.bin");
-	}
+	//~ if(AtStart)
+	//~ {		
+		//~ WriteXY(mu1,"mu1.bin");	
+		//~ WriteXY(mu2,"mu2.bin");
+		//~ WriteXY(eps,"eps.bin");
+	//~ }
 
 	
 	
@@ -785,15 +785,15 @@ void ginit(GRID HydroGrid, double tau)
 
 
 
-	if(AtStart)
-	{
-		WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
-		WriteXY(Dymu1mu2,"Dymu1mu2.bin");
-		WriteXY(Dxmu1,"Dxmu1.bin");	
-		WriteXY(Dxmu2,"Dxmu2.bin");
-		WriteXY(Dymu1,"Dymu1.bin");	
-		WriteXY(Dymu2,"Dymu2.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
+		//~ WriteXY(Dymu1mu2,"Dymu1mu2.bin");
+		//~ WriteXY(Dxmu1,"Dxmu1.bin");	
+		//~ WriteXY(Dxmu2,"Dxmu2.bin");
+		//~ WriteXY(Dymu1,"Dymu1.bin");	
+		//~ WriteXY(Dymu2,"Dymu2.bin");
+	//~ }
 
 
 
@@ -807,13 +807,13 @@ void ginit(GRID HydroGrid, double tau)
 		by[i][j] = Norm*(-Dymu1[i][j]*mu2[i][j] + mu1[i][j]*Dymu2[i][j]);
 	}
 
-	if(AtStart)
-	{
-		WriteXY(ax,"ax.bin");
-		WriteXY(ay,"ay.bin");
-		WriteXY(bx,"bx.bin");
-		WriteXY(by,"by.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(ax,"ax.bin");
+		//~ WriteXY(ay,"ay.bin");
+		//~ WriteXY(bx,"bx.bin");
+		//~ WriteXY(by,"by.bin");
+	//~ }
 	
 	
 	weno_xy_XDER(ax,Dxax);
@@ -967,7 +967,7 @@ void ginit(GRID HydroGrid, double tau)
 		if(fabs(temp3) > maxTrPIFluid)
 			maxTrPIFluid= fabs(temp3);
 			
-				
+		
 		HydroGrid[i][j][k].pi[0] = Tmunu[0][0] - tid[0][0] - PImat[0][0];
 		HydroGrid[i][j][k].pi[1] = Tmunu[0][1] - tid[0][1] - PImat[0][1];
 		HydroGrid[i][j][k].pi[2] = Tmunu[0][2] - tid[0][2] - PImat[0][2];
@@ -977,20 +977,18 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].pi[6] = Tmunu[1][3] - tid[1][3] - PImat[1][3];
 		HydroGrid[i][j][k].pi[7] = Tmunu[2][2] - tid[2][2] - PImat[2][2];
 		HydroGrid[i][j][k].pi[8] = Tmunu[2][3] - tid[2][3] - PImat[2][3];
-		HydroGrid[i][j][k].pi[9] = Tmunu[3][3] - tid[3][3] - PImat[3][3];;
+		HydroGrid[i][j][k].pi[9] = Tmunu[3][3] - tid[3][3] - PImat[3][3];
 		
+#ifndef BULK		
+		HydroGrid[i][j][k].PI = 0;
+#endif
 		
-		DECLp10;	
-
-
+		DECLp10;
 		double temp4= p1 - p5 - p8 - tau0*tau0*p10;	
 			
 		if(fabs(temp4)>maxTrpiFluid)
 			maxTrpiFluid= fabs(temp4);
 
-
-		//~ if(fabs(X)<1e-5 && fabs(Y)<1e-5)
-			//~ cout<<std::scientific<<"TEST:: "<< ee <<"   "<< eps<< "   "<< VX<<"  "<<VY<<"  "<< VE<< "   "<<p1-p5-p8-tau0*tau0*p10<< endl;
 		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
 		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
 		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
@@ -1037,7 +1035,7 @@ void ginit(GRID HydroGrid, double tau)
 		cout<<"Max TRACE"<<endl;
 		cout<<std::scientific<<"Field --> "<<gmaxTrField <<"  IdealFluid --> "<< gmaxTrIFluid <<"  PI Matrix --> "<< gmaxTrPIFluid<<"  pi Matrix --> "<< gmaxTrpiFluid<<endl;
 	}
-	
+
 	if(!rank)
 		cout<<endl<<"done with eigen value problem at TAUSTART"<<endl;
 	

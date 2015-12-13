@@ -67,7 +67,6 @@ using namespace std;
 #include "Source.h"
 #include "write.h"
 #include "root.h"
-
 #ifdef SHAS
 #include "hydroshasta.h"
 #endif
@@ -186,7 +185,7 @@ int main(int argc, char* argv[])
 #endif
 
 #ifdef GINIT
-		if(tmaxMev<100)
+		if(tmaxMev<120)
 			break;
 #endif
 

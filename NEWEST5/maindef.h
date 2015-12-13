@@ -3,29 +3,34 @@ double tau;
 
 #define GEVFM 0.1973 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)&& !defined(LBI) 
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) 
+//~ #define NSINIT
+//~ #define ZEROINIT   
 	#define NPX  4
 	#define NPY  4
 	#define NPZ  1
 	#define NP (NPX*NPY*NPZ)
 
-	#define TAUSTART 0.10 
+	#define TAUSTART 0.60 
 	#define TS 0.01
 	#define XL 6
 	#define XS 0.1
 	#define YL 6
 	#define YS 0.1
-	#define ZL 0.1
+	#define ZL 2
 	#define ZS 0.1
 	
 	#define PFREQ 0.1
-	#define FREQ ((int)1)
+	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
 #endif
 
 
 
-#if defined(BJORKEN) && !defined(LBI)	
+#if defined(BJORKEN) 	
+//~ #define NSINIT
+//~ #define ZEROINIT
+
 	#define NPX  1
 	#define NPY  1
 	#define NPZ  1
@@ -47,14 +52,23 @@ double tau;
 
 
 
-#if defined(GINIT) && defined(LBI) 
-	#define NOS  6 //per side	
-	#define NPX  4
-	#define NPY  4
+#if defined(GINIT) 
+	#define LBI
+	#define BULK
+	#define S95P
+	#define VORT
+	//~ #define NSINIT
+	//~ #define ZEROINIT
+	
+	#define PEDESTAL 0 	
+	
+	#define NOS  6 //per side	for ginit.h
+	#define NPX  6
+	#define NPY  6
 	#define NPZ  1
 	#define NP (NPX*NPY*NPZ)
 
-	#define TAUSTART 0.10
+	#define TAUSTART 0.1
 	#define TS 0.002
 	#define XL 7
 	#define XS 0.1
@@ -63,14 +77,19 @@ double tau;
 	#define ZL 0
 	#define ZS 0.1
 	
-	#define PFREQ 0.5	
+	#define PFREQ 0.01	
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
 #endif
 
 
 
-#if defined(GUBSER) && defined(LBI)
+#if defined(GUBSER) 
+//~ #define NSINIT
+//~ #define ZEROINIT
+	#define LBI
+	
+	
 	#define NPX  4
 	#define NPY  4
 	#define NPZ  1
@@ -78,9 +97,9 @@ double tau;
 
 	#define TAUSTART 1.00 
 	#define TS 0.005
-	#define XL 7.5
+	#define XL 5
 	#define XS 0.05
-	#define YL 7.5
+	#define YL 5
 	#define YS 0.05
 	#define ZL 0
 	#define ZS 0.05
@@ -187,6 +206,9 @@ typedef struct
 #endif
 	
 
+#ifdef VORT
+	double Vort[Npi];
+#endif
 
 #if defined KT
 	double Fx[SVAR], Fy[SVAR], Fz[SVAR];  //centered fluxes

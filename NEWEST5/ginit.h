@@ -1,13 +1,13 @@
 
 #define XPOSNUCLEI 2.5
 #define IMPACTPARAMETER (2*XPOSNUCLEI)
+ inline double genWENOder(double qm2, double qm1, double qc, double qp1, double qp2, double dx  );
 
-
-#define NM 4
+#define NM 4  
 
 
 typedef double (*ARRXY) [YCM + 2*NOS*BORDER];
-ARRXY mu1,mu2,mmu1mu2;
+ARRXY mu1,mu2,mu1mu2;
 ARRXY Dxmu1mu2,Dymu1mu2;
 ARRXY Dxmu1,Dxmu2;
 ARRXY Dymu1,Dymu2;
@@ -16,7 +16,7 @@ ARRXY Dxax,Dyay,Dxbx,Dyby;
 ARRXY DivA,DivB;
 ARRXY enxy,vxxy,vyxy,vzxy;
 ARRXY p1xy,p2xy,p3xy,p4xy,p5xy;
-
+ARRXY TField[4][4];
 
 
 struct PAR{
@@ -177,58 +177,14 @@ void weno_xy_XDER(ARRXY array,ARRXY result)
 		for(i=2;i<xt-2;i++)
 		{
 			double qm2,qm1,qc,qp1,qp2;
-			double left,right;
-			
 				
 			qm2 = array[i-2][j];
 			qm1 = array[i-1][j];
 			qc  = array  [i][j];
 			qp1 = array[i+1][j];
 			qp2 = array[i+2][j];
-			
-			
-			beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-			beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-			beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-
-
-			q[0]= (2*qc  + 5*qp1 - 1*qp2)/6.0;
-			q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-			q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alpha[c];
-
-			for(c=0;c<3;c++)
-				w[c]= alpha[c]/sum;
-			
-			left=0;
-			for(c=0;c<3;c++)
-				left += w[c]*q[c];
-			
-			qt[0]= (11*qc - 7*qp1 + 2*qp2)/6.0;
-			qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-			qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-			
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alphat[c];
-			
-			for(c=0;c<3;c++)
-				wt[c]= alphat[c]/sum;
-			
-			right=0;
-			for(c=0;c<3;c++)
-				right += wt[c]*qt[c];
 				
-			result[i][j] = (right-left)/XS;			
+			result[i][j] = genWENOder(qm2,qm1,qc,qp1,qp2,XS);		
 		}
 	}
 }
@@ -256,59 +212,14 @@ void weno_xy_YDER(ARRXY array,ARRXY result)
 	{
 		
 		double qm2,qm1,qc,qp1,qp2;
-		double left,right;
-		
 		
 		qm2 = array[i][j-2];
 		qm1 = array[i][j-1];
 		qc  = array[i][j];
 		qp1 = array[i][j+1];
-		qp2 = array[i][j+2];
-
-		
-		beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-		beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-		beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-		
-		q[0]= (2*qc + 5*qp1 - 1*qp2)/6.0;
-		q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-		q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alpha[c];
-
-		for(c=0;c<3;c++)
-			w[c]= alpha[c]/sum;
-		
-		left=0;
-		for(c=0;c<3;c++)
-			left+= w[c]*q[c];
-
-
-		
-		qt[0]= (11*qc   - 7 *qp1 + 2*qp2)/6.0;
-		qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-		qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-		
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alphat[c];
-		
-		for(c=0;c<3;c++)
-			wt[c]= alphat[c]/sum;
-		
-		right=0;
-		for(c=0;c<3;c++)
-			right += wt[c]*qt[c];
-			
-		result[i][j] = (right-left)/YS;
+		qp2 = array[i][j+2]; 
+		 
+		result[i][j] = genWENOder(qm2,qm1,qc,qp1,qp2,YS);
 	}
 }
 
@@ -334,7 +245,6 @@ void weno_xylog_XDER(ARRXY array,ARRXY result)
 		for(i=2;i<xt-2;i++)
 		{
 			double qm2,qm1,qc,qp1,qp2;
-			double left,right;
 			
 				
 			qm2 = log( array[i-2][j] );			
@@ -343,50 +253,8 @@ void weno_xylog_XDER(ARRXY array,ARRXY result)
 			qp1 = log( array[i+1][j] );
 			qp2 = log( array[i+2][j] );
 			
-			double val = array[i][j] ;
-			
-			beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-			beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-			beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-
-
-			q[0]= (2*qc  + 5*qp1 - 1*qp2)/6.0;
-			q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-			q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alpha[c];
-
-			for(c=0;c<3;c++)
-				w[c]= alpha[c]/sum;
-			
-			left=0;
-			for(c=0;c<3;c++)
-				left += w[c]*q[c];
-			
-			qt[0]= (11*qc - 7*qp1 + 2*qp2)/6.0;
-			qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-			qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-			for(c=0;c<3;c++)
-				alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-			
-			sum=0;
-			for(c=0;c<3;c++)
-				sum += alphat[c];
-			
-			for(c=0;c<3;c++)
-				wt[c]= alphat[c]/sum;
-			
-			right=0;
-			for(c=0;c<3;c++)
-				right += wt[c]*qt[c];
-				
-			result[i][j] = val*(right-left)/XS;			
+			double var = array[i][j];
+			result[i][j] = var*genWENOder(qm2,qm1,qc,qp1,qp2,XS);				
 		}
 	}
 }
@@ -411,59 +279,15 @@ void weno_xylog_YDER(ARRXY array,ARRXY result)
 	{
 		
 		double qm2,qm1,qc,qp1,qp2;
-		double left,right;
-		
 		
 		qm2 = log( array[i][j-2]);
 		qm1 = log( array[i][j-1]);
 		qc  = log( array[i][j]  );
 		qp1 = log( array[i][j+1]);
 		qp2 = log( array[i][j+2]);
-
-		double val = array[i][j] ;
-		beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
-		beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
-		beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
-		
-		q[0]= (2*qc + 5*qp1 - 1*qp2)/6.0;
-		q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
-		q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alpha[c]= d[c]/pow(eps + beta[c],WENOP);
-
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alpha[c];
-
-		for(c=0;c<3;c++)
-			w[c]= alpha[c]/sum;
-		
-		left=0;
-		for(c=0;c<3;c++)
-			left+= w[c]*q[c];
-
-
-		
-		qt[0]= (11*qc   - 7 *qp1 + 2*qp2)/6.0;
-		qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
-		qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
-
-		for(c=0;c<3;c++)
-			alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
-		
-		sum=0;
-		for(c=0;c<3;c++)
-			sum += alphat[c];
-		
-		for(c=0;c<3;c++)
-			wt[c]= alphat[c]/sum;
-		
-		right=0;
-		for(c=0;c<3;c++)
-			right += wt[c]*qt[c];
-			
-		result[i][j] = val*(right-left)/YS;
+ 
+		double var = array[i][j];
+		result[i][j] = var*genWENOder(qm2,qm1,qc,qp1,qp2,YS);
 	}
 }
 
@@ -534,9 +358,14 @@ void ReleaseXYArray(ARRXY* buf)
 void StoreVars()
 {
 
+	for(int i=0;i<4;i++)
+	for(int j=0;j<4;j++)
+		AllocateXYArray(&TField[i][j]);
+		
+	
 	AllocateXYArray(&mu1);
 	AllocateXYArray(&mu2);
-	AllocateXYArray(&mmu1mu2);
+	AllocateXYArray(&mu1mu2);
 	AllocateXYArray(&Dxmu1mu2);
 	AllocateXYArray(&Dymu1mu2);
 	AllocateXYArray(&Dxmu1);
@@ -569,9 +398,14 @@ void StoreVars()
 
 void RemoveVars()
 {
+	
+	for(int i=0;i<4;i++)
+	for(int j=0;j<4;j++)
+		ReleaseXYArray(&TField[i][j]);
+		
 	ReleaseXYArray(&mu1);
 	ReleaseXYArray(&mu2);
-	ReleaseXYArray(&mmu1mu2);
+	ReleaseXYArray(&mu1mu2);
 	ReleaseXYArray(&Dxmu1mu2);
 	ReleaseXYArray(&Dymu1mu2);
 	ReleaseXYArray(&Dxmu1);
@@ -856,6 +690,7 @@ void ginit(GRID HydroGrid, double tau)
 		f.function=&WoodSaxon;	
 		gsl_integration_qag(&f, 0, 250, 0, 1e-13, 1000, GSL_INTEG_GAUSS61, w, &mu1[i][j], &abserr);
 		mu1[i][j] *= (2*fac);
+		//~ mu1[i][j] += (PEDESTAL);
 		
 		params.x=X;
 		params.y=Y;
@@ -864,25 +699,77 @@ void ginit(GRID HydroGrid, double tau)
 		f.function=&WoodSaxon;	
 		gsl_integration_qag(&f, 0, 250, 0, 1e-13, 1000, GSL_INTEG_GAUSS61, w, &mu2[i][j], &abserr);
 		mu2[i][j] *= (2*fac);
+		//~ mu2[i][j] += (PEDESTAL);
 
-		eps[i][j] = mu1[i][j]*mu2[i][j];
+
+		mu1mu2[i][j] = mu1[i][j]*mu2[i][j];
 		gsl_integration_workspace_free (w);
 	}
 	
 	
 
 	
-	if(AtStart)
-	{		
-		WriteXY(mu1,"mu1.bin");	
-		WriteXY(mu2,"mu2.bin");
-		WriteXY(eps,"eps.bin");
+	double mu1mu2max=0;
+	for(i=0;i<xt;i++)
+	for(j=0;j<yt;j++)
+	{
+		if(mu1mu2[i][j]>mu1mu2max)
+			mu1mu2max=mu1mu2[i][j];
 	}
+	double globmu1mu2max;
+	MPI_Allreduce( &mu1mu2max, &globmu1mu2max, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	
+	
+	
+	
+	double Tmax = 0.4/GEVFM;  //0.4GeV @ 0.6 fm/c converted to fm inverse
+	double Emaxguess  =   FEnFromTemp(Tmax); 	
+	double e0;	
+	while( fabs(  s95p_T(Emaxguess) -  Tmax)>1e-10)
+	{
+		e0 = Emaxguess;
+		Emaxguess = e0 - (s95p_T(e0) - Tmax) / (6.608681233 * pow(e0, -0.25));	//6.608681233 
+		//~ if(!rank)
+			//~ cout<<std::scientific<<"ITERATIVE:: "<< s95p_T(Emaxguess)*GEVFM<<endl;
+	}
+	double Emax = Emaxguess*pow( tau/0.6,-4./3.);
+	
+	//~ if(!rank)
+	//~ {
+		//~ cout<<Emax<<endl;
+		//~ cout<<Emax/GEVFM<<endl;
+	//~ }
+	//~ exit(1);
+	
+	double Norm = 0.58*Emax/globmu1mu2max;
+	
+	if(!rank && AtStart)
+	{
+		cout<<"@0.6:: emax-> "<<Emaxguess<<" & temp in Gev --> "<<s95p_TGev(Emaxguess)<<endl;
+		cout<<"@"<<tau<<":: emax-> "<<Emax<<" & temp in Gev --> "<<s95p_TGev(Emax)<<endl;
+		cout<<"Normalisation "<<Norm <<endl <<endl <<endl;
+	} 
+		
+	for(i=0;i<xt;i++)
+	for(j=0;j<yt;j++)
+	{
+		eps[i][j] =  Norm*mu1mu2[i][j];//+ (Emax/1e8);
+		//~ if(eps[i][j] < 1e-8)
+			//~ eps[i][j]=1e-8;
+	} 
+	
+	
+	//~ if(AtStart)
+	//~ {		
+		//~ WriteXY(mu1,"mu1.bin");	
+		//~ WriteXY(mu2,"mu2.bin");
+		//~ WriteXY(eps,"eps.bin");
+	//~ }
 
 	
 	
-	weno_xylog_XDER(eps,Dxmu1mu2);
-	weno_xylog_YDER(eps,Dymu1mu2);
+	weno_xylog_XDER(mu1mu2,Dxmu1mu2);
+	weno_xylog_YDER(mu1mu2,Dymu1mu2);
 	
 	weno_xylog_XDER(mu1,Dxmu1);
 	weno_xylog_YDER(mu1,Dymu1);
@@ -894,15 +781,15 @@ void ginit(GRID HydroGrid, double tau)
 
 
 
-	if(AtStart)
-	{
-		WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
-		WriteXY(Dymu1mu2,"Dymu1mu2.bin");
-		WriteXY(Dxmu1,"Dxmu1.bin");	
-		WriteXY(Dxmu2,"Dxmu2.bin");
-		WriteXY(Dymu1,"Dymu1.bin");	
-		WriteXY(Dymu2,"Dymu2.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(Dxmu1mu2,"Dxmu1mu2.bin");	
+		//~ WriteXY(Dymu1mu2,"Dymu1mu2.bin");
+		//~ WriteXY(Dxmu1,"Dxmu1.bin");	
+		//~ WriteXY(Dxmu2,"Dxmu2.bin");
+		//~ WriteXY(Dymu1,"Dymu1.bin");	
+		//~ WriteXY(Dymu2,"Dymu2.bin");
+	//~ }
 
 
 
@@ -910,19 +797,19 @@ void ginit(GRID HydroGrid, double tau)
 	for(i=0;i<xt;i++)
 	for(j=0;j<yt;j++)
 	{
-		ax[i][j] = (-Dxmu1mu2[i][j]);
-		ay[i][j] = (-Dymu1mu2[i][j]);
-		bx[i][j] = (-Dxmu1[i][j]*mu2[i][j] + mu1[i][j]*Dxmu2[i][j]);
-		by[i][j] = (-Dymu1[i][j]*mu2[i][j] + mu1[i][j]*Dymu2[i][j]);
+		ax[i][j] = (-Norm*Dxmu1mu2[i][j]);
+		ay[i][j] = (-Norm*Dymu1mu2[i][j]);
+		bx[i][j] = Norm*(-Dxmu1[i][j]*mu2[i][j] + mu1[i][j]*Dxmu2[i][j]);
+		by[i][j] = Norm*(-Dymu1[i][j]*mu2[i][j] + mu1[i][j]*Dymu2[i][j]);
 	}
 
-	if(AtStart)
-	{
-		WriteXY(ax,"ax.bin");
-		WriteXY(ay,"ay.bin");
-		WriteXY(bx,"bx.bin");
-		WriteXY(by,"by.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(ax,"ax.bin");
+		//~ WriteXY(ay,"ay.bin");
+		//~ WriteXY(bx,"bx.bin");
+		//~ WriteXY(by,"by.bin");
+	//~ }
 	
 	
 	weno_xy_XDER(ax,Dxax);
@@ -930,13 +817,13 @@ void ginit(GRID HydroGrid, double tau)
 	weno_xy_YDER(ay,Dyay);
 	weno_xy_YDER(by,Dyby);
 
-	if(AtStart)
-	{	
-		WriteXY(Dxax,"Dxax.bin");
-		WriteXY(Dxbx,"Dxbx.bin");
-		WriteXY(Dyay,"Dyay.bin");
-		WriteXY(Dyby,"Dyby.bin");
-	}
+	//~ if(AtStart)
+	//~ {	
+		//~ WriteXY(Dxax,"Dxax.bin");
+		//~ WriteXY(Dxbx,"Dxbx.bin");
+		//~ WriteXY(Dyay,"Dyay.bin");
+		//~ WriteXY(Dyby,"Dyby.bin");
+	//~ }
 
 	for(i=0;i<xt;i++)
 	for(j=0;j<yt;j++)
@@ -945,11 +832,13 @@ void ginit(GRID HydroGrid, double tau)
 		DivB[i][j] = Dxbx[i][j]+Dyby[i][j];
 	}
 
-	if(AtStart)
-	{
-		WriteXY(DivA,"DivA.bin");
-		WriteXY(DivB,"DivB.bin");
-	}
+	//~ if(AtStart)
+	//~ {
+		//~ WriteXY(DivA,"DivA.bin");
+		//~ WriteXY(DivB,"DivB.bin");
+	//~ }
+	
+	
 	
 
 
@@ -958,74 +847,82 @@ void ginit(GRID HydroGrid, double tau)
 	double Tmunu[NM][NM];
 	
 	
+	
+	double maxTrField=0;
+	double maxTrIFluid=0;
+	double maxTrPIFluid=0;
+	double maxTrpiFluid=0;
+	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
 		double EV[NM];
-		
 		X =	HydroGrid[i][j][k].X;
 		Y = HydroGrid[i][j][k].Y;
-		double eta = HydroGrid[i][j][k].eta;
 		
 		int ii = i+NOS*BORDER;
 		int jj = j+NOS*BORDER;
 			
 		EV[0]=X;
 		EV[1]=Y;
-		EV[2]=eta;
+		EV[2]=0;
 		EV[3]=eps[ii][jj];
 
 		double ee = eps[ii][jj];
-		double dt = 80*ee;
+		double dt = 100*ee;
 		double AX = ax[ii][jj];
 		double AY = ay[ii][jj];
 		double BX = bx[ii][jj];
 		double BY = by[ii][jj];
-		double DA = DivA[ii][jj];
-		double DB = DivB[ii][jj];
-
-		double c1= cosh(eta);
-		double s1= sinh(eta);
-		double c2= cosh(2*eta);
-		double s2= sinh(2*eta);
+		double Le = -DivA[ii][jj];
+		double DB = DivB[ii][jj]; 
 		
-		Tmunu[0][0] =  ee + tau02*(-0.25*(dt+DA) + 0.125*dt*(c2) - 0.125*DB*(s2));
-		Tmunu[0][1] =  tau0*(AX*(c1) + BX*(s1));
-		Tmunu[0][2] =  tau0*(AY*(c1) + BY*(s1));
-		Tmunu[0][3] =  tau02*(0.125*dt*(s2) - 0.125*DB*(c2));
+		
+		Tmunu[0][0] =  ee - 0.125*tau02*(-2*Le+dt );
+		Tmunu[0][1] =  0.5*tau0*(AX );
+		Tmunu[0][2] =  0.5*tau0*(AY);
+		Tmunu[0][3] =  0.125*tau0*DB;
 		Tmunu[1][0] =  Tmunu[0][1];
-		Tmunu[1][1] =  ee - tau02*0.25*(dt+DA);
+		Tmunu[1][1] =  ee - 0.25*tau02*(-Le+dt);
 		Tmunu[1][2] =  0;
-		Tmunu[1][3] =  tau0*(AX*(s1) + BX*(c1));
+		Tmunu[1][3] =  0.5*(BX);
 		Tmunu[2][0] =  Tmunu[0][2];
-		Tmunu[2][1] =  0;
+		Tmunu[2][1] =  Tmunu[1][2];
 		Tmunu[2][2] =  Tmunu[1][1];
-		Tmunu[2][3] =  tau0*(AY*(s1) + BY*(c1));
+		Tmunu[2][3] =  0.5*(BY);
 		Tmunu[3][0] =  Tmunu[0][3];
 		Tmunu[3][1] =  Tmunu[1][3];
 		Tmunu[3][2] =  Tmunu[2][3];
-		Tmunu[3][3] =  -ee + tau02*( 0.25*(DA+dt) - 0.125*DB*(s2) + 0.125*dt*(c2) );
+		Tmunu[3][3] =  -ee/(tau02)+ 0.125*(-2*Le+3*dt);
+		
+		
+		
+		for(int  a=0;a<4;a++)
+		for(int  b=0;b<4;b++)
+			TField[a][b][ii][jj] = Tmunu[a][b]; 
 
-
-		RotateTMuNu( Tmunu, eta, tau0);
-
+		double temp1 = Tmunu[0][0] - Tmunu[1][1] - Tmunu[2][2] - tau02*Tmunu[3][3];		
+		if(fabs(temp1)>maxTrField)
+			maxTrField= fabs(temp1);
+			
+			
 		FindVar(Tmunu,EV,tau0);
 
 		double eps,VX,VY,VE; 
 		
-		eps = EV[0];
+		eps = EV[0]+PEDESTAL;
 		VX = EV[1];
 		VY = EV[2];
 		VE = EV[3];
 		
-
+		
 		HydroGrid[i][j][k].En = eps;
 		HydroGrid[i][j][k].P = EOS(eps, HydroGrid[i][j][k].r);
 		HydroGrid[i][j][k].Vx=VX;
 		HydroGrid[i][j][k].Vy=VY;
 		HydroGrid[i][j][k].Ve=VE;
-		HydroGrid[i][j][k].u[0] = 1.0/sqrt(1.0 - VX*VX - VY*VY - tau0*tau0*VE*VE);
+		HydroGrid[i][j][k].u[0] = 1.0/sqrt(1.0 - VX*VX - VY*VY - tau02*VE*VE);
 		HydroGrid[i][j][k].u[1] = HydroGrid[i][j][k].u[0]*VX;
 		HydroGrid[i][j][k].u[2] = HydroGrid[i][j][k].u[0]*VY;
 		HydroGrid[i][j][k].u[3] = HydroGrid[i][j][k].u[0]*VE;
@@ -1038,36 +935,50 @@ void ginit(GRID HydroGrid, double tau)
 			HydroGrid[i][j][k].prevu[1] = u1;
 			HydroGrid[i][j][k].prevu[2] = u2;
 			HydroGrid[i][j][k].prevu[3] = u3;
-			
 			continue;
 		}
 		
+		double tid[4][4];
+		double PImat[4][4];
+		double guu[4][4]={{1,0,0,0},{0,-1,0,0},{0,0,-1,0},{0,0,0,-1.0/(tau02)}};
+		double uup[4]={u0,u1,u2,u3};
 		
-		double tid00,tid01,tid02,tid03;
-		double tid11,tid12,tid13;
-		double tid22,tid23;
-		double tid33;
- 
-		tid00 = -P + ((e + P)*u0*u0);
-		tid01 = ((e + P)*u0*u1);
-		tid02 = ((e + P)*u0*u2);
-		tid03 = ((e + P)*u0*u3);
+		for(int p=0;p<4;p++)
+		for(int q=0;q<4;q++)
+			tid[p][q]= (e+P)*uup[p]*uup[q] - P*guu[p][q];
+	
+		double temp2= tid[0][0] - tid[1][1] - tid[2][2] - tau0*tau0*tid[3][3];	
+			
+		if(fabs(temp2) > maxTrIFluid)
+			maxTrIFluid= fabs(temp2);
+			
+		HydroGrid[i][j][k].PI = -temp2/3.0;
+		PI = HydroGrid[i][j][k].PI;
+			
+		for(int p=0;p<4;p++)
+		for(int q=0;q<4;q++)
+			PImat[p][q]= PI*( guu[p][q] - uup[p]*uup[q]);	
+			
+		double temp3= PImat[0][0] - PImat[1][1] - PImat[2][2] - tau0*tau0*PImat[3][3];	
+		if(fabs(temp3) > maxTrPIFluid)
+			maxTrPIFluid= fabs(temp3);
+			
 		
-		tid11 = P + ((e + P)*u1*u1);
-		tid22 = P + ((e + P)*u2*u2);
-		tid12 = ((e + P)*u1*u2);
-		tid13 = ((e + P)*u1*u3);
+		HydroGrid[i][j][k].pi[0] = Tmunu[1][1] - tid[1][1] - PImat[1][1];
+		HydroGrid[i][j][k].pi[1] = Tmunu[2][2] - tid[2][2] - PImat[2][2];
+		HydroGrid[i][j][k].pi[2] = Tmunu[1][2] - tid[1][2] - PImat[1][2];
+		HydroGrid[i][j][k].pi[3] = Tmunu[1][3] - tid[1][3] - PImat[1][3];
+		HydroGrid[i][j][k].pi[4] = Tmunu[2][3] - tid[2][3] - PImat[2][3]; 
 		
-		tid23 = ((e + P)*u2*u3); 
+#ifndef BULK		
+		HydroGrid[i][j][k].PI = 0;
+#endif
 		
-		tid33 = ((e + P)*u3*u3 + P/(tau0*tau0) ); 
-
-		HydroGrid[i][j][k].pi[0] = Tmunu[1][1] - tid11;
-		HydroGrid[i][j][k].pi[1] = Tmunu[2][2] - tid22;
-		HydroGrid[i][j][k].pi[2] = Tmunu[1][2] - tid12;
-		HydroGrid[i][j][k].pi[3] = Tmunu[1][3] - tid13;
-		HydroGrid[i][j][k].pi[4] = Tmunu[2][3] - tid23;
 		DECLp5;	
+		double temp4=  A1 - p1 - p2 - tau0*tau0*A5;	
+			
+		if(fabs(temp4)>maxTrpiFluid)
+			maxTrpiFluid= fabs(temp4);
 
 		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + A1;
 		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
@@ -1075,6 +986,21 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
 	}
 	
+	
+	
+	if(AtStart)
+	{
+			WriteXY(TField[0][0],"t00.bin");
+			WriteXY(TField[0][1],"t01.bin");
+			WriteXY(TField[0][2],"t02.bin");
+			WriteXY(TField[0][3],"t03.bin");
+			WriteXY(TField[1][1],"t11.bin");
+			WriteXY(TField[1][2],"t12.bin");
+			WriteXY(TField[1][3],"t13.bin");
+			WriteXY(TField[2][2],"t22.bin");
+			WriteXY(TField[2][3],"t23.bin");
+			WriteXY(TField[3][3],"t33.bin");
+	}
 	
 	RemoveVars();
 	
@@ -1086,30 +1012,22 @@ void ginit(GRID HydroGrid, double tau)
 	
 		return;
 	}
+	 
+	 
 	
-	double maxT=0;
-	
- 	for(i=0;i<XCM;i++)
-	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCM;k++)
-	{
-		DECLp5u4;
-		double trace =  (A1 - p1 - p2 - A5*(tau0*tau0));
-		
-		if(maxT>trace)
-			maxT=trace;		
-	}
+	double gmaxTrField,gmaxTrIFluid,gmaxTrPIFluid,gmaxTrpiFluid; 
+	MPI_Allreduce( &maxTrField, &gmaxTrField, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrIFluid, &gmaxTrIFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrPIFluid, &gmaxTrPIFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
+	MPI_Allreduce( &maxTrpiFluid, &gmaxTrpiFluid, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 
 	
 	if(!rank)
+	{
 		cout<<"Max TRACE"<<endl;
+		cout<<std::scientific<<"Field --> "<<gmaxTrField <<"  IdealFluid --> "<< gmaxTrIFluid <<"  PI Matrix --> "<< gmaxTrPIFluid<<"  pi Matrix --> "<< gmaxTrpiFluid<<endl;
+	}
 
-	MPI_Barrier(mpi_grid);
-	
-	cout<<maxT<<" --  rank ---"<<rank<<endl;
-
-	MPI_Barrier(mpi_grid);
-	
 	if(!rank)
 		cout<<endl<<"done with eigen value problem at TAUSTART"<<endl;
-		
+	
 }

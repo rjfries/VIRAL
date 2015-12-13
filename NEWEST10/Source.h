@@ -295,6 +295,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 			
 			
 		
+
 		double T = FT(e,r);	
 		double s = FS(e, P, T);		
 		double SH =   Feta(  s, e, r);			
@@ -387,6 +388,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 
 
 	}
+	
 		
 #ifdef VORT
 	AddVorticity(HydroGrid,tau);
@@ -622,3 +624,4 @@ void NSInit(GRID HydroGrid, double tau, double ts)
 		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + p4;
 	}
 }
+

@@ -50,6 +50,10 @@
 using namespace std;
 
 #include "maindef.h"
+
+#ifdef S95P
+#include "s95p.h"
+#endif
 #include "thermo.h"
 #include "alloc.h"
 #include "init.h"
@@ -77,10 +81,15 @@ using namespace std;
 #include "hydroKT.h"
 #endif
 
+
+
 #include "time.h"
 
 void FirstOrder(GRID HydroGrid, double ts, double tau);
 void SecondOrder(GRID HydroGrid, double ts, double tau);
+
+
+
 
 int main(int argc, char* argv[])
 {
@@ -145,13 +154,15 @@ int main(int argc, char* argv[])
 
 		CheckRoot( HydroGrid ,  tau);
 		
-		if(rank==root)
-			cout<<NP*sizeof(cell)*XCM*YCM*ZCM/(1024*1024) <<" mega bytes"<<endl;
+		//~ if(rank==root)
+			//~ cout<<NP*sizeof(cell)*XCM*YCM*ZCM/(1024*1024) <<" mega bytes"<<endl;
 			
+		double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
+		
 		if(rank==root)
 		{
 			cout<<"Time Step is "<<ts <<" @ "; 
-			cout<<std::fixed<<std::setprecision(13)<<"TAU -->"<<tau;
+			cout<<std::fixed<<std::setprecision(4)<<" TempMax is "<< tmaxMev<<" MeV at TAU -->"<<tau;
 			cout<<std::fixed<<std::setprecision(5)<<" This is tau step no. "<<l;
 			clock_t now = clock();
 			cout<<std::fixed<<std::setw(5)<<std::setprecision(5)<<" at time "<< (((double)(now-start))/CLOCKS_PER_SEC)<< " seconds"<<endl<<endl<<endl<<endl; 	
@@ -171,9 +182,15 @@ int main(int argc, char* argv[])
 		
 		
 #ifdef GUBSER
-		if(tau>11)
+		if(tau>9)
 			break;
 #endif
+
+#ifdef GINIT
+		if(tmaxMev<120)
+			break;
+#endif
+
 		if(tau>25.3)
 			break;
 	}

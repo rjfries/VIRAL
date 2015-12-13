@@ -97,6 +97,55 @@ inline double genminmod(double um, double u, double up, double dx, double gminv 
 	return((left-right)/dx);
 }
 
+ inline double genLOGWENOder(double eqm2, double eqm1, double eqc, double eqp1, double eqp2, double dx  )
+{ 	
+	double w[3], q[3], d[3], alpha[3];
+	double wt[3], qt[3], dt[3], alphat[3];
+	double beta[4];
+	double p,eps=WENOEPS,sum;
+	double left=0,right=0;
+	
+	double qm2 = log(eqm2);
+	double qm1 = log(eqm1);
+	double qc = log(eqc);
+	double qp1 = log(eqp1);
+	double qp2 = log(eqp2);
+	
+	d[0]= dt[2]=0.3;
+	d[1]= dt[1]=0.6 ;
+	d[2]= dt[0]=0.1 ;
+	beta[0]=(13./12.)*pow(qc - 2*qp1 + qp2 , 2) + 0.25*pow(3*qc - 4*qp1 + qp2 , 2);
+	beta[1]=(13./12.)*pow(qm1 - 2*qc + qp1 , 2) + 0.25*pow(qm1 - qp1 , 2);
+	beta[2]=(13./12.)*pow(qm2 - 2*qm1 + qc , 2) + 0.25*pow(qm2 - 4*qm1 + 3*qc , 2);
+	q[0]= (2*qc + 5*qp1 - 1*qp2)/6.0;
+	q[1]= (-1*qm1 + 5*qc + 2*qp1)/6.0;
+	q[2]= (2*qm2 - 7*qm1 + 11*qc)/6.0;
+	for(int c=0;c<3;c++)
+		alpha[c]= d[c]/pow(eps + beta[c],WENOP);
+	sum=0;
+	for(int c=0;c<3;c++)
+		sum += alpha[c];
+	for(int c=0;c<3;c++)
+		w[c]= alpha[c]/sum;
+	for(int c=0;c<3;c++)
+		left+= w[c]*q[c];
+		
+	qt[0]= (11*qc   - 7 *qp1 + 2*qp2)/6.0;
+	qt[1]= (2*qm1 + 5*qc - 1*qp1)/6.0;
+	qt[2]= (-1*qm2 + 5*qm1 + 2*qc)/6.0;
+	for(int c=0;c<3;c++)
+		alphat[c]= dt[c]/pow(eps + beta[c],WENOP);
+	sum=0;
+	for(int c=0;c<3;c++)
+		sum += alphat[c];
+	for(int c=0;c<3;c++)
+		wt[c]= alphat[c]/sum;
+	for(int c=0;c<3;c++)
+		right += wt[c]*qt[c];
+		
+	return(eqc*(left-right)/dx);
+}
+
 inline double genWENOR(double qm2, double qm1, double qc, double qp1, double qp2  )
 { 	 
 	double wt[3], qt[3], dt[3], alphat[3];
@@ -157,6 +206,7 @@ inline double genWENOL(double qm2, double qm1, double qc, double qp1, double qp2
 	return(left);
 }
 
+ 
 
 
 inline double SBee(double r)
@@ -813,4 +863,25 @@ inline int IsIrreleventPoint(int i, int j, int k)
 }
 
 
-
+inline double MaxTempGev(GRID HydroGrid)
+{
+	int i,j,k;
+	
+	double tmax=0;
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	{
+		DECLePPIa;
+		
+		double temp = s95p_TGev(e);
+		
+		if(temp>tmax)
+			tmax=temp;		
+	}	
+	
+	double globaltmax;
+	MPI_Allreduce( &tmax, &globaltmax, 1,MPI_DOUBLE, MPI_MAX,mpi_grid); 	
+	
+	return globaltmax;
+}

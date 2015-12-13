@@ -1,10 +1,7 @@
 void StoreInHeap();
-
+void NSInit(GRID HydroGrid, double tau, double ts);
+void ZeroInit(GRID HydroGrid, double tau, double ts);
 void CheckRoot(GRID HydroGrid , double tau);
-
-void InitStorePrevValues(GRID HydroGrid);
-void InitStorePrevPrevValues(GRID HydroGrid);
-
 double DebugMSG(GRID HydroGrid);
 
 int k0;
@@ -156,19 +153,7 @@ void mpi_init()
 
 }
 
-
-
-inline void UpdateEOS(GRID HydroGrid)
-{
-	int i,j,k;
-
-	for(i=0;i<XCM;i++)
-	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCM;k++)
-	{
-		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En ,  HydroGrid[i][j][k].r);
-	}
-}
+ 
 
 
 void initvar(GRID HydroGrid, double tau, double ts)
@@ -529,23 +514,31 @@ void init(double tau, double ts)
 	if(!rank)
 		cout<<"k0 is  "<<k0<<endl;
 	
-	#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)
 		initvar(HydroGrid,tau, ts);
-	#endif
+#endif
 	
-	#ifdef GINIT
+#ifdef GINIT
 		ginit(HydroGrid,tau-ts);
-		ginit(HydroGrid,tau);
-	#endif
+		ginit(HydroGrid,tau);		
+#endif
 
-	#ifdef BJORKEN		
+#ifdef BJORKEN		
 		initBjorken(HydroGrid,tau, ts);
-	#endif
+#endif
 	
-	#ifdef GUBSER
+#ifdef GUBSER
 		initGubser(HydroGrid,tau,ts);
-	#endif
+#endif
 	
+	
+#ifdef NSINIT
+		NSInit(HydroGrid,tau,ts);
+#endif
+#ifdef ZEROINIT
+		ZeroInit(HydroGrid,tau,ts);
+#endif
+
 	DebugMSG(HydroGrid);
 	CheckRoot( HydroGrid, tau);	
 }
