@@ -3,7 +3,7 @@ void NSInit(GRID HydroGrid, double tau, double ts);
 void ZeroInit(GRID HydroGrid, double tau, double ts);
 void CheckRoot(GRID HydroGrid , double tau);
 double DebugMSG(GRID HydroGrid);
-
+double MaxTempGev(GRID HydroGrid);
 int k0;
 
 //PARALLEL STUFFS
@@ -513,7 +513,7 @@ void init(double tau, double ts)
 #else	
 	k0 = int(-(ZSTART-ETASTART)/ZS ); 
 #endif
-
+  
 	
 	if(!rank)
 		cout<<"k0 is  "<<k0<<endl;
@@ -544,5 +544,14 @@ void init(double tau, double ts)
 #endif
 
 	DebugMSG(HydroGrid);
+	
+	double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
+	if(rank==root)
+	{
+		cout<<"Time Step is "<<ts <<" @ "; 
+		cout<<std::fixed<<std::setprecision(4)<<" TempMax is "<< tmaxMev<<" MeV at TAU -->"<<tau;
+		cout<<std::fixed<<std::setprecision(5)<<" This is tau step no. "<<0; 
+		fflush(stdout);
+	}	
 	CheckRoot( HydroGrid, tau);	
 }

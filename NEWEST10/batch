@@ -2,15 +2,15 @@
 #BSUB -o stdout
 #BSUB -P 082858712092
 #BSUB -L /bin/bash
-#BSUB -W 600
-#BSUB -n 36
+#BSUB -W 180
+#BSUB -n 100
 #BSUB -u sidharthsp@gmail.com
 #BSUB -M 2700    
 
 
 ## 20 cores/node
 
-#BSUB -R 'span[ptile=18]'
+#BSUB -R 'span[ptile=20]'
 
 # load intel toolchain
 module load GSL 

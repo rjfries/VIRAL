@@ -169,6 +169,9 @@ int main(int argc, char* argv[])
 
 		if( fabs( (tau-tauPrint) - printFreq) < 1e-6)
 		{	tauPrint += printFreq;	WriteResultsXY(tau,HydroGrid);}//WriteTempXYCom(tau,HydroGrid) ;}//WriteResultsXYCom(tau,HydroGrid);}//	WriteTempXYCom(tau,HydroGrid) ;}//
+		if( tau<(0.25+1E-6)   &&  fabs(100*tau - int(100*tau+1E-6))<1E-6 )
+		{	WriteResultsXY(tau,HydroGrid);}
+		
 		
 		if( fabs( (tau-sourcePrint) - sourceFreq) < 1e-6 )
 		{	sourcePrint += sourceFreq;				}//WriteSourceXY(tau-ts,HydroGrid);}

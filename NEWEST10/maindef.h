@@ -54,7 +54,7 @@ double tau;
 
 #if defined(GINIT) 
 	#define LBI
-	//~ #define BULK
+	#define BULK
 	#define S95P
 	#define VORT
 	//~ #define NSINIT
@@ -63,21 +63,21 @@ double tau;
 	#define PEDESTAL 0 	
 	
 	#define NOS  6 //per side	for ginit.h
-	#define NPX  6
-	#define NPY  6
+	#define NPX  10
+	#define NPY  10
 	#define NPZ  1
 	#define NP (NPX*NPY*NPZ)
 
 	#define TAUSTART 0.1
 	#define TS 0.002
-	#define XL 7
+	#define XL 4
 	#define XS 0.1
-	#define YL 7
+	#define YL 4
 	#define YS 0.1
 	#define ZL 0
 	#define ZS 0.1
 	
-	#define PFREQ 0.01	
+	#define PFREQ 0.1
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
 #endif
@@ -279,7 +279,6 @@ inline double ratio(double num, double denom)
 
 
 void CalcNS(GRID HydroGrid, double tau, double ts);
-
 
 inline double fmtoMev(double temp)
 {

@@ -397,6 +397,8 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 
  
  
+ //For zero pi and PI initialisation
+ 
 void ZeroInit(GRID HydroGrid, double tau, double ts)
 {
 	
@@ -420,6 +422,8 @@ void ZeroInit(GRID HydroGrid, double tau, double ts)
 	}
 }
 
+
+// FOR NS Initialisation -- not complete
 
 void CalcDer4VelNS(GRID HydroGrid, double tau, double tstep)
 {

@@ -212,7 +212,6 @@ void weno_xy_YDER(ARRXY array,ARRXY result)
 	{
 		
 		double qm2,qm1,qc,qp1,qp2;
-		double left,right; 
 		
 		qm2 = array[i][j-2];
 		qm1 = array[i][j-1];
@@ -245,8 +244,7 @@ void weno_xylog_XDER(ARRXY array,ARRXY result)
 	{
 		for(i=2;i<xt-2;i++)
 		{
-			double qm2,qm1,qc,qp1,qp2;
-			double left,right;
+			double qm2,qm1,qc,qp1,qp2; 
 			
 				
 			qm2 = log( array[i-2][j] );			
@@ -280,8 +278,7 @@ void weno_xylog_YDER(ARRXY array,ARRXY result)
 	for(j=2; j<yt-2; j++)
 	{
 		
-		double qm2,qm1,qc,qp1,qp2;
-		double left,right; 
+		double qm2,qm1,qc,qp1,qp2; 
 		
 		qm2 = log( array[i][j-2]);
 		qm1 = log( array[i][j-1]);
@@ -981,6 +978,7 @@ void ginit(GRID HydroGrid, double tau)
 		
 #ifndef BULK		
 		HydroGrid[i][j][k].PI = 0;
+		PI=0;
 #endif
 		
 		DECLp10;
