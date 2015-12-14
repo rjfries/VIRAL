@@ -180,7 +180,7 @@ typedef struct
 	double temp[TEMPVAR];
 	
 	double T00,T10,T20,T30;
-	double En,P,Vx,Vy,Ve;
+	double En,P,Vx,Vy,Ve,Temp;
 	double u[VARN];
 	double prevu[VARN], du[VARN][VARN];	//4 velocity and its derivative
 

@@ -3,7 +3,7 @@ void NSInit(GRID HydroGrid, double tau, double ts);
 void ZeroInit(GRID HydroGrid, double tau, double ts);
 void CheckRoot(GRID HydroGrid , double tau);
 double DebugMSG(GRID HydroGrid);
-
+double MaxTempGev(GRID HydroGrid);
 int k0;
 
 //PARALLEL STUFFS
@@ -173,6 +173,7 @@ void initvar(GRID HydroGrid, double tau, double ts)
 		
 		
 		HydroGrid[i][j][k].En = 16*exp(-r*r);
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r);
 	
 		
 		HydroGrid[i][j][k].Vx= 0;
@@ -240,6 +241,8 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 		
 		HydroGrid[i][j][k].En = 30/GEVFM;
 		
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r);
+	
 		HydroGrid[i][j][k].Vx= 0;
 		HydroGrid[i][j][k].Vy= 0;
 		HydroGrid[i][j][k].Ve= 0;	
@@ -314,7 +317,8 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		for(i=0 ; i < XCM ; i=i+f)
 		{
 			double temp = buf[nvar*i+0];
-			HydroGrid[i][j][k0].En = FEnFromTemp(temp);			
+			HydroGrid[i][j][k0].En = FEnFromTemp(temp);	
+			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En , HydroGrid[i][j][k0].r);			
 			HydroGrid[i][j][k0].pi[0] = buf[nvar*i+4];//piXX
 			HydroGrid[i][j][k0].pi[1] = buf[nvar*i+6];//piYY
 			HydroGrid[i][j][k0].pi[2] = buf[nvar*i+5];//piXY

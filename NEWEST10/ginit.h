@@ -919,6 +919,7 @@ void ginit(GRID HydroGrid, double tau)
 		
 		
 		HydroGrid[i][j][k].En = eps;
+		HydroGrid[i][j][k].Temp = FT(eps, HydroGrid[i][j][k].r);
 		HydroGrid[i][j][k].P = EOS(eps, HydroGrid[i][j][k].r);
 		HydroGrid[i][j][k].Vx=VX;
 		HydroGrid[i][j][k].Vy=VY;

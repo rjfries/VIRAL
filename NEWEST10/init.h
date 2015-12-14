@@ -318,7 +318,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		{
 			double temp = buf[nvar*i+0];
 			HydroGrid[i][j][k0].En = FEnFromTemp(temp);	
-			HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r);
+			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En , HydroGrid[i][j][k0].r);
 			HydroGrid[i][j][k0].pi[0] = buf[nvar*i+1]; //pitautau
 			HydroGrid[i][j][k0].pi[1] = buf[nvar*i+2]; //pitauX
 			HydroGrid[i][j][k0].pi[2] = buf[nvar*i+3]; //pitauY
@@ -517,7 +517,7 @@ void init(double tau, double ts)
 #else	
 	k0 = int(-(ZSTART-ETASTART)/ZS ); 
 #endif
-  
+
 	
 	if(!rank)
 		cout<<"k0 is  "<<k0<<endl;

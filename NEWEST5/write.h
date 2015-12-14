@@ -1,9 +1,9 @@
 
 
 #ifdef GUBSER
-	#define PRINTVAR (4+5+1)
+	#define PRINTVAR (4+5+1+1)
 #else
-	#define PRINTVAR (4+5+1)
+	#define PRINTVAR (4+5+1+1)
 #endif
 
 #define SOURCEVAR 4
@@ -123,6 +123,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[3];
 			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[4];
 			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].PI;
+			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].Temp;
 			
 			
 		}
@@ -208,6 +209,7 @@ void WriteResultsXYCom(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[3];
 			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[4];
 			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].PI;
+			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].Temp;
 		}
 
 
