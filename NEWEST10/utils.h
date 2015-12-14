@@ -874,7 +874,7 @@ inline double MaxTempGev(GRID HydroGrid)
 	{
 		DECLePPIa;
 		
-		double temp = s95p_TGev(e);
+		double temp =   GEVFM* FT(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r);;// FT returns in 1/fm 
 		
 		if(temp>tmax)
 			tmax=temp;		

@@ -57,6 +57,9 @@ double tau;
 	#define BULK
 	#define S95P
 	#define VORT
+	#define FIX
+	
+	
 	//~ #define NSINIT
 	//~ #define ZEROINIT
 	
@@ -238,6 +241,8 @@ typedef struct
 #endif
 
 }cell;
+
+double BMax;
 
 typedef cell (*GRID) [YCM][ZCM];
 GRID HydroGrid;

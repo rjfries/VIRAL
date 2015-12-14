@@ -117,14 +117,14 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].Vy;
 			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Ve;
 			
-			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].pi[0];
-			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].pi[1];
-			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].pi[2];
-			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[3];
+			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].Temp;
+			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].T00;
+			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].T10;
+			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].T30;
 			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[4];
-			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].pi[5];
-			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].pi[6];
-			buf[jj*PRINTVAR+11]=HydroGrid[i][j][k0+off].pi[7];
+			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].pi[7];
+			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].pi[5];
+			buf[jj*PRINTVAR+11]=HydroGrid[i][j][k0+off].pi[6];
 			buf[jj*PRINTVAR+12]=HydroGrid[i][j][k0+off].pi[8];
 			buf[jj*PRINTVAR+13]=HydroGrid[i][j][k0+off].pi[9];
 			buf[jj*PRINTVAR+14]=HydroGrid[i][j][k0+off].PI;

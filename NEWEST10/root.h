@@ -364,6 +364,8 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		gsl_root_fdfsolver_free (s);
 		
 		HydroGrid[i][j][k].En = r;    //find the new energy from root finding algorithm
+		
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r);
 		HydroGrid[i][j][k].P = 	EOS(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r) ;		
 	}
 	

@@ -248,6 +248,38 @@ void Rescalepi(GRID HydroGrid, double tau)
 
 }
 
+
+
+
+
+
+
+
+void FixOne(GRID HydroGrid, double tau)
+{
+	
+	int i,j,k,l;
+  
+	if(BMax>0.98)
+	{
+		for(i=il;i<ir;i++)
+		for(j=jl;j<jr;j++)
+		for(k=kl;k<kr;k++)
+		{			 
+			HydroGrid[i][j][k].Ve =  0; 
+		
+			for(l=0;l<Npi;l++)
+				HydroGrid[i][j][k].pi[l]=0;
+			
+			HydroGrid[i][j][k].PI=0;
+			
+		 }
+	 }
+
+}
+
+
+
 void FirstOrder(GRID HydroGrid, double tau, double ts)
 {
 	
@@ -276,8 +308,11 @@ void FirstOrder(GRID HydroGrid, double tau, double ts)
 	boundary(HydroGrid);  // Outflowing boundary condition for everything
 	
 	
-	
-	//~ Rescalepi(HydroGrid,tau);
+#ifdef FIX
+	//~ Rescalepi(HydroGrid,tau);	
+	FixOne(HydroGrid,tau);	
+#endif
+
 	DebugMSG(HydroGrid);
 }
 
@@ -327,7 +362,13 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 		
 	pack(HydroGrid);
 	boundary(HydroGrid);
+
+
+#ifdef FIX
 	//~ Rescalepi(HydroGrid,tau);	
+	FixOne(HydroGrid,tau);	
+#endif
+	
 	DebugMSG(HydroGrid);
 }
 
@@ -400,7 +441,12 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 		
 	pack(HydroGrid);
 	boundary(HydroGrid);
+
+#ifdef FIX
 	//~ Rescalepi(HydroGrid,tau);	
+	FixOne(HydroGrid,tau);	
+#endif
+
 	DebugMSG(HydroGrid);
 }
 
