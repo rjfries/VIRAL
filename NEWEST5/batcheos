@@ -1,0 +1,18 @@
+#PBS -l nodes=20:ppn=5
+#PBS -l mem=100gb
+#PBS -l walltime=01:50:00
+#PBS -l billto=022858711009  
+#PBS -N hydro
+#PBS -S /bin/bash
+#PBS -o stdout
+#PBS -e stdout
+#PBS -j oe
+#PBS -m abe
+#PBS -M sidharthsp@gmail.com 
+ 
+module load GSL 
+module load OpenMPI
+echo $PBS_O_WORKDIR
+cd $PBS_O_WORKDIR
+  
+mpirun hydro 
