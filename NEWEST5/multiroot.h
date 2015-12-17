@@ -447,6 +447,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		if(1)//status == GSL_SUCCESS)
 		{		
 			HydroGrid[i][j][k].En = gsl_vector_get(result, 0);    //find the new energy from root finding algorithm
+			HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En ,HydroGrid[i][j][k].r);
 			HydroGrid[i][j][k].u[1] = gsl_vector_get(result, 1);    //find the new u1 from root finding algorithm
 			HydroGrid[i][j][k].u[2] = gsl_vector_get(result, 2);    //find the new u2 from root finding algorithm
 			HydroGrid[i][j][k].u[3] = gsl_vector_get(result, 3);    //find the new u3 from root finding algorithm

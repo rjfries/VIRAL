@@ -44,6 +44,15 @@ double tau;
 	#define YS 0.1
 	#define ZL 2
 	#define ZS 0.1
+	
+#ifndef IDEAL
+#define SCALE_VIS 1
+#define SCALE_TPI 1
+#define SCALE_VIS_BULK 1
+#define SCALE_TPI_BULK 1
+#endif
+
+
 		
 	#define PFREQ 0.2
 	#define FREQ ((int)1)
@@ -57,7 +66,7 @@ double tau;
 	#define BULK
 	#define S95P
 	#define VORT
-	#define FIX
+	//~ #define FIX
 	
 	
 	//~ #define NSINIT
@@ -80,6 +89,14 @@ double tau;
 	#define ZL 0
 	#define ZS 0.1
 	
+	
+#ifndef IDEAL
+#define SCALE_VIS 1
+#define SCALE_TPI 1
+#define SCALE_VIS_BULK 0.01
+#define SCALE_TPI_BULK 1
+#endif
+
 	#define PFREQ 0.1
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)

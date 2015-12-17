@@ -91,6 +91,7 @@ double DebugMSG(GRID HydroGrid)
 	in.rank = rank; 
 
 	MPI_Allreduce(&in,&out,1,MPI_DOUBLE_INT,MPI_MAXLOC,mpi_grid);
+	BMax =  out.val;
 	
 	if(rank==out.rank)
 	{

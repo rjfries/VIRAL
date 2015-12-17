@@ -1,5 +1,5 @@
 
-#define XPOSNUCLEI 2.5
+#define XPOSNUCLEI  5
 #define IMPACTPARAMETER (2*XPOSNUCLEI)
  inline double genWENOder(double qm2, double qm1, double qc, double qp1, double qp2, double dx  );
 
