@@ -1,9 +1,9 @@
 
 
 #ifdef GUBSER
-	#define PRINTVAR (4+5+1+1)
+	#define PRINTVAR (12)//4+5+1+1 
 #else
-	#define PRINTVAR (4+5+1+1)
+	#define PRINTVAR (12)//4+5+1+1+1 
 #endif
 
 #define SOURCEVAR 4
@@ -113,19 +113,18 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			jj=jj/f;
 		
 			buf[jj*PRINTVAR+0]=HydroGrid[i][j][k0+off].En;
-			buf[jj*PRINTVAR+1]=HydroGrid[i][j][k0+off].Vx;
-			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].Vy;
-			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Ve;
+			buf[jj*PRINTVAR+1]=HydroGrid[i][j][k0+off].Temp;
+			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].P;
+			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Vx;
+			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].Vy;
+			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;
 			
-			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].pi[0];
-			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].pi[1];
-			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].pi[2];
-			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[3];
-			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[4];
-			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].PI;
-			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].Temp;
-			
-			
+			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].pi[0];
+			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[1];
+			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[2];
+			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].pi[3];
+			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].pi[4];
+			buf[jj*PRINTVAR+11]=HydroGrid[i][j][k0+off].PI;			
 		}
 
 
@@ -210,6 +209,7 @@ void WriteResultsXYCom(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[4];
 			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].PI;
 			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].Temp;
+			buf[jj*PRINTVAR+11]=HydroGrid[i][j][k0+off].P;
 		}
 
 

@@ -46,13 +46,13 @@ double tau;
 	#define ZS 0.1
 	
 #ifndef IDEAL
+
 #define SCALE_VIS 1
 #define SCALE_TPI 1
 #define SCALE_VIS_BULK 1
 #define SCALE_TPI_BULK 1
+
 #endif
-
-
 		
 	#define PFREQ 0.2
 	#define FREQ ((int)1)
@@ -66,9 +66,8 @@ double tau;
 	#define BULK
 	#define S95P
 	#define VORT
-	//~ #define FIX
 	
-	
+	//~ #define FIX	
 	//~ #define NSINIT
 	//~ #define ZEROINIT
 	
@@ -86,8 +85,13 @@ double tau;
 	#define XS 0.1
 	#define YL 4
 	#define YS 0.1
+#ifdef LBI
 	#define ZL 0
 	#define ZS 0.1
+#else
+	#define ZL 5
+	#define ZS 0.5
+#endif	
 	
 	
 #ifndef IDEAL
@@ -105,13 +109,11 @@ double tau;
 
 
 #if defined(GUBSER) 
-//~ #define NSINIT
-//~ #define ZEROINIT
 	#define LBI
 	
 	
-	#define NPX  4
-	#define NPY  4
+	#define NPX  6
+	#define NPY  6
 	#define NPZ  1
 	#define NP (NPX*NPY*NPZ)
 
@@ -127,8 +129,42 @@ double tau;
 	#define PFREQ 0.1		
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
+	
+	
+#ifndef IDEAL
+	#define SCALE_VIS 1
+	#define SCALE_TPI 1
+	#define SCALE_VIS_BULK 0.01
+	#define SCALE_TPI_BULK 1
+#endif
+
 #endif 
 	
+	
+	
+
+#define XCM ((int)((XL/XS)+2*BORDER+OFF))
+#define YCM ((int)((YL/YS)+2*BORDER+OFF))
+
+#define XCMA ((int)(XL/XS+OFF))
+#define YCMA ((int)(YL/YS+OFF))
+
+
+
+
+#if defined LBI
+#define ZCM  1
+#define ZCMA 1
+#else
+#define ZCM ((int)(2*(ZL/ZS)+2*BORDER+OFF+1)) 
+#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
+#endif
+
+
+
+
+
+
 	
 #define DIM 3
 #define WENOP 2
@@ -154,22 +190,6 @@ double tau;
 
 
 
-#define XCM ((int)((XL/XS)+2*BORDER+OFF))
-#define YCM ((int)((YL/YS)+2*BORDER+OFF))
-
-#define XCMA ((int)(XL/XS+OFF))
-#define YCMA ((int)(YL/YS+OFF))
-
-
-#if !defined LBI
-#define ZCM ((int)(2*(ZL/ZS)+2*BORDER+OFF+1)) 
-#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
-#endif
-
-#if defined LBI
-#define ZCM  1
-#define ZCMA 1
-#endif
 
 #define VARN 4
 #define Npi 5

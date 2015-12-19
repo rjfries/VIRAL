@@ -1,8 +1,8 @@
-CC = mpiicpc
+CC = mpicxx
 GCC = g++
 WALL = -Wall
 O =   -O3 #-Ofast 
-PROFILE = -DRK3	-DKT  -DGUBSER #-DGINIT 
+PROFILE = -DRK3	-DKT -DGINIT 
 DEBUG =       -g
 INCLUDES =
 COMPILER = $(CC) $(WALL) $(O) $(PROFILE)  $(INCLUDES)
@@ -58,7 +58,7 @@ clean:
 	rm -f *~
 	rm -f *.o
 	rm -f *.qsub
-	rm -f stdout
+	rm -f std*
 	rm -f core*
 
 cleanO:	
@@ -82,6 +82,6 @@ cleanI:
 	rm -f *~
 	rm -f *.o
 	rm -f *.qsub
-	rm -f stdout
+	rm -f std*
 	rm -f core*
 

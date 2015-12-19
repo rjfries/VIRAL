@@ -600,9 +600,7 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	FindEigenValuesZ(HydroGrid, tau);
 #endif
 
-
-	Reconstruct(HydroGrid);
-	
+	Reconstruct(HydroGrid);	
 
 	FindMaxEigenValueXYZ(HydroGrid);
 	

@@ -92,12 +92,7 @@ inline double FS( double en, double Pr, double T)
 
 
 //shear viscosity terms
-#ifndef IDEAL
-#define SCALE_VIS 1
-#define SCALE_TPI 1
-#define SCALE_VIS_BULK 1
-#define SCALE_TPI_BULK 1
-#endif
+
 
 inline double Feta(  double s, double en, double r)
 {

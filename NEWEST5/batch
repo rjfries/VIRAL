@@ -24,3 +24,4 @@ module load ictce
 
 # launch MPI program using the hydra launcher
 mpiexec.hydra ./hydro
+#mpiexec.hydra amplxe-cl -c hotspots -r result_2 -- ./hydro

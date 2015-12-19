@@ -260,9 +260,11 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		DECLp5u4;
 		DECLcoord;
 		DECLePPIa;
+		
+#ifdef S95P
 		if(P==0)
 			cout<<std::scientific<<e<<" source.h *******  "<<s95p_p(e)<<"   "<<X<<"  "<<Y<<endl;
-			
+#endif
 			
 		
 
@@ -311,7 +313,6 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		+ (-(pow(tau,-2)*pow(tpi,-1)*pow(u0,-2)*(3*SH*tau2*u2*pow(u0,2) - 3*A5*tau4*tpi*u2*pow(u0,2) - 3*p5*tau4*tpi*u3*pow(u0,2) + 4*SH*tau4*u2*pow(u0,2)*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[3][0]) + (-(pow(tau,-2)*pow(tpi,-1)*pow(u0,-2)*(3*SH*tau2*u0*u1*u2 - 3*A5*tau4*tpi*u0*u1*u2 - 3*p5*tau4*tpi*u0*u1*u3 + 4*SH*tau4*u0*u1*u2*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[3][1]) + (-(pow(tau,-2)*pow(tpi,-1)*pow(u0,-2)*(3*SH*tau2*u0 - 3*p5*tau4*tpi*u0*u2*u3 + 3*SH*tau2*u0*pow(u2,2) - 3*A5*tau4*tpi*u0*pow(u2,2) + 3*SH*tau4*u0*pow(u3,2) + 4*SH*tau4*u0*pow(u2,2)*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[3][2]) + (-(pow(tau,-2)*pow(tpi,-1)*pow(u0,-2)*(p5*tau2*tpi*u0 + 4*SH*tau2*u0*u2*u3 - 3*A5*tau4*tpi*u0*u2*u3 - 3*p5*tau4*tpi*u0*pow(u3,2) + 4*SH*tau4*u0*u2*pow(u3,3)))/3.)*(HydroGrid[i][j][k].du[3][3])  
 		);
 #ifdef BULK
-		         
 		 HydroGrid[i][j][k].Source[9]=  (  ( -((3*PI*tau + 3*BU*u0 + 4*PI*tPI*u0)*pow(tau,-1)*pow(tPI,-1)*pow(u0,-1))/3. )
 		+ (-((3*BU + 4*PI*tPI)*pow(tPI,-1)*pow(u0,-1))/3.)*(HydroGrid[i][j][k].du[0][0]) + (-(PI*u1*pow(u0,-2)))*(HydroGrid[i][j][k].du[0][1]) + (-(PI*u2*pow(u0,-2)))*(HydroGrid[i][j][k].du[0][2]) + (-(PI*u3*pow(u0,-2)))*(HydroGrid[i][j][k].du[0][3])
 		+ (0)*(HydroGrid[i][j][k].du[1][0]) + (-((3*BU + PI*tPI)*pow(tPI,-1)*pow(u0,-1))/3.)*(HydroGrid[i][j][k].du[1][1]) + (0)*(HydroGrid[i][j][k].du[1][2]) + (0)*(HydroGrid[i][j][k].du[1][3])
@@ -444,24 +445,17 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		double r = HydroGrid[i][j][k].r; 
-		double PI = HydroGrid[i][j][k].PI; 		
-		double e = HydroGrid[i][j][k].En;
-		double P =  HydroGrid[i][j][k].P;
-				 
 		DECLp5u4;
-		
+		DECLcoord;
+		DECLePPIa; 
 		double T =  FT(e,r);	
 		double s = FS(e, P, T);
 		
 		double SH =   Feta(  s, e, r);
 		double tpi= Ftaupi(  SH, P, e, r);	
-			
 		double BU =  FZeta(  s, e, r);
 		double tPI= FtauPI(  BU, P, e, r);	
-		       
-		       
-		       
+
 		 HydroGrid[i][j][k].nspi[0]=  (  ( (-2*SH*u0*pow(tau,-1)*(-1 - tau2*pow(u3,2) + pow(u1,2)*(-1 + 2*tau2*pow(u3,2))))/3. )
 		+ ((2*SH*(1 + pow(u1,2) + pow(u0,2)*(-1 + 2*pow(u1,2))))/3.)*(HydroGrid[i][j][k].du[0][0]) + ((4*SH*u0*u1*(1 + pow(u1,2)))/3.)*(HydroGrid[i][j][k].du[0][1]) + ((2*SH*u0*u2*(-1 + 2*pow(u1,2)))/3.)*(HydroGrid[i][j][k].du[0][2]) + ((2*SH*(u0*u3*(1 + tau*u3)*(-1 + 2*pow(u1,2)) - tau*u0*(-1 + 2*pow(u1,2))*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[0][3])
 		+ ((-4*SH*u0*u1*(1 + pow(u1,2)))/3.)*(HydroGrid[i][j][k].du[1][0]) + ((-4*SH*pow(1 + pow(u1,2),2))/3.)*(HydroGrid[i][j][k].du[1][1]) + ((-4*SH*u1*u2*(1 + pow(u1,2)))/3.)*(HydroGrid[i][j][k].du[1][2]) + ((-4*SH*u1*u3*(1 + pow(u1,2)))/3.)*(HydroGrid[i][j][k].du[1][3])

@@ -299,6 +299,8 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 	MPI_File fh;	
 	
 	MPI_File_open(mpi_grid,  "init/tempbin-15.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
+	//~ MPI_File_open(mpi_grid,  "init/tempbin-15F.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
+	//~ MPI_File_open(mpi_grid,  "init/tempbin-8.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
 	
 	int nvar = 8;
 	int chunk = nvar*XCM;
@@ -512,10 +514,11 @@ void init(double tau, double ts)
 	//~ MPI_Barrier(mpi_grid);
 	//~ exit(1);
 	
-#if !defined LBI
-	k0 = int(-(ZSTART-ETASTART)/ZS + BORDER + OFF); 
+	
+#if defined LBI
+	k0 = int(-(ZSTART-ETASTART)/ZS );
 #else	
-	k0 = int(-(ZSTART-ETASTART)/ZS ); 
+	k0 = int(-(ZSTART-ETASTART)/ZS + BORDER + OFF); 
 #endif
 
 	
@@ -548,7 +551,6 @@ void init(double tau, double ts)
 #endif
 
 	DebugMSG(HydroGrid);
-	
 	double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
 	if(rank==root)
 	{

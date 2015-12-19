@@ -59,7 +59,7 @@ double tau;
 	#define VORT
 	#define FIX
 	
-	
+	//~ #define FIX	
 	//~ #define NSINIT
 	//~ #define ZEROINIT
 	
@@ -77,9 +77,22 @@ double tau;
 	#define XS 0.1
 	#define YL 4
 	#define YS 0.1
+#ifdef LBI
 	#define ZL 0
 	#define ZS 0.1
+#else
+	#define ZL 5
+	#define ZS 0.5
+#endif	
 	
+	
+#ifndef IDEAL
+#define SCALE_VIS 1
+#define SCALE_TPI 1
+#define SCALE_VIS_BULK 0.01
+#define SCALE_TPI_BULK 1
+#endif
+
 	#define PFREQ 0.1
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
@@ -100,9 +113,9 @@ double tau;
 
 	#define TAUSTART 1.00 
 	#define TS 0.005
-	#define XL 5
+	#define XL 7.5
 	#define XS 0.05
-	#define YL 5
+	#define YL 7.5
 	#define YS 0.05
 	#define ZL 0
 	#define ZS 0.05
@@ -110,8 +123,42 @@ double tau;
 	#define PFREQ 0.1		
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
+	
+	
+#ifndef IDEAL
+#define SCALE_VIS 1
+#define SCALE_TPI 1
+#define SCALE_VIS_BULK 0.01
+#define SCALE_TPI_BULK 1
+#endif
+
 #endif 
 	
+	
+	
+
+#define XCM ((int)((XL/XS)+2*BORDER+OFF))
+#define YCM ((int)((YL/YS)+2*BORDER+OFF))
+
+#define XCMA ((int)(XL/XS+OFF))
+#define YCMA ((int)(YL/YS+OFF))
+
+
+
+
+#if defined LBI
+#define ZCM  1
+#define ZCMA 1
+#else
+#define ZCM ((int)(2*(ZL/ZS)+2*BORDER+OFF+1)) 
+#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
+#endif
+
+
+
+
+
+
 	
 #define DIM 3
 #define WENOP 2
@@ -137,22 +184,6 @@ double tau;
 
 
 
-#define XCM ((int)((XL/XS)+2*BORDER+OFF))
-#define YCM ((int)((YL/YS)+2*BORDER+OFF))
-
-#define XCMA ((int)(XL/XS+OFF))
-#define YCMA ((int)(YL/YS+OFF))
-
-
-#if !defined LBI
-#define ZCM ((int)(2*(ZL/ZS)+2*BORDER+OFF+1)) 
-#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
-#endif
-
-#if defined LBI
-#define ZCM  1
-#define ZCMA 1
-#endif
 
 #define VARN 4
 #define Npi 10
@@ -284,6 +315,7 @@ inline double ratio(double num, double denom)
 
 
 void CalcNS(GRID HydroGrid, double tau, double ts);
+
 
 inline double fmtoMev(double temp)
 {
