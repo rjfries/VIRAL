@@ -14,7 +14,7 @@
 
 # load intel toolchain
 module load GSL 
-module load ictce
+module load ictce 
 
 ## ONLY SET THESE VARIABLES FOR RUNNING INTEL MPI JOBS (WITH MORE THAN 100 CORES)
 #export I_MPI_HYDRA_BOOTSTRAP=lsf

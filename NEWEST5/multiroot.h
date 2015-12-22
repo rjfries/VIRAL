@@ -25,7 +25,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 	int count=0;
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		count++;
 		double W = HydroGrid[i][j][k].T00;
@@ -41,7 +41,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		
 		DECLp5u4;
 
-		double P = EOS(e,r);
+		double P = EOS(e );
 		
 		double y[4];
 		
@@ -62,7 +62,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
  
 		double u0 = HydroGrid[i][j][k].u[0];
@@ -254,7 +254,7 @@ int conservation_f (const gsl_vector * x, void *params, gsl_vector * f)
 	const double u2 = gsl_vector_get (x, 2);
 	const double u3 = gsl_vector_get (x, 3);
 
-	double P = EOS(e,r);
+	double P = EOS(e );
 
 	const double y0 = -(u1*X) - u2*Y - u3*Z*pow(tau,2) + (-e + W)*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),0.5);
 	const double y1 = -(e*u1) - u2*(p3 + (e + P - PI)*u1*u2) - u3*(p4 + (e + P - PI)*u1*u3)*pow(tau,2) - u1*(P + p1 - PI + (e + P - PI)*pow(u1,2)) + X*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),0.5);
@@ -293,8 +293,8 @@ int conservation_df  (const gsl_vector * x, void *params, gsl_matrix * J)
 	const double u2 = gsl_vector_get (x, 2);
 	const double u3 = gsl_vector_get (x, 3);
 
-	double P = EOS(e,r);
-	double a = DPDE(e,r);
+	double P = EOS(e);
+	double a = DPDE(e);
 
 	const double df00 =  -pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),0.5);
 	const double df01 =  -X + u1*(-e + W)*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),-0.5) ;
@@ -364,7 +364,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		
 		struct rparams p = { HydroGrid[i][j][k].T00,
@@ -447,7 +447,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		if(1)//status == GSL_SUCCESS)
 		{		
 			HydroGrid[i][j][k].En = gsl_vector_get(result, 0);    //find the new energy from root finding algorithm
-			HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En ,HydroGrid[i][j][k].r);
+			HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En);
 			HydroGrid[i][j][k].u[1] = gsl_vector_get(result, 1);    //find the new u1 from root finding algorithm
 			HydroGrid[i][j][k].u[2] = gsl_vector_get(result, 2);    //find the new u2 from root finding algorithm
 			HydroGrid[i][j][k].u[3] = gsl_vector_get(result, 3);    //find the new u3 from root finding algorithm
@@ -475,14 +475,14 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	int quit =0;
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		
 		double En = HydroGrid[i][j][k].En ;
+		double u0 = HydroGrid[i][j][k].u[0];
 		double u1 = HydroGrid[i][j][k].u[1];
 		double u2 = HydroGrid[i][j][k].u[2];
 		double u3 = HydroGrid[i][j][k].u[3];	
-		double u0 = HydroGrid[i][j][k].u[0];
 
 		double r = HydroGrid[i][j][k].r;
 		
@@ -497,14 +497,13 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 			 cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
 			 cout<<"HELL BROKE LOOSE Energy  "<<En<<endl;
 			 quit = 1;
-		//	 exit(quit);
-		 }			 
-		
+			 exit(quit);
+		 }
+		 		
 		HydroGrid[i][j][k].Vx = vx;
 		HydroGrid[i][j][k].Vy = vy;
 		HydroGrid[i][j][k].Ve = ve;
-		HydroGrid[i][j][k].P = EOS(En,r);
-		
+		HydroGrid[i][j][k].P = EOS(En );		
 	}
 	
 	

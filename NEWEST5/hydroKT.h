@@ -19,7 +19,7 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCM;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		DECLp5u4;
 		DECLePPIa;
@@ -35,13 +35,14 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Fx[2] =  tau*(  p3 + u1*u2*(e+P-PI)            );
 		HydroGrid[i][j][k].Fx[3] =  tau*(  p4 + u1*u3*(e+P-PI)            );
 #endif
-
         HydroGrid[i][j][k].Fx[4]=  (p1*u1)/u0;
         HydroGrid[i][j][k].Fx[5]=  (p2*u1)/u0;
         HydroGrid[i][j][k].Fx[6]=  (p3*u1)/u0;
         HydroGrid[i][j][k].Fx[7]=  (p4*u1)/u0;
         HydroGrid[i][j][k].Fx[8]=  (p5*u1)/u0;
         HydroGrid[i][j][k].Fx[9]=  (PI*u1)/u0;
+
+
 #if  defined CON
 		HydroGrid[i][j][k].Fy[0] =  tau*(    p3 + u2*u0*(e+P-PI)            );
 		HydroGrid[i][j][k].Fy[1] =  tau*(  HydroGrid[i][j][k].T10*u2/u0      );
@@ -53,7 +54,6 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Fy[2] =  tau*(  p2 + (P-PI) + u2*u2*(e+P-PI)   );
 		HydroGrid[i][j][k].Fy[3] =  tau*(  p5 + u2*u3*(e+P-PI)            );
 #endif
-
 		HydroGrid[i][j][k].Fy[4]=  (p1*u2)/u0;
         HydroGrid[i][j][k].Fy[5]=  (p2*u2)/u0;
         HydroGrid[i][j][k].Fy[6]=  (p3*u2)/u0;
@@ -67,8 +67,7 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Fz[1] =  tau*(  HydroGrid[i][j][k].T10*u3/u0       );
 		HydroGrid[i][j][k].Fz[2] =  tau*(  HydroGrid[i][j][k].T20*u3/u0       );
 		HydroGrid[i][j][k].Fz[3] =  tau*(  HydroGrid[i][j][k].T30*u3/u0       );	
-#else	
-		
+#else		
   		HydroGrid[i][j][k].Fz[0] =  tau*(  A4 + u3*u0*(e+P-PI)                     );
 		HydroGrid[i][j][k].Fz[1] =  tau*(  p4 + u3*u1*(e+P-PI)                     );
 		HydroGrid[i][j][k].Fz[2] =  tau*(  p5 + u3*u2*(e+P-PI)                     );
@@ -84,150 +83,24 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 }
 
 
-#define GMMX(VAR )\
-void GMMX_##VAR(GRID HydroGrid , int NVAR  ){\
-	int i,j,k,l;\
-	for(l=0;l<NVAR;l++)\
-	for(j=jl;j<jr;j++)\
-	for(k=kl;k<kr;k++)\
-	for(i=1;i<XCM-1;i++){\
-		double qm1,qc,qp1;\
-		qm1=HydroGrid[i-1][j][k].VAR[l];\
-		qc=HydroGrid[i][j][k].VAR[l];\
-		qp1=HydroGrid[i+1][j][k].VAR[l];\
-		double slope1 = genminmod(qm1,qc,qp1,XS, GMINV);\
-		double num = (qc  - qm1 );\
-		double denom = (qp1 - qc );\
-		double r = ratio(num,denom);\
-		slope1 *= phi(r,-1);\
-		HydroGrid[i][j][k].VAR##LX[l]   = qc + slope1*(XS/2);\
-		HydroGrid[i-1][j][k].VAR##RX[l] = qc - slope1*(XS/2);\
-	}\
-}
-
-#define GMMY(VAR )\
-void GMMY_##VAR(GRID HydroGrid , int NVAR    ){\
-	int i,j,k,l;\
-	for(l=0;l<NVAR;l++)\
-	for(i=il;i<ir;i++)\
-	for(k=kl;k<kr;k++)\
-	for(j=1;j<YCM-1;j++){\
-		double qm1,qc,qp1,qp2;\
-		qm1=HydroGrid[i][j-1][k].VAR[l];\
-		qc=HydroGrid[i][j][k].VAR[l];\
-		qp1=HydroGrid[i][j+1][k].VAR[l];\
-		double slope1 = genminmod(qm1,qc,qp1,YS,GMINV);\
-		double num = (qc  - qm1 );\
-		double denom = (qp1 - qc );\
-		double r = ratio(num,denom);\
-		slope1 *= phi(r,-1);\
-		HydroGrid[i][j][k].VAR##LY[l]   = qc + slope1*(YS/2);\
-		HydroGrid[i][j-1][k].VAR##RY[l] = qc - slope1*(YS/2);\
-	}\
-}
-
-
-#define GMMZ(VAR )\
-void GMMZ_##VAR(GRID HydroGrid , int NVAR  ){\
-	int i,j,k,l;\
-	for(l=0;l<NVAR;l++)\
-	for(i=il;i<ir;i++)\
-	for(j=jl;j<jr;j++)\
-	for(k=1;k<ZCM-1;k++){\
-		double qm1,qc,qp1,qp2;\
-		qm1=HydroGrid[i][j][k-1].VAR[l];\
-		qc=HydroGrid[i][j][k].VAR[l];\
-		qp1=HydroGrid[i][j][k+1].VAR[l];\
-		double slope1 = genminmod(qm1,qc,qp1,ZS,GMINV);\
-		double num = (qc  - qm1 );\
-		double denom = (qp1 - qc );\
-		double r = ratio(num,denom);\
-		slope1 *= phi(r,-1);\	
-		HydroGrid[i][j][k].VAR##LZ[l]   = qc + slope1*(ZS/2);\
-		HydroGrid[i][j][k-1].VAR##RZ[l] = qc - slope1*(ZS/2);\
-	}\
-}
-
-
-
-
-
-
-
-#define VLRX(VAR )\
-void VLRX_##VAR( GRID HydroGrid , int NVAR   ){\
-	double eps=1e-12,Sl, Sr,S;\
-	int i,j,k,l,c;\
-	for(l=0;l<NVAR;l++)\
-	for(j=jl;j<jr;j++)\
-	for(k=kl;k<kr;k++)\
-	for(i=1;i<XCM-1;i++){\
-		double qm1,qc,qp1;\
-		qm1=HydroGrid[i-1][j][k].VAR[l];\
-		qc=HydroGrid[i][j][k].VAR[l];\
-		qp1=HydroGrid[i+1][j][k].VAR[l];\
-		Sl = (qc-qm1)/XS; Sr = (qp1-qc)/XS;\
-		S = (SGN(Sl)+SGN(Sr))* ((fabs(Sl)* fabs(Sr))/ (fabs(Sl)+fabs(Sr)+eps));\
-		HydroGrid[i][j][k].VAR##LX[l] =  qc + S*(XS/2);\
-		HydroGrid[i-1][j][k].VAR##RX[l] = qc - S*(XS/2);\			
-	}\
-}
-
-
-#define VLRY(VAR )\
-void VLRY_##VAR( GRID HydroGrid , int NVAR   ){\
-	double eps=1e-12,Sl, Sr,S;\
-	int i,j,k,l,c;\
-	for(l=0;l<NVAR;l++)\	
-	for(i=il;i<ir;i++)\
-	for(k=kl;k<kr;k++)\
-	for(j=1;j<YCM-1;j++){\
-		double qm1,qc,qp1;\
-		qm1=HydroGrid[i][j-1][k].VAR[l];\
-		qc=HydroGrid[i][j][k].VAR[l];\
-		qp1=HydroGrid[i][j+1][k].VAR[l];\
-		Sl = (qc-qm1)/YS; Sr = (qp1-qc)/YS;\
-		S = (SGN(Sl)+SGN(Sr))* ((fabs(Sl)* fabs(Sr))/ (fabs(Sl)+fabs(Sr)+eps));\
-		HydroGrid[i][j][k].VAR##LY[l] =  qc + S*(YS/2);\
-		HydroGrid[i][j-1][k].VAR##RY[l]= qc -  S*(YS/2);\
-	}\
-}
-
-#define VLRZ(VAR )\
-void VLRZ_##VAR( GRID HydroGrid  , int NVAR  ){\
-	double eps=1e-12,Sl, Sr,S;\
-	int i,j,k,l,c;\
-	for(l=0;l<NVAR;l++)\	
-	for(i=il;i<ir;i++)\
-	for(j=jl;j<jr;j++)\
-	for(k=1;k<ZCM-1;k++){\
-		double qm1,qc,qp1;\
-		qm1=HydroGrid[i][j][k-1].VAR[l];\
-		qc=HydroGrid[i][j][k].VAR[l];\
-		qp1=HydroGrid[i][j][k+1].VAR[l];\
-		Sl = (qc-qm1)/ZS;Sr = (qp1-qc)/ZS;\
-		S = (SGN(Sl)+SGN(Sr))* ((fabs(Sl)* fabs(Sr))/ (fabs(Sl)+fabs(Sr)+eps));\
-		HydroGrid[i][j][k] .VAR##LZ[l]=  qc + S*(ZS/2);\
-		HydroGrid[i][j][k-1].VAR##RZ[l]= qc -  S*(ZS/2);\
-	}\
-}
-
 #define WENOX(VAR )\
 void WENOX_##VAR(GRID HydroGrid , int NVAR  ){\
 	double w[3], q[3], d[3], alpha[3];\
 	double wt[3], qt[3], dt[3], alphat[3], beta[4];\
 	double p,eps=WENOEPS,sum;\
 	int i,j,k,l,c;\	
-	d[0]= dt[2]=0.3;  d[1]= dt[1]=0.6;  d[2]= dt[0]=0.1;\
+	d[0]= dt[2]=0.3;  d[1]= dt[1]=0.6;  d[2]= dt[0]=0.1;\ 
 	for(l=0;l<NVAR;l++)\
 	for(j=jl;j<jr;j++)\
-	for(k=kl;k<kr;k++)\
-	for(i=1;i<XCM-1;i++){\
+	for(k=0;k<ZCMA;k++)\
+	for(i=1;i<XCM;i++){\
 		double qm2,qm1,qc,qp1,qp2,left=0,right=0;\			
-		qc=HydroGrid[i][j][k].VAR[l]; qm1=HydroGrid[i-1][j][k].VAR[l]; qp1=HydroGrid[i+1][j][k].VAR[l];\
-		if(i==1){qm2=qm1; qp2=HydroGrid[i+2][j][k].VAR[l];}\
-		else if(i==XCM-2){qm2=HydroGrid[i-2][j][k].VAR[l]; qp2=qp1;}\
-		else {qm2=HydroGrid[i-2][j][k].VAR[l]; qp2=HydroGrid[i+2][j][k].VAR[l];}\
+		qc=HydroGrid[i][j][k].VAR[l];\
+		if(i>1 && i<XCM-2){qm1=HydroGrid[i-1][j][k].VAR[l];qm2=HydroGrid[i-2][j][k].VAR[l];qp1=HydroGrid[i+1][j][k].VAR[l];qp2=HydroGrid[i+2][j][k].VAR[l];}\
+		else if(i==0){qm2=qm1=qc;qp1=HydroGrid[i+1][j][k].VAR[l];qp2=HydroGrid[i+2][j][k].VAR[l];}\
+		else if(i==1){qm2=qm1=HydroGrid[i-1][j][k].VAR[l]; qp1=HydroGrid[i+1][j][k].VAR[l];qp2=HydroGrid[i+2][j][k].VAR[l];}\
+		else if(i==XCM-2){qm2=HydroGrid[i-2][j][k].VAR[l]; qm1=HydroGrid[i-1][j][k].VAR[l];qp1=qp2=HydroGrid[i+1][j][k].VAR[l];}\
+		else if(i==XCM-1){qm2=HydroGrid[i-2][j][k].VAR[l]; qm1=HydroGrid[i-1][j][k].VAR[l];qp1=qp2=qc;}\
 		HydroGrid[i][j][k].VAR##LX[l] = genWENOL(qm2,qm1,qc,qp1,qp2);HydroGrid[i-1][j][k].VAR##RX[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
 	}\
 } 
@@ -241,18 +114,22 @@ void WENOY_##VAR(GRID HydroGrid , int NVAR  ){\
 	d[0]= dt[2]=0.3;  d[1]= dt[1]=0.6;  d[2]= dt[0]=0.1;\
 	for(l=0;l<NVAR;l++)\
 	for(i=il;i<ir;i++)\
-	for(k=kl;k<kr;k++)\
-	for(j=1;j<YCM-1;j++){\
+	for(k=0;k<ZCMA;k++)\
+	for(j=1;j<YCM;j++){\
 		double qm2,qm1,qc,qp1,qp2,left=0,right=0;\			
-		qc=HydroGrid[i][j][k].VAR[l]; qm1=HydroGrid[i][j-1][k].VAR[l]; qp1=HydroGrid[i][j+1][k].VAR[l];\
-		if(j==1){qm2=qm1; qp2=HydroGrid[i][j+2][k].VAR[l];}\
-		else if(j==YCM-2){qm2=HydroGrid[i][j-2][k].VAR[l]; qp2=qp1;}\
-		else {qm2=HydroGrid[i][j-2][k].VAR[l]; qp2=HydroGrid[i][j+2][k].VAR[l];}\
+		qc=HydroGrid[i][j][k].VAR[l];\
+		if(j>1 && j<YCM-2){qm1=HydroGrid[i][j-1][k].VAR[l];qm2=HydroGrid[i][j-2][k].VAR[l];qp1=HydroGrid[i][j+1][k].VAR[l];qp2=HydroGrid[i][j+2][k].VAR[l];}\
+		else if(j==0){qm2=qm1=qc;qp1=HydroGrid[i][j+1][k].VAR[l];qp2=HydroGrid[i][j+2][k].VAR[l];}\
+		else if(j==1){qm2=qm1=HydroGrid[i][j-1][k].VAR[l]; qp1=HydroGrid[i][j+1][k].VAR[l];qp2=HydroGrid[i][j+2][k].VAR[l];}\
+		else if(j==YCM-2){qm2=HydroGrid[i][j-2][k].VAR[l]; qm1=HydroGrid[i][j-1][k].VAR[l];qp1=qp2=HydroGrid[i][j+1][k].VAR[l];}\
+		else if(j==YCM-1){qm2=HydroGrid[i][j-2][k].VAR[l]; qm1=HydroGrid[i][j-1][k].VAR[l];qp1=qp2=qc;}\
 		HydroGrid[i][j][k].VAR##LY[l] = genWENOL(qm2,qm1,qc,qp1,qp2);	HydroGrid[i][j-1][k].VAR##RY[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
 	}\
 } 
 		
 		
+#if !defined LBI
+
 #define WENOZ(VAR )\
 void WENOZ_##VAR(GRID HydroGrid , int NVAR  ){\
 	double w[3], q[3], d[3], alpha[3];\
@@ -263,53 +140,37 @@ void WENOZ_##VAR(GRID HydroGrid , int NVAR  ){\
 	for(l=0;l<NVAR;l++)\
 	for(i=il;i<ir;i++)\
 	for(j=jl;j<jr;j++)\
-	for(k=1;k<ZCM-1;k++){\
-		double qm2,qm1,qc,qp1,qp2,left=0,right=0;\			
-		qc=HydroGrid[i][j][k].VAR[l]; qm1=HydroGrid[i][j][k-1].VAR[l]; qp1=HydroGrid[i][j][k+1].VAR[l];\
-		if(k==1){qm2=qm1; qp2=HydroGrid[i][j][k+2].VAR[l];}\
-		else if(k==ZCM-2){qm2=HydroGrid[i][j][k-2].VAR[l]; qp2=qp1;}\
-		else {qm2=HydroGrid[i][j][k-2].VAR[l]; qp2=HydroGrid[i][j][k+2].VAR[l];}\
-		HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2);\
-		HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+	for(k=0;k<ZCMA;k++){\
+		double qm2,qm1,qc,qp1,qp2;\			
+		qc=HydroGrid[i][j][k].VAR[l];\
+		switch(k){\
+			case 0: qm2=qm1=qc;qp1=HydroGrid[i][j][k+1].VAR[l];qp2=HydroGrid[i][j][k+2].VAR[l];\
+			HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2);  VAR##RZ[l][i][j] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+			qm2=qm1=qc=qp1=HydroGrid[i][j][0].VAR[l];qp2==HydroGrid[i][j][1].VAR[l];  VAR##LZ[l][i][j] = genWENOL(qm2,qm1,qc,qp1,qp2); break;\					
+			case 1: qm2=qm1=HydroGrid[i][j][k-1].VAR[l]; qp1=HydroGrid[i][j][k+1].VAR[l];qp2=HydroGrid[i][j][k+2].VAR[l];\
+			HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2); HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2); break;\				
+			case ZCMA-2: qm2=HydroGrid[i][j][k-2].VAR[l]; qm1=HydroGrid[i][j][k-1].VAR[l];qp1=qp2=HydroGrid[i][j][k+1].VAR[l];\
+			HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2); HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2); break;\		
+			case ZCMA-1: qm2=HydroGrid[i][j][k-2].VAR[l]; qm1=HydroGrid[i][j][k-1].VAR[l];qp1=qp2=qc;\
+			HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2);    HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+			qm1=qc=qp1=qp2=HydroGrid[i][j][ZCMA-1].VAR[l];qm2= HydroGrid[i][j][ZCMA-2].VAR[l];    HydroGrid[i][j][k].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2); break;\
+			default: qm2=HydroGrid[i][j][k-2].VAR[l]; qm1=HydroGrid[i][j][k-1].VAR[l];qp1=HydroGrid[i][j][k+1].VAR[l];qp2=HydroGrid[i][j][k+2].VAR[l];\
+			HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2); HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2); break;}\	
 	}\
 } 
+	
+WENOZ(Fz );
+WENOZ(Var);
+WENOZ(Az ); 
+#endif
+		
 		
 WENOX(Fx );
 WENOY(Fy );
-WENOZ(Fz );
 WENOX(Var);
 WENOY(Var);
-WENOZ(Var);
 WENOX(Ax );
 WENOY(Ay );
-WENOZ(Az ); 
-
-				
-VLRX(Fx );
-VLRY(Fy );
-VLRZ(Fz );
-VLRX(Var);
-VLRY(Var);
-VLRZ(Var);
-VLRX(Ax );
-VLRY(Ay );
-VLRZ(Az ); 	
-			
-
-			
-				
-GMMX(Fx );
-GMMY(Fy );
-GMMZ(Fz );
-GMMX(Var);
-GMMY(Var);
-GMMZ(Var); 
-GMMX(Ax );
-GMMY(Ay );
-GMMZ(Az ); 	
-		
-
-		
 void FindEigenValuesX(GRID HydroGrid, double tau)
 {
 
@@ -318,7 +179,7 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		DECLePPIa;
 		DECLp5u4;
@@ -336,7 +197,7 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 					; 
 		
 #else
-		HydroGrid[i][j][k].Ax[0] = u1/u0;
+		HydroGrid[i][j][k].Ax[0] = u1/u0; 
 		continue;
 	 
 
@@ -351,7 +212,7 @@ void FindEigenValuesY(GRID HydroGrid, double tau)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		DECLePPIa;
 		DECLp5u4;
@@ -367,7 +228,7 @@ void FindEigenValuesY(GRID HydroGrid, double tau)
 						) 
 					; 
 #else
-		HydroGrid[i][j][k].Ay[0] = u2/u0;
+		HydroGrid[i][j][k].Ay[0] = u2/u0; 
 
 #endif
 
@@ -375,7 +236,7 @@ void FindEigenValuesY(GRID HydroGrid, double tau)
 	}
 }
 
-			
+#if !defined LBI
 void FindEigenValuesZ(GRID HydroGrid, double tau)
 {
 
@@ -383,8 +244,8 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
-	{
+	for(k=0;k<ZCMA;k++)
+	{  
 		DECLePPIa;
 		DECLp5u4;
 		DECLTmu0;
@@ -398,90 +259,47 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 							/ ( (e+P-PI)*(u0)*(-u0*u0+a*(-1+u0*u0) )  ) 
 							) ;		
 #else
-		HydroGrid[i][j][k].Az[0] = u3/u0;
+		HydroGrid[i][j][k].Az[0] = u3/u0; 
 #endif
 
 	}
 }
-
-
-
-#define GMMTYPE 0	
-#define VLRTYPE  1	
-#define WENOTYPE 2
+#endif
+ 
 	
 void Reconstruct(GRID HydroGrid)
-{
-	//~ int type = GMMTYPE;
-	//~ int type = VLRTYPE;
-	int type = WENOTYPE;
+{ 
+	WENOX_Fx(HydroGrid , SVAR);
+	WENOY_Fy(HydroGrid , SVAR);
 
-	switch(type)
-	{
-		case GMMTYPE:
-		
-			GMMX_Fx(HydroGrid , SVAR);
-			GMMY_Fy(HydroGrid , SVAR);
-			GMMZ_Fz(HydroGrid , SVAR);
-			GMMX_Var(HydroGrid , SVAR);
-			GMMY_Var(HydroGrid , SVAR);
-			GMMZ_Var(HydroGrid , SVAR);
-			
-			 
-			GMMX_Ax(HydroGrid , EVAR);
-			GMMY_Ay(HydroGrid , EVAR);
-			GMMZ_Az(HydroGrid , EVAR);
-		 
-			break;
-			
-		case VLRTYPE:
-		
-			VLRX_Fx(HydroGrid , SVAR);
-			VLRY_Fy(HydroGrid , SVAR);
-			VLRZ_Fz(HydroGrid , SVAR);
-			VLRX_Var(HydroGrid , SVAR);
-			VLRY_Var(HydroGrid , SVAR);
-			VLRZ_Var(HydroGrid , SVAR);
-			
-			
-			VLRX_Ax( HydroGrid , EVAR );
-			VLRY_Ay( HydroGrid , EVAR );
-			VLRZ_Az( HydroGrid , EVAR );
-			
-			
-			break;
-			
-		case WENOTYPE:
-		
-			WENOX_Fx(HydroGrid , SVAR);
-			WENOY_Fy(HydroGrid , SVAR);
-			WENOZ_Fz(HydroGrid , SVAR);
-			WENOX_Var(HydroGrid , SVAR);
-			WENOY_Var(HydroGrid , SVAR);
-			WENOZ_Var(HydroGrid , SVAR);
-			
-			WENOX_Ax( HydroGrid , EVAR );
-			WENOY_Ay( HydroGrid , EVAR );
-			WENOZ_Az( HydroGrid , EVAR );
-						
-			break;
-	}
+	WENOX_Var(HydroGrid , SVAR);
+	WENOY_Var(HydroGrid , SVAR);
 	
+	WENOX_Ax( HydroGrid , EVAR );
+	WENOY_Ay( HydroGrid , EVAR );
+	
+#if !defined LBI	
+	WENOZ_Fz(HydroGrid , SVAR);
+	WENOZ_Var(HydroGrid , SVAR);
+	WENOZ_Az( HydroGrid , EVAR );
+#endif
+
 }
 		
 void FindMaxEigenValueXYZ(GRID HydroGrid)
 {
 	int i,j,k,l;
-	
-	
+
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
-	{
-		double maxlx=0,maxrx=0;
+	for(k=0;k<ZCMA;k++)
+	{ 
+		double maxlx=0,maxrx=0;  
 		double maxly=0,maxry=0;
-		double maxlz=0,maxrz=0;
 		
+#if !defined LBI	
+		double maxlz=0,maxrz=0;
+#endif				
 		for(l=0;l<EVAR;l++)
 		{
 			if(fabs(HydroGrid[i][j][k].AxLX[l]) > maxlx)
@@ -489,7 +307,6 @@ void FindMaxEigenValueXYZ(GRID HydroGrid)
 			
 			if(fabs(HydroGrid[i][j][k].AxRX[l]) > maxrx)
 				maxrx = fabs(HydroGrid[i][j][k].AxRX[l]);
-				
 			
 			if(fabs(HydroGrid[i][j][k].AyLY[l]) > maxly)
 				maxly = fabs(HydroGrid[i][j][k].AyLY[l]);
@@ -497,20 +314,25 @@ void FindMaxEigenValueXYZ(GRID HydroGrid)
 			if(fabs(HydroGrid[i][j][k].AyRY[l]) > maxry)
 				maxry = fabs(HydroGrid[i][j][k].AyRY[l]);
 				
+#if !defined LBI	
+			if(fabs(HydroGrid[i][j][k].AzLZ[l]) > maxlz)
+				maxlz = fabs(HydroGrid[i][j][k].AzLZ[l]); 
 				
-			if(fabs(HydroGrid[i][j][k].AzLZ[l]) > maxly)
-				maxlz = fabs(HydroGrid[i][j][k].AzLZ[l]);
-			
-			if(fabs(HydroGrid[i][j][k].AzRZ[l]) > maxry)
+			if(fabs(HydroGrid[i][j][k].AzRZ[l]) > maxrz)
 				maxrz = fabs(HydroGrid[i][j][k].AzRZ[l]);
+#endif		
+
 		}
 				
 		HydroGrid[i][j][k].AxLXMAX = maxlx;
 		HydroGrid[i][j][k].AxRXMAX = maxrx;
 		HydroGrid[i][j][k].AyLYMAX = maxly;
 		HydroGrid[i][j][k].AyRYMAX = maxry; 
+#if !defined LBI	
 		HydroGrid[i][j][k].AzLZMAX = maxlz;
 		HydroGrid[i][j][k].AzRZMAX = maxrz;
+#endif		
+
 	}
 }
 			
@@ -523,18 +345,19 @@ void CFL(GRID HydroGrid, double tau, double taustep)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		double xflow = MAX(   HydroGrid[i][j][k].AxLXMAX  ,   HydroGrid[i][j][k].AxRXMAX  );
 		double yflow = MAX(   HydroGrid[i][j][k].AyLYMAX  ,   HydroGrid[i][j][k].AyRYMAX  );
+		double zflow = MAX(   HydroGrid[i][j][k].AzLZMAX  ,   HydroGrid[i][j][k].AzRZMAX  );
 		
-		double ttt= sqrt(xflow*xflow+yflow*yflow);
+		double ttt= sqrt(xflow*xflow+yflow*yflow+zflow*zflow);
 		
 		if(ttt>maxflowgrid)
 			maxflowgrid = ttt;
 	}
 	
-	double timesug = XS/(4*maxflowgrid);
+	double timesug = XS/(8*maxflowgrid);
 	double mintime;
 	
     MPI_Reduce(&timesug, &mintime, 1, MPI_DOUBLE,MPI_MIN, 0, MPI_COMM_WORLD);
@@ -551,7 +374,7 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 
 	for( int i=0; i<XCM ; i++)
 	for( int j=0; j<YCM ; j++)
-	for( int k=0; k<ZCM ; k++)
+	for( int k=0; k<ZCMA ; k++)
 	{
 		HydroGrid[i][j][k].Var[0]= tau*HydroGrid[i][j][k].T00;
 		HydroGrid[i][j][k].Var[1]= tau*HydroGrid[i][j][k].T10;
@@ -570,7 +393,7 @@ void ClearResultVariable(GRID HydroGrid)
 {
 	for( int i=0; i<XCM ; i++)
 	for( int j=0; j<YCM ; j++)
-	for( int k=0; k<ZCM ; k++)
+	for( int k=0; k<ZCMA ; k++)
 	for( int l=0; l<SVAR; l++)
 		HydroGrid[i][j][k].Result[l] = 0;
 }
@@ -583,7 +406,7 @@ void AddPartialResultToFinalResult(GRID HydroGrid)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 		HydroGrid[i][j][k].Result[l] += HydroGrid[i][j][k].PartialResult[l];
 }
 
@@ -600,10 +423,12 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	FindEigenValuesZ(HydroGrid, tau);
 #endif
 
-	Reconstruct(HydroGrid);	
 
-	FindMaxEigenValueXYZ(HydroGrid);
+ 
 	
+	
+	Reconstruct(HydroGrid);	 
+	FindMaxEigenValueXYZ(HydroGrid); 
 	
 	fvX( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);
@@ -611,13 +436,13 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	fvY( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);
 	
-
+ 
 #if !defined LBI
-	fvZ( HydroGrid, tau);
+	fvZ( HydroGrid, tau);	
 	AddPartialResultToFinalResult( HydroGrid);	
 #endif
 	
-	CFL(HydroGrid, tau ,  taustep);
+	//~ CFL(HydroGrid, tau ,  taustep);
 }
 
 
@@ -634,7 +459,7 @@ void fvX(GRID HydroGrid, double tau)
 	 	
 	for( l=0; l<SVAR; l++)
 	for( j=jl; j<jr ; j++)
-	for( k=kl; k<kr ; k++) 
+	for( k=0; k<ZCMA ; k++) 
 	for( i=il-1; i<ir ; i++)
 		HydroGrid[i][j][k].fluxT[l] =   0.5*( HydroGrid[i][j][k].FxLX[l] + HydroGrid[i][j][k].FxRX[l] )
 				- 0.5 *(  MAX(  HydroGrid[i][j][k].AxLXMAX , HydroGrid[i][j][k].AxRXMAX  ) ) * ( HydroGrid[i][j][k].VarRX[l] - HydroGrid[i][j][k].VarLX[l] ); 
@@ -642,7 +467,7 @@ void fvX(GRID HydroGrid, double tau)
 	
 	for( l=0; l<SVAR; l++)
 	for( j=jl;j<jr;j++)
-	for( k=kl;k<kr;k++)
+	for( k=0; k<ZCMA ; k++) 
 	for( i=il;i<ir;i++)
 		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/XS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i-1][j][k].fluxT[l]);
 
@@ -655,7 +480,7 @@ void fvY(GRID HydroGrid, double tau)
 	 	
 	for( l=0; l<SVAR; l++)
 	for( i=il; i< ir;  i++)
-	for( k=kl; k< kr;  k++)
+	for( k=0; k<ZCMA ; k++) 
 	for( j=jl-1 ; j<jr; j++)
 		HydroGrid[i][j][k].fluxT[l] =   0.5*( HydroGrid[i][j][k].FyLY[l] + HydroGrid[i][j][k].FyRY[l] )
 				- 0.5 *(  MAX( fabs( HydroGrid[i][j][k].AyLYMAX  ), fabs(  HydroGrid[i][j][k].AyRYMAX ) ) ) * ( HydroGrid[i][j][k].VarRY[l] - HydroGrid[i][j][k].VarLY[l] ); 
@@ -663,7 +488,7 @@ void fvY(GRID HydroGrid, double tau)
 	
 	for( l=0; l<SVAR; l++)
 	for( i=il; i< ir;  i++)
-	for( k=kl; k< kr;  k++)
+	for( k=0; k<ZCMA ; k++) 
 	for( j=jl; j<jr; j++)
 		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/YS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j-1][k].fluxT[l]);
 
@@ -677,14 +502,41 @@ void fvZ(GRID HydroGrid,  double tau)
 	for( l=0; l<SVAR; l++)
 	for( i=il; i< ir; i++)
 	for( j=jl; j< jr; j++)
-	for( k=kl-1; k< kr; k++) 
+	for( k=0; k<ZCMA ; k++) 
 		HydroGrid[i][j][k].fluxT[l] =   0.5*( HydroGrid[i][j][k].FzLZ[l] + HydroGrid[i][j][k].FzRZ[l] )
-				- 0.5 *(  MAX( fabs( HydroGrid[i][j][k].AzLZMAX   ), fabs( HydroGrid[i][j][k].AzRZMAX  ) ) ) * ( HydroGrid[i][j][k].VarRZ[l] - HydroGrid[i][j][k].VarLZ[l] ); 
+				- 0.5*(MAX(fabs( HydroGrid[i][j][k].AzLZMAX), fabs( HydroGrid[i][j][k].AzRZMAX)))*(HydroGrid[i][j][k].VarRZ[l]-HydroGrid[i][j][k].VarLZ[l]); 
 		
+	
 	
 	for( l=0; l<SVAR; l++)
 	for( i=il; i< ir; i++)
 	for( j=jl; j< jr; j++)
-	for( k=kl; k< kr; k++)
+	{ 	
+		double AzLZMAX=0;
+		double AzRZMAX=0;
+		
+		for(int m=0;m<EVAR;m++)
+		{
+			if( fabs(AzLZ[m][i][j]) > AzLZMAX)
+				AzLZMAX = fabs(AzLZ[m][i][j]) ;
+								
+			if( fabs(AzRZ[m][i][j]) > AzRZMAX)
+				AzRZMAX = fabs(AzRZ[m][i][j]) ;
+		}	
+		FluxT[l][i][j] = 0.5*(FzLZ[l][i][j]+FzRZ[l][i][j]) - 0.5 *(  MAX(AzLZMAX,AzRZMAX ) )* ( VarRZ[l][i][j] -  VarLZ[l][i][j] ); 
+	}
+	
+	
+	
+	for( l=0; l<SVAR; l++)
+	for( i=il; i< ir; i++)
+	for( j=jl; j< jr; j++)
+	for( k=1; k<ZCMA ; k++) 
 		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j][k-1].fluxT[l]);
+		
+		
+	for( l=0; l<SVAR; l++)
+	for( i=il; i< ir; i++)
+	for( j=jl; j< jr; j++)
+		HydroGrid[i][j][0].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][0].fluxT[l] - FluxT[l][i][j]);
 }

@@ -1,6 +1,4 @@
 #define PIE 3.141592653589793
-
-
 /*  
  *    x massless quark degrees of freedom
  * 	  gq = 2·2·3 = 12 for quarks
@@ -8,19 +6,8 @@
  * 	  
  * 	DOF = x*gq*(7/8) + (2*8)
  */
-
 #define DOF 42.25  //x=2.5
-
-
-#define FACTOR (3.0*DOF*PIE*PIE/90.0)
-
-#ifdef IDEAL
-#define SCALE_VIS 1e-6
-#define SCALE_TPI 1e-6
-#define SCALE_VIS_BULK 1e-6
-#define SCALE_TPI_BULK 1e-6
-#endif
-
+#define FACTOR (3.0*DOF*PIE*PIE/90.0) 
 
 inline double EOS(double en , double r)
 {
@@ -154,6 +141,10 @@ inline double FZeta( double s, double en, double r)
 	double ret;
 	
 	ret = (SCALE_VIS_BULK*(s/(4.0*PIE)) );
+	
+#ifdef BULKTEST
+	ret =1;
+#endif
 		
 	return(ret);
 }
@@ -163,6 +154,12 @@ inline double FtauPI( double zeta , double  p, double en, double r)
 	double ret;
 	
 	ret = (1.5*SCALE_TPI_BULK* zeta/p );
-		
+	
+	
+#ifdef BULKTEST
+	ret = 0.1;
+#endif	
+
+
 	return(ret);
 }

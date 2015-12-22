@@ -18,42 +18,41 @@ void UnPackFromLeft(GRID HydroGrid);
 void PackToRight(GRID HydroGrid)
 {
 	int i,j,k,l,m;
-	int ii,jj,kk;
+	int ii,jj;
 
 	
-	if(MYXRIGHT != BOUNDARY || MYYRIGHT != BOUNDARY || MYZRIGHT != BOUNDARY)
+	if(MYXRIGHT != BOUNDARY || MYYRIGHT != BOUNDARY )
 	{
 		if(MYXRIGHT != BOUNDARY)
 		{
 		
 			for(m=0;m<BORDER;m++)
 			for(j=jl;j<jr;j++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
-				jj=j-jl;
-				kk=k-kl;
+				jj=j-jl; 
 
-				rightX[0][m][jj][kk] =	HydroGrid[ir-m-1][j][k].T00;
-				rightX[1][m][jj][kk] =	HydroGrid[ir-m-1][j][k].T10;
-				rightX[2][m][jj][kk] =	HydroGrid[ir-m-1][j][k].T20;
-				rightX[3][m][jj][kk] =	HydroGrid[ir-m-1][j][k].T30;
+				rightX[0][m][jj][k] =	HydroGrid[ir-m-1][j][k].T00;
+				rightX[1][m][jj][k] =	HydroGrid[ir-m-1][j][k].T10;
+				rightX[2][m][jj][k] =	HydroGrid[ir-m-1][j][k].T20;
+				rightX[3][m][jj][k] =	HydroGrid[ir-m-1][j][k].T30;
 				
-				rightX[4][m][jj][kk] =	HydroGrid[ir-m-1][j][k].En;
-				rightX[5][m][jj][kk] =	HydroGrid[ir-m-1][j][k].Vx;
-				rightX[6][m][jj][kk] =	HydroGrid[ir-m-1][j][k].Vy;
-				rightX[7][m][jj][kk] =	HydroGrid[ir-m-1][j][k].Ve;
+				rightX[4][m][jj][k] =	HydroGrid[ir-m-1][j][k].En;
+				rightX[5][m][jj][k] =	HydroGrid[ir-m-1][j][k].Vx;
+				rightX[6][m][jj][k] =	HydroGrid[ir-m-1][j][k].Vy;
+				rightX[7][m][jj][k] =	HydroGrid[ir-m-1][j][k].Ve;
 				
 				for(l=0;l<VARN;l++)
 				{
-					rightX[2*VARN+l][m][jj][kk] =	HydroGrid[ir-m-1][j][k].u[l];
-					rightX[3*VARN+l][m][jj][kk] =	HydroGrid[ir-m-1][j][k].prevu[l];
+					rightX[2*VARN+l][m][jj][k] =	HydroGrid[ir-m-1][j][k].u[l];
+					rightX[3*VARN+l][m][jj][k] =	HydroGrid[ir-m-1][j][k].prevu[l];
 				}
 				
 				for(l=0;l<Npi;l++)
-					rightX[4*VARN+l][m][jj][kk] =	HydroGrid[ir-m-1][j][k].pi[l];
+					rightX[4*VARN+l][m][jj][k] =	HydroGrid[ir-m-1][j][k].pi[l];
 					
-				rightX[4*VARN+Npi][m][jj][kk] =	HydroGrid[ir-m-1][j][k].PI;
-				rightX[4*VARN+Npi+NPI][m][jj][kk] =	HydroGrid[ir-m-1][j][k].P;
+				rightX[4*VARN+Npi][m][jj][k] =	HydroGrid[ir-m-1][j][k].PI;
+				rightX[4*VARN+Npi+NPI][m][jj][k] =	HydroGrid[ir-m-1][j][k].P;
 			}
 				
 		}
@@ -64,71 +63,33 @@ void PackToRight(GRID HydroGrid)
 		
 			for(m=0;m<BORDER;m++)
 			for(i=il;i<ir;i++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
-				ii=i-il;
-				kk=k-kl;
+				ii=i-il; 
 
-				rightY[0][m][ii][kk] =	HydroGrid[i][jr-m-1][k].T00;
-				rightY[1][m][ii][kk] =	HydroGrid[i][jr-m-1][k].T10;
-				rightY[2][m][ii][kk] =	HydroGrid[i][jr-m-1][k].T20;
-				rightY[3][m][ii][kk] =	HydroGrid[i][jr-m-1][k].T30;
+				rightY[0][m][ii][k] =	HydroGrid[i][jr-m-1][k].T00;
+				rightY[1][m][ii][k] =	HydroGrid[i][jr-m-1][k].T10;
+				rightY[2][m][ii][k] =	HydroGrid[i][jr-m-1][k].T20;
+				rightY[3][m][ii][k] =	HydroGrid[i][jr-m-1][k].T30;
 				
-				rightY[4][m][ii][kk] =	HydroGrid[i][jr-m-1][k].En;
-				rightY[5][m][ii][kk] =	HydroGrid[i][jr-m-1][k].Vx;
-				rightY[6][m][ii][kk] =	HydroGrid[i][jr-m-1][k].Vy;
-				rightY[7][m][ii][kk] =	HydroGrid[i][jr-m-1][k].Ve;
+				rightY[4][m][ii][k] =	HydroGrid[i][jr-m-1][k].En;
+				rightY[5][m][ii][k] =	HydroGrid[i][jr-m-1][k].Vx;
+				rightY[6][m][ii][k] =	HydroGrid[i][jr-m-1][k].Vy;
+				rightY[7][m][ii][k] =	HydroGrid[i][jr-m-1][k].Ve;
 		
 				for(l=0;l<VARN;l++)
 				{
-					rightY[2*VARN+l][m][ii][kk] =	HydroGrid[i][jr-m-1][k].u[l];
-					rightY[3*VARN+l][m][ii][kk] =	HydroGrid[i][jr-m-1][k].prevu[l];
+					rightY[2*VARN+l][m][ii][k] =	HydroGrid[i][jr-m-1][k].u[l];
+					rightY[3*VARN+l][m][ii][k] =	HydroGrid[i][jr-m-1][k].prevu[l];
 				}
 				
 				for(l=0;l<Npi;l++)
-					rightY[4*VARN+l][m][ii][kk] =  HydroGrid[i][jr-m-1][k].pi[l];
+					rightY[4*VARN+l][m][ii][k] =  HydroGrid[i][jr-m-1][k].pi[l];
 					
-				rightY[4*VARN+Npi][m][ii][kk] =	HydroGrid[i][jr-m-1][k].PI;
-				rightY[4*VARN+Npi+NPI][m][ii][kk] =	HydroGrid[i][jr-m-1][k].P;
+				rightY[4*VARN+Npi][m][ii][k] =	HydroGrid[i][jr-m-1][k].PI;
+				rightY[4*VARN+Npi+NPI][m][ii][k] =	HydroGrid[i][jr-m-1][k].P;
 			}
 		}
-
-		//~ if(MYZRIGHT != BOUNDARY)
-		//~ {
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii=i-il;
-				//~ jj=j-jl;
-//~ 
-//~ 
-				//~ rightZ[0][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T00;
-				//~ rightZ[1][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T10;
-				//~ rightZ[2][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T20;
-				//~ rightZ[3][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T30;
-				//~ 
-				//~ rightZ[4][m][ii][jj] =	HydroGrid[i][j][kr-m-1].En;
-				//~ rightZ[5][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vx;
-				//~ rightZ[6][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vy;
-				//~ rightZ[7][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Ve;
-				//~ 
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ rightZ[2*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].u[l];
-					//~ rightZ[3*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].prevu[l];
-				//~ }
-				//~ 
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ rightZ[4*VARN+l][m][ii][jj] =  HydroGrid[i][j][kr-m-1].pi[l];
-					//~ 
-				//~ rightZ[4*VARN+Npi][m][ii][jj] =	HydroGrid[i][j][kr-m-1].PI;
-				//~ rightZ[4*VARN+Npi+NPI][m][ii][jj] =	HydroGrid[i][j][kr-m-1].P;
-				//~ 
-			//~ }
-		//~ }
 	}
 }
 
@@ -139,41 +100,40 @@ void UnPackFromLeft(GRID HydroGrid)
 
 
 	int i,j,k,l,m;
-	int ii,jj,kk;
+	int ii,jj ;
 	if(MYXLEFT!= BOUNDARY || MYYLEFT!= BOUNDARY || MYZLEFT!= BOUNDARY)
 	{
 		if(MYXLEFT!= BOUNDARY)
 		{
 			for(m=0;m<BORDER;m++)
 			for(j=jl;j<jr;j++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
-				jj=j-jl;
-				kk=k-kl;
+				jj=j-jl; 
 				i=il-1-m;
 				
-				HydroGrid[i][j][k].T00 = leftX[0][m][jj][kk];
-				HydroGrid[i][j][k].T10 = leftX[1][m][jj][kk];
-				HydroGrid[i][j][k].T20 = leftX[2][m][jj][kk];
-				HydroGrid[i][j][k].T30 = leftX[3][m][jj][kk];
+				HydroGrid[i][j][k].T00 = leftX[0][m][jj][k];
+				HydroGrid[i][j][k].T10 = leftX[1][m][jj][k];
+				HydroGrid[i][j][k].T20 = leftX[2][m][jj][k];
+				HydroGrid[i][j][k].T30 = leftX[3][m][jj][k];
 				
 				
-				HydroGrid[i][j][k].En = leftX[4][m][jj][kk];
-				HydroGrid[i][j][k].Vx = leftX[5][m][jj][kk];
-				HydroGrid[i][j][k].Vy = leftX[6][m][jj][kk];
-				HydroGrid[i][j][k].Ve = leftX[7][m][jj][kk];
+				HydroGrid[i][j][k].En = leftX[4][m][jj][k];
+				HydroGrid[i][j][k].Vx = leftX[5][m][jj][k];
+				HydroGrid[i][j][k].Vy = leftX[6][m][jj][k];
+				HydroGrid[i][j][k].Ve = leftX[7][m][jj][k];
 				
 				for(l=0;l<VARN;l++)
 				{
-					HydroGrid[i][j][k].u[l] = leftX[2*VARN+l][m][jj][kk];
-					HydroGrid[i][j][k].prevu[l] = leftX[3*VARN+l][m][jj][kk];
+					HydroGrid[i][j][k].u[l] = leftX[2*VARN+l][m][jj][k];
+					HydroGrid[i][j][k].prevu[l] = leftX[3*VARN+l][m][jj][k];
 				}
 				
 				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l]= leftX[4*VARN+l][m][jj][kk];
+					HydroGrid[i][j][k].pi[l]= leftX[4*VARN+l][m][jj][k];
 				
-				HydroGrid[i][j][k].PI= leftX[4*VARN+Npi][m][jj][kk];	
-				HydroGrid[i][j][k].P= leftX[4*VARN+Npi+NPI][m][jj][kk];	
+				HydroGrid[i][j][k].PI= leftX[4*VARN+Npi][m][jj][k];	
+				HydroGrid[i][j][k].P= leftX[4*VARN+Npi+NPI][m][jj][k];	
 			}
 		}
 		 
@@ -181,84 +141,47 @@ void UnPackFromLeft(GRID HydroGrid)
 		{
 			for(m=0;m<BORDER;m++)
 			for(i=il;i<ir;i++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 				
-				ii=i-il;
-				kk=k-kl;
+				ii=i-il; 
 				j=jl-1-m;
 				
-				HydroGrid[i][j][k].T00 = leftY[0][m][ii][kk];  
-				HydroGrid[i][j][k].T10 = leftY[1][m][ii][kk];
-				HydroGrid[i][j][k].T20 = leftY[2][m][ii][kk];
-				HydroGrid[i][j][k].T30 = leftY[3][m][ii][kk];
+				HydroGrid[i][j][k].T00 = leftY[0][m][ii][k];  
+				HydroGrid[i][j][k].T10 = leftY[1][m][ii][k];
+				HydroGrid[i][j][k].T20 = leftY[2][m][ii][k];
+				HydroGrid[i][j][k].T30 = leftY[3][m][ii][k];
 			
-				HydroGrid[i][j][k].En = leftY[4][m][ii][kk]; 
-				HydroGrid[i][j][k].Vx = leftY[5][m][ii][kk];
-				HydroGrid[i][j][k].Vy = leftY[6][m][ii][kk];
-				HydroGrid[i][j][k].Ve = leftY[7][m][ii][kk];
+				HydroGrid[i][j][k].En = leftY[4][m][ii][k]; 
+				HydroGrid[i][j][k].Vx = leftY[5][m][ii][k];
+				HydroGrid[i][j][k].Vy = leftY[6][m][ii][k];
+				HydroGrid[i][j][k].Ve = leftY[7][m][ii][k];
 				
 				for(l=0;l<VARN;l++)
 				{
-					HydroGrid[i][j][k].u[l] = leftY[2*VARN+l][m][ii][kk];
-					HydroGrid[i][j][k].prevu[l] = leftY[3*VARN+l][m][ii][kk];
+					HydroGrid[i][j][k].u[l] = leftY[2*VARN+l][m][ii][k];
+					HydroGrid[i][j][k].prevu[l] = leftY[3*VARN+l][m][ii][k];
 				}
 				
 				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l] = leftY[4*VARN+l][m][ii][kk];
+					HydroGrid[i][j][k].pi[l] = leftY[4*VARN+l][m][ii][k];
 				
-				HydroGrid[i][j][k].PI = leftY[4*VARN+Npi][m][ii][kk];	
-				HydroGrid[i][j][k].P = leftY[4*VARN+Npi+NPI][m][ii][kk];	
+				HydroGrid[i][j][k].PI = leftY[4*VARN+Npi][m][ii][k];	
+				HydroGrid[i][j][k].P = leftY[4*VARN+Npi+NPI][m][ii][k];	
 				
 				
 								
 			}
 		}
-
-		//~ if(MYZLEFT!= BOUNDARY)
-		//~ {
-//~ 
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii = i-il;
-				//~ jj = j-jl;
-				//~ k = kl-1-m;
-				//~ 
-				//~ HydroGrid[i][j][k].T00 = leftZ[0][m][ii][jj];
-				//~ HydroGrid[i][j][k].T10 = leftZ[1][m][ii][jj];
-				//~ HydroGrid[i][j][k].T20 = leftZ[2][m][ii][jj];
-				//~ HydroGrid[i][j][k].T30 = leftZ[3][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].En = leftZ[4][m][ii][jj]; 
-				//~ HydroGrid[i][j][k].Vx = leftZ[5][m][ii][jj];
-				//~ HydroGrid[i][j][k].Vy = leftZ[6][m][ii][jj];
-				//~ HydroGrid[i][j][k].Ve = leftZ[7][m][ii][jj];
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ HydroGrid[i][j][k].u[l] = leftZ[2*VARN+l][m][ii][jj];
-					//~ HydroGrid[i][j][k].prevu[l] = leftZ[3*VARN+l][m][ii][jj];
-				//~ }
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ HydroGrid[i][j][k].pi[l] = leftZ[4*VARN+l][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].PI = leftZ[4*VARN+Npi][m][ii][jj];	
-				//~ HydroGrid[i][j][k].P = leftZ[4*VARN+Npi+NPI][m][ii][jj];	
-				//~ 
-			//~ }
-		//~ }
 	}
 }
 
 void PackToLeft(GRID HydroGrid)
 {
 	int i,j,k,l,m;
-	int ii,jj,kk;
+	int ii,jj;
 
-	if(MYXLEFT!= BOUNDARY || MYYLEFT!= BOUNDARY || MYZLEFT!= BOUNDARY)
+	if(MYXLEFT!= BOUNDARY || MYYLEFT!= BOUNDARY )
 	{
 
 		if(MYXLEFT != BOUNDARY)
@@ -266,33 +189,32 @@ void PackToLeft(GRID HydroGrid)
 		
 			for(m=0;m<BORDER;m++)
 			for(j=jl;j<jr;j++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
-				jj=j-jl;
-				kk=k-kl;
+				jj=j-jl; 
 				
 				
-				leftX[0][m][jj][kk] =	HydroGrid[il+m][j][k].T00;
-				leftX[1][m][jj][kk] =	HydroGrid[il+m][j][k].T10;
-				leftX[2][m][jj][kk] =	HydroGrid[il+m][j][k].T20;
-				leftX[3][m][jj][kk] =	HydroGrid[il+m][j][k].T30;
+				leftX[0][m][jj][k] =	HydroGrid[il+m][j][k].T00;
+				leftX[1][m][jj][k] =	HydroGrid[il+m][j][k].T10;
+				leftX[2][m][jj][k] =	HydroGrid[il+m][j][k].T20;
+				leftX[3][m][jj][k] =	HydroGrid[il+m][j][k].T30;
 				
-				leftX[4][m][jj][kk] =	HydroGrid[il+m][j][k].En;
-				leftX[5][m][jj][kk] =	HydroGrid[il+m][j][k].Vx;
-				leftX[6][m][jj][kk] =	HydroGrid[il+m][j][k].Vy;
-				leftX[7][m][jj][kk] =	HydroGrid[il+m][j][k].Ve;
+				leftX[4][m][jj][k] =	HydroGrid[il+m][j][k].En;
+				leftX[5][m][jj][k] =	HydroGrid[il+m][j][k].Vx;
+				leftX[6][m][jj][k] =	HydroGrid[il+m][j][k].Vy;
+				leftX[7][m][jj][k] =	HydroGrid[il+m][j][k].Ve;
 				
 				for(l=0;l<VARN;l++)
 				{
-					leftX[2*VARN+l][m][jj][kk] =	HydroGrid[il+m][j][k].u[l];
-					leftX[3*VARN+l][m][jj][kk] =	HydroGrid[il+m][j][k].prevu[l];
+					leftX[2*VARN+l][m][jj][k] =	HydroGrid[il+m][j][k].u[l];
+					leftX[3*VARN+l][m][jj][k] =	HydroGrid[il+m][j][k].prevu[l];
 				}
 				
 				for(l=0;l<Npi;l++)
-					leftX[4*VARN+l][m][jj][kk] =	HydroGrid[il+m][j][k].pi[l];
+					leftX[4*VARN+l][m][jj][k] =	HydroGrid[il+m][j][k].pi[l];
 					
-				leftX[4*VARN+Npi][m][jj][kk] =	HydroGrid[il+m][j][k].PI;
-				leftX[4*VARN+Npi+NPI][m][jj][kk] =	HydroGrid[il+m][j][k].P;
+				leftX[4*VARN+Npi][m][jj][k] =	HydroGrid[il+m][j][k].PI;
+				leftX[4*VARN+Npi+NPI][m][jj][k] =	HydroGrid[il+m][j][k].P;
 			}
 		}
 	
@@ -301,69 +223,33 @@ void PackToLeft(GRID HydroGrid)
 		{
 			for(m=0;m<BORDER;m++)
 			for(i=il;i<ir;i++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
-				ii=i-il;
-				kk=k-kl;
+				ii=i-il; 
 				
-				leftY[0][m][ii][kk] =	HydroGrid[i][jl+m][k].T00;
-				leftY[1][m][ii][kk] =	HydroGrid[i][jl+m][k].T10;
-				leftY[2][m][ii][kk] =	HydroGrid[i][jl+m][k].T20;
-				leftY[3][m][ii][kk] =	HydroGrid[i][jl+m][k].T30;
+				leftY[0][m][ii][k] =	HydroGrid[i][jl+m][k].T00;
+				leftY[1][m][ii][k] =	HydroGrid[i][jl+m][k].T10;
+				leftY[2][m][ii][k] =	HydroGrid[i][jl+m][k].T20;
+				leftY[3][m][ii][k] =	HydroGrid[i][jl+m][k].T30;
 				
-				leftY[4][m][ii][kk] =	HydroGrid[i][jl+m][k].En;
-				leftY[5][m][ii][kk] =	HydroGrid[i][jl+m][k].Vx;
-				leftY[6][m][ii][kk] =	HydroGrid[i][jl+m][k].Vy;
-				leftY[7][m][ii][kk] =	HydroGrid[i][jl+m][k].Ve;
+				leftY[4][m][ii][k] =	HydroGrid[i][jl+m][k].En;
+				leftY[5][m][ii][k] =	HydroGrid[i][jl+m][k].Vx;
+				leftY[6][m][ii][k] =	HydroGrid[i][jl+m][k].Vy;
+				leftY[7][m][ii][k] =	HydroGrid[i][jl+m][k].Ve;
 		
 				for(l=0;l<VARN;l++)
 				{
-					leftY[2*VARN+l][m][ii][kk] =	HydroGrid[i][jl+m][k].u[l];
-					leftY[3*VARN+l][m][ii][kk] =	HydroGrid[i][jl+m][k].prevu[l];
+					leftY[2*VARN+l][m][ii][k] =	HydroGrid[i][jl+m][k].u[l];
+					leftY[3*VARN+l][m][ii][k] =	HydroGrid[i][jl+m][k].prevu[l];
 				}
 				
 				for(l=0;l<Npi;l++)
-					leftY[4*VARN+l][m][ii][kk] =  HydroGrid[i][jl+m][k].pi[l];
+					leftY[4*VARN+l][m][ii][k] =  HydroGrid[i][jl+m][k].pi[l];
 					
-				leftY[4*VARN+Npi][m][ii][kk] =	HydroGrid[i][jl+m][k].PI;
-				leftY[4*VARN+Npi+NPI][m][ii][kk] =	HydroGrid[i][jl+m][k].P;
+				leftY[4*VARN+Npi][m][ii][k] =	HydroGrid[i][jl+m][k].PI;
+				leftY[4*VARN+Npi+NPI][m][ii][k] =	HydroGrid[i][jl+m][k].P;
 			}
 		}
-
-		//~ if(MYZLEFT != BOUNDARY)
-		//~ {
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii=i-il;
-				//~ jj=j-jl;
-//~ 
-				//~ leftZ[0][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T00;
-				//~ leftZ[1][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T10;
-				//~ leftZ[2][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T20;
-				//~ leftZ[3][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T30;
-				//~ 
-				//~ leftZ[4][m][ii][jj] =	HydroGrid[i][j][kr-m-1].En;
-				//~ leftZ[5][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vx;
-				//~ leftZ[6][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vy;
-				//~ leftZ[7][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Ve;
-				//~ 
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ leftZ[2*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].u[l];
-					//~ leftZ[3*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].prevu[l];
-				//~ }
-				//~ 
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ leftZ[4*VARN+l][m][ii][jj] =  HydroGrid[i][j][kr-m-1].pi[l];
-					//~ 
-				//~ rightZ[4*VARN+Npi][m][ii][jj] =	HydroGrid[i][j][kr-m-1].PI;
-				//~ rightZ[4*VARN+Npi+NPI][m][ii][jj] =	HydroGrid[i][j][kr-m-1].P ;
-			//~ }
-		//~ }
 	}
 }
 
@@ -372,43 +258,42 @@ void UnPackFromRight(GRID HydroGrid)
 
 
 	int i,j,k,l,m;
-	int ii,jj,kk;
+	int ii,jj;
 
 	
-	if(MYXRIGHT != BOUNDARY || MYYRIGHT != BOUNDARY || MYZRIGHT != BOUNDARY)
+	if(MYXRIGHT != BOUNDARY || MYYRIGHT != BOUNDARY )
 	{
 		if(MYXRIGHT != BOUNDARY)
 		{
 			for(m=0;m<BORDER;m++)
 			for(j=jl;j<jr;j++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 				jj=j-jl;
-				kk=k-kl;
 				i = ir+m;
 					
-				HydroGrid[i][j][k].T00 = rightX[0][m][jj][kk];
-				HydroGrid[i][j][k].T10 = rightX[1][m][jj][kk];
-				HydroGrid[i][j][k].T20 = rightX[2][m][jj][kk];
-				HydroGrid[i][j][k].T30 = rightX[3][m][jj][kk];
+				HydroGrid[i][j][k].T00 = rightX[0][m][jj][k];
+				HydroGrid[i][j][k].T10 = rightX[1][m][jj][k];
+				HydroGrid[i][j][k].T20 = rightX[2][m][jj][k];
+				HydroGrid[i][j][k].T30 = rightX[3][m][jj][k];
 				
 				
-				HydroGrid[i][j][k].En = rightX[4][m][jj][kk]; 
-				HydroGrid[i][j][k].Vx = rightX[5][m][jj][kk];
-				HydroGrid[i][j][k].Vy = rightX[6][m][jj][kk];
-				HydroGrid[i][j][k].Ve = rightX[7][m][jj][kk];
+				HydroGrid[i][j][k].En = rightX[4][m][jj][k]; 
+				HydroGrid[i][j][k].Vx = rightX[5][m][jj][k];
+				HydroGrid[i][j][k].Vy = rightX[6][m][jj][k];
+				HydroGrid[i][j][k].Ve = rightX[7][m][jj][k];
 				
 				for(l=0;l<VARN;l++)
 				{
-					HydroGrid[i][j][k].u[l] = rightX[2*VARN+l][m][jj][kk];
-					HydroGrid[i][j][k].prevu[l] = rightX[3*VARN+l][m][jj][kk];
+					HydroGrid[i][j][k].u[l] = rightX[2*VARN+l][m][jj][k];
+					HydroGrid[i][j][k].prevu[l] = rightX[3*VARN+l][m][jj][k];
 				}
 				
 				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l]= rightX[4*VARN+l][m][jj][kk];
+					HydroGrid[i][j][k].pi[l]= rightX[4*VARN+l][m][jj][k];
 				
-				HydroGrid[i][j][k].PI= rightX[4*VARN+Npi][m][jj][kk];	
-				HydroGrid[i][j][k].P = rightX[4*VARN+Npi+NPI][m][jj][kk];	
+				HydroGrid[i][j][k].PI= rightX[4*VARN+Npi][m][jj][k];	
+				HydroGrid[i][j][k].P = rightX[4*VARN+Npi+NPI][m][jj][k];	
 				
 						
 			}
@@ -418,71 +303,34 @@ void UnPackFromRight(GRID HydroGrid)
 		{
 			for(m=0;m<BORDER;m++)
 			for(i=il;i<ir;i++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 				ii=i-il;
-				kk=k-kl;
 				j=jr+m;
 				
-				HydroGrid[i][j][k].T00 = rightY[0][m][ii][kk];  
-				HydroGrid[i][j][k].T10 = rightY[1][m][ii][kk];
-				HydroGrid[i][j][k].T20 = rightY[2][m][ii][kk];
-				HydroGrid[i][j][k].T30 = rightY[3][m][ii][kk];
+				HydroGrid[i][j][k].T00 = rightY[0][m][ii][k];  
+				HydroGrid[i][j][k].T10 = rightY[1][m][ii][k];
+				HydroGrid[i][j][k].T20 = rightY[2][m][ii][k];
+				HydroGrid[i][j][k].T30 = rightY[3][m][ii][k];
 			
-				HydroGrid[i][j][k].En = rightY[4][m][ii][kk];  
-				HydroGrid[i][j][k].Vx = rightY[5][m][ii][kk];
-				HydroGrid[i][j][k].Vy = rightY[6][m][ii][kk];
-				HydroGrid[i][j][k].Ve = rightY[7][m][ii][kk];
+				HydroGrid[i][j][k].En = rightY[4][m][ii][k];  
+				HydroGrid[i][j][k].Vx = rightY[5][m][ii][k];
+				HydroGrid[i][j][k].Vy = rightY[6][m][ii][k];
+				HydroGrid[i][j][k].Ve = rightY[7][m][ii][k];
 				
 				for(l=0;l<VARN;l++)
 				{
-					HydroGrid[i][j][k].u[l] = rightY[2*VARN+l][m][ii][kk];
-					HydroGrid[i][j][k].prevu[l] = rightY[3*VARN+l][m][ii][kk];
+					HydroGrid[i][j][k].u[l] = rightY[2*VARN+l][m][ii][k];
+					HydroGrid[i][j][k].prevu[l] = rightY[3*VARN+l][m][ii][k];
 				}
 				
 				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l] = rightY[4*VARN+l][m][ii][kk];
+					HydroGrid[i][j][k].pi[l] = rightY[4*VARN+l][m][ii][k];
 				
-				HydroGrid[i][j][k].PI = rightY[4*VARN+Npi][m][ii][kk];				
-				HydroGrid[i][j][k].P  = rightY[4*VARN+Npi+NPI][m][ii][kk];				
+				HydroGrid[i][j][k].PI = rightY[4*VARN+Npi][m][ii][k];				
+				HydroGrid[i][j][k].P  = rightY[4*VARN+Npi+NPI][m][ii][k];				
 			}
 		}
-
-		//~ if(MYZRIGHT!= BOUNDARY)
-		//~ {
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii=i-il;
-				//~ jj=j-jl;
-				//~ k = kr+m;
-//~ 
-				//~ HydroGrid[i][j][k].T00 = rightZ[0][m][ii][jj];
-				//~ HydroGrid[i][j][k].T10 = rightZ[1][m][ii][jj];
-				//~ HydroGrid[i][j][k].T20 = rightZ[2][m][ii][jj];
-				//~ HydroGrid[i][j][k].T30 = rightZ[3][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].En = rightZ[4][m][ii][jj]; 
-				//~ HydroGrid[i][j][k].Vx = rightZ[5][m][ii][jj];
-				//~ HydroGrid[i][j][k].Vy = rightZ[6][m][ii][jj];
-				//~ HydroGrid[i][j][k].Ve = rightZ[7][m][ii][jj];
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ HydroGrid[i][j][k].u[l] = rightZ[2*VARN+l][m][ii][jj];
-					//~ HydroGrid[i][j][k].prevu[l] = rightZ[3*VARN+l][m][ii][jj];
-				//~ }
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ HydroGrid[i][j][k].pi[l] = rightZ[4*VARN+l][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].PI = rightZ[4*VARN+Npi][m][ii][jj];
-				//~ HydroGrid[i][j][k].P  = rightZ[4*VARN+Npi+NPI][m][ii][jj];
-				//~ 
-			//~ 
-			//~ }
-		//~ }
 	}
 }
 
@@ -506,7 +354,7 @@ void PackXL( GRID HydroGrid )
 	{
 		for(m=0;m<BORDER;m++)
 		for(n=0;n<BORDER;n++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		{  
 			int ioff = il;
 			int joff = jl;
@@ -544,7 +392,7 @@ void PackXL( GRID HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 			
 				int ioff = il;
@@ -592,7 +440,7 @@ void PackXR( GRID HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{ 
 				
 				int ioff = ir - BORDER;
@@ -628,7 +476,7 @@ void PackXR( GRID HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 				
 				int ioff = ir-BORDER;					
@@ -675,7 +523,7 @@ void UnpackXR(GRID  HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{ 
 				
 				int ioff = ir;
@@ -711,7 +559,7 @@ void UnpackXR(GRID  HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 				
 				int ioff = ir;					
@@ -755,7 +603,7 @@ void UnpackXL( GRID HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{  
 					
 				int ioff = 0;					
@@ -791,7 +639,7 @@ void UnpackXL( GRID HydroGrid )
 		{
 			for(m=0;m<BORDER;m++)
 			for(n=0;n<BORDER;n++)
-			for(k=kl;k<kr;k++)
+			for(k=0;k<ZCMA;k++)
 			{
 				
 				int ioff = 0;
@@ -856,10 +704,7 @@ void pack(GRID HydroGrid )
 		MPI_Isend(rightY,CHUNKY,MPI_DOUBLE,MYYRIGHT,tag,mpi_grid,&req );		
 	}
 	
-	//~ if(MYZRIGHT != BOUNDARY)
-	//~ {
-		//~ MPI_Isend(rightZ,CHUNKZ,MPI_DOUBLE,MYZRIGHT,tag,mpi_grid,&req );		
-	//~ }
+	 
 
 //If a process to my left, then it must have sent so
 // receive from left and unpack
@@ -873,11 +718,7 @@ void pack(GRID HydroGrid )
 	{
 		MPI_Irecv(leftY,CHUNKY,MPI_DOUBLE,MYYLEFT,tag,mpi_grid,&reqLtoR[1]);		
 	}
-
-	//~ if(MYZLEFT != BOUNDARY)
-	//~ {
-		//~ MPI_Irecv(leftZ,CHUNKZ,MPI_DOUBLE,MYZLEFT,tag,mpi_grid,&reqLtoR[2]);		
-	//~ }
+ 
 
 
 	 
@@ -902,10 +743,7 @@ void pack(GRID HydroGrid )
 	{
 		MPI_Isend(leftY,CHUNKY,MPI_DOUBLE,MYYLEFT,tag,mpi_grid,&req );		
 	}
-	//~ if(MYZLEFT != BOUNDARY)
-	//~ {
-		//~ MPI_Isend(leftZ,CHUNKZ,MPI_DOUBLE,MYZLEFT,tag,mpi_grid,&req );		
-	//~ }
+ 
  
 // If a process to my right, then it must have sent so
 // receive from right and unpack
@@ -918,10 +756,7 @@ void pack(GRID HydroGrid )
 	{
 		MPI_Irecv(rightY,CHUNKY,MPI_DOUBLE,MYYRIGHT,tag,mpi_grid,&reqRtoL[1]);		
 	}
-	//~ if(MYZRIGHT!= BOUNDARY)
-	//~ {
-		//~ MPI_Irecv(rightZ,CHUNKZ,MPI_DOUBLE,MYZRIGHT,tag,mpi_grid,&reqRtoL[2]);		
-	//~ }
+ 
 	
 
 	MPI_Waitall(3,reqRtoL,status);

@@ -45,10 +45,9 @@ double DebugMSG(GRID HydroGrid)
 		
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
-		if( !HydroGrid[i][j][k].RELEVANT)
-			continue;
+
 		tvx = HydroGrid[i][j][k].Vx;
 		tvy = HydroGrid[i][j][k].Vy;
 		tvz = HydroGrid[i][j][k].Ve;
@@ -141,7 +140,7 @@ double DebugMSG(GRID HydroGrid)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=kl;k<kr;k++)
+	for(k=0;k<ZCMA;k++)
 	{
 		s = HydroGrid[i][j][k].Source[l];
 

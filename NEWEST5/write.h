@@ -1,11 +1,6 @@
 
 
-#ifdef GUBSER
-	#define PRINTVAR (12)//4+5+1+1 
-#else
-	#define PRINTVAR (12)//4+5+1+1+1 
-#endif
-
+#define PRINTVAR (12)//4+5+1+1+1  
 #define SOURCEVAR 4
 
 
@@ -79,9 +74,9 @@ inline int OFFSETXYALLVARSSOURCE(int gi)
 void WriteResultsXY(double tau, GRID HydroGrid)
 {
 
-	int len = snprintf(0,0,"res/tau%2.2ffm.bin",tau);
+	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.2ffm.bin",tau);
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 
 	MPI_Offset offset;
 	int i,j;
@@ -147,9 +142,9 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 void WriteResultsXYCom(double tau, GRID HydroGrid)
 {
 
-	int len = snprintf(0,0,"res/tau%2.2ffm.bin",tau);
+	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.2ffm.bin",tau);
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 
 	MPI_Offset offset;
 	int i,j;
@@ -234,9 +229,9 @@ void WriteResultsXYCom(double tau, GRID HydroGrid)
 void WriteTempXYCom(double tau, GRID HydroGrid)
 {
 
-	int len = snprintf(0,0,"res/tau%2.2ffm.bin",tau);
+	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.2ffm.bin",tau);
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 
 	MPI_Offset offset;
 	int i,j;
@@ -296,65 +291,6 @@ void WriteTempXYCom(double tau, GRID HydroGrid)
 		}
 	}
 	
-	MPI_File_close(&fh);
-	delete buf;
-
-}
-
-
-
-
-
-void WriteSourceXY(double tau, GRID HydroGrid)
-{
-
-	int len = snprintf(0,0,"res/source%2.2ffm.bin",tau);
-	char *str = new char[len+3];
-	sprintf(str,"res/source%2.2ffm.bin",tau);
-
-	MPI_Offset offset;
-	int i,j;
-	int gi;
-	MPI_Status ierr;
-	MPI_File fh;	
-	
-	MPI_File_open(mpi_grid, str,  MPI_MODE_WRONLY |MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
-	double *buf;
-
-	int f = FREQ;
-	
-	int chunk = SOURCEVAR*YCMA/f;
-	
-	buf = new double [chunk];
-	
-	for(i=il;i<ir;i=i+f)
-	{
-		gi = MYGLOBALiWB(i);		
-		offset = OFFSETXYALLVARSSOURCE(gi); //(in bytes)
-	
-		MPI_File_seek(fh,offset,MPI_SEEK_SET);	//takes offset in bytes
-
-		
-		for(j=jl;j<jr;j=j+f)
-		{
-			int jj=j-jl;
-			jj=jj/f;
-
-
-			for(int l=0;l<SOURCEVAR;l++)
-				buf[jj*SOURCEVAR+l] = HydroGrid[i][j][k0].Source[l];
-		}
-
-
-		int error = MPI_File_write(fh, (void*)buf, chunk, MPI_DOUBLE, &ierr);
-		
-		if(error!=MPI_SUCCESS)
-		{
-			cout<<"hell0"<<endl;
-			MPI_Finalize();
-			exit(0);
-		}
-	}
 	MPI_File_close(&fh);
 	delete buf;
 
@@ -422,9 +358,9 @@ void WriteResults(double tau, GRID HydroGrid)
 	
 	MPI_File fh;	
 
-	int len = snprintf(0,0,"res/tau%2.2ffm.bin",tau);
+	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.2ffm.bin",tau);
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 	
 	MPI_File_open(mpi_grid, str,  MPI_MODE_WRONLY|MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
 	double *buf;
@@ -441,20 +377,24 @@ void WriteResults(double tau, GRID HydroGrid)
 		
 		offset=OFFSET(gi,gj);
 
-		for(k=kl;k<kr;k=k+FREQZ)
-		{
-			int kk = k-kl;
-			kk=kk/FREQZ;
-			
-			buf[kk*PRINTVAR+0]=HydroGrid[i][j][k].En;
-			buf[kk*PRINTVAR+1]=HydroGrid[i][j][k].Vx;
-			buf[kk*PRINTVAR+2]=HydroGrid[i][j][k].Vy;
-			buf[kk*PRINTVAR+3]=HydroGrid[i][j][k].Ve;
-			
-			buf[kk*PRINTVAR+4]=HydroGrid[i][j][k].T00;
-			buf[kk*PRINTVAR+5]=HydroGrid[i][j][k].T10;
-			buf[kk*PRINTVAR+6]=HydroGrid[i][j][k].T20;
-			buf[kk*PRINTVAR+7]=HydroGrid[i][j][k].T30;			
+		for(k=0;k<ZCMA;k=k+FREQZ)
+		{ 
+			k=k/FREQZ;
+ 
+			buf[k*PRINTVAR+0]=HydroGrid[i][j][k].En;	
+			buf[k*PRINTVAR+1]=HydroGrid[i][j][k].Vx;
+			buf[k*PRINTVAR+2]=HydroGrid[i][j][k].Vy;
+			buf[k*PRINTVAR+3]=HydroGrid[i][j][k].Ve; 
+					
+			buf[k*PRINTVAR+4]=HydroGrid[i][j][k].pi[0];
+			buf[k*PRINTVAR+5]=HydroGrid[i][j][k].pi[1];
+			buf[k*PRINTVAR+6]=HydroGrid[i][j][k].pi[2];
+			buf[k*PRINTVAR+7]=HydroGrid[i][j][k].pi[3];
+			buf[k*PRINTVAR+8]=HydroGrid[i][j][k].pi[4];
+			buf[k*PRINTVAR+9]=HydroGrid[i][j][k].PI;
+			buf[k*PRINTVAR+10]=HydroGrid[i][j][k].Temp;
+			buf[k*PRINTVAR+11]=HydroGrid[i][j][k].P;
+						
 		}
 
 		MPI_File_seek(fh,offset,MPI_SEEK_SET);
@@ -475,77 +415,12 @@ void WriteResults(double tau, GRID HydroGrid)
 
 
 
-
-void WriteSource(double tau, GRID HydroGrid)
-{
-
-
-	MPI_Offset offset;
-
-	int i,j,k;
-	int gi,gj;
-	MPI_Status ierr;
-	
-	MPI_File fh;	
-
-	int len = snprintf(0,0,"res/source%2.2ffm.bin",tau);
-	char *str = new char[len+3];
-	sprintf(str,"res/source%2.2ffm.bin",tau);
-
-
-	
-	MPI_File_open(mpi_grid, str,  MPI_MODE_WRONLY|MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
-	double *buf;
-  
-  	int chunk = ZCMA*SOURCEVAR/FREQZ; 
-	buf = new double [chunk];
-
-
-	for(i=il;i<ir;i=i+FREQ)
-	for(j=jl;j<jr;j=j+FREQ)
-	{	
-		gi = MYGLOBALiWB(i);
-		gj = MYGLOBALjWB(j);
-		
-	
-		offset=OFFSETSOURCE(gi,gj);
-				
-
-		for(k=kl;k<kr;k=k+FREQZ)
-		{
-			int kk = k-kl;
-			kk=kk/FREQ;
-			
-			for(int l=0;l<SOURCEVAR;l++)
-				buf[kk*SOURCEVAR+l] = HydroGrid[i][j][k].Source[l];
-		}
-		
-
-		MPI_File_seek(fh,offset,MPI_SEEK_SET);
-
-		int error=MPI_File_write(fh, (void*)buf, chunk, MPI_DOUBLE, &ierr);
-		
-		if(error!=MPI_SUCCESS)
-		{
-			cout<<"hell3"<<endl;
-			MPI_Finalize();
-			exit(0);
-		}
-	
-
-	}
-
-	MPI_File_close(&fh);
-	delete buf;
-}
-
-
 void WriteResultsXYSteven(double tau, GRID HydroGrid)
 {
 
-	int len = snprintf(0,0,"res/tau%2.2ffm.bin",tau);
+	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.2ffm.bin",tau);
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 
 	MPI_Offset offset;
 	int i,j;

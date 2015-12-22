@@ -2,7 +2,7 @@ CC = mpiicpc
 GCC = g++
 WALL = -Wall
 O =   -O3 #-Ofast 
-PROFILE = -DRK3	-DKT  -DGUBSER #-DGINIT 
+PROFILE = -DRK3	-DKT  -DGUBSER #-DBULKTEST#-DGINIT #
 DEBUG =       -g
 INCLUDES =
 COMPILER = $(CC) $(WALL) $(O) $(PROFILE)  $(INCLUDES)
@@ -60,6 +60,7 @@ clean:
 	rm -f *.qsub
 	rm -f stdout
 	rm -f core*
+	rm -f temp.txt
 
 cleanO:	
 	rm -f res/*.bin
@@ -72,6 +73,7 @@ cleanO:
 	rm -f *.qsub
 	rm -f std*
 	rm -f core*
+	rm -f temp.txt
 
 cleanI:
 	rm -f init/init.dat
@@ -84,4 +86,5 @@ cleanI:
 	rm -f *.qsub
 	rm -f stdout
 	rm -f core*
+	rm -f temp.txt
 

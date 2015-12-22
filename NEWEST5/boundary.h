@@ -38,7 +38,7 @@ void XYBoundaryGaussian(GRID HydroGrid)
 	if(MYXLEFT == BOUNDARY)
 	{
 		for(j=jl;j<jr;j++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(i=0;i<BORDER;i++)
 		{
 			y[2]=(var[il+2][j][k].En);
@@ -55,7 +55,7 @@ void XYBoundaryGaussian(GRID HydroGrid)
 	if(MYXRIGHT == BOUNDARY)
 	{	
 		for(j=jl;j<jr;j++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(i=0;i<BORDER;i++)	
 		{
 			y[2]=(var[ir-3][j][k].En);
@@ -71,7 +71,7 @@ void XYBoundaryGaussian(GRID HydroGrid)
 	if(MYYLEFT == BOUNDARY)
 	{	
 		for(i=il;i<ir;i++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(j=0;j<BORDER;j++)		
 		{
 			y[2]=var[i][jl+2][k].En;
@@ -87,7 +87,7 @@ void XYBoundaryGaussian(GRID HydroGrid)
 	if(MYYRIGHT == BOUNDARY)
 	{	
 		for(i=il;i<ir;i++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(j=0;j<BORDER;j++)
 		{
 			y[2]=var[i][jr-3][k].En;
@@ -115,7 +115,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 	if(MYXLEFT == BOUNDARY)
 	{
 		for(j=jl;j<jr;j++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(i=0;i<BORDER;i++)
 		{
 
@@ -159,7 +159,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 	if(MYXRIGHT == BOUNDARY)
 	{	
 		for(j=jl;j<jr;j++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(i=0;i<BORDER;i++)
 		{
 			HydroGrid[ir+i][j][k].T00 = HydroGrid[ir-1][j][k].T00;
@@ -201,7 +201,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 	if(MYYLEFT == BOUNDARY)
 	{	
 		for(i=il;i<ir;i++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(j=0;j<BORDER;j++)
 		{
 			HydroGrid[i][j][k].T00 = HydroGrid[i][jl][k].T00;
@@ -243,7 +243,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 	if(MYYRIGHT == BOUNDARY)
 	{	
 		for(i=il;i<ir;i++)
-		for(k=kl;k<kr;k++)
+		for(k=0;k<ZCMA;k++)
 		for(j=0;j<BORDER;j++)
 		{
 			HydroGrid[i][jr+j][k].T00 = HydroGrid[i][jr-1][k].T00;
@@ -288,96 +288,11 @@ void XYBoundaryCopy(GRID HydroGrid)
 
 
 
-
-#if !defined LBI
-
-void ZBoundaryCopy(GRID HydroGrid)
-{
-
-	int i,j,k,l;	
-	
-	if(MYZLEFT == BOUNDARY)
-	{	
-		for(i=il;i<ir;i++)
-		for(j=jl;j<jr;j++)
-		for(k=0;k<BORDER;k++)
-		{
-			HydroGrid[i][j][k].T00 = HydroGrid[i][j][kl].T00;
-			HydroGrid[i][j][k].T10 = HydroGrid[i][j][kl].T10;
-			HydroGrid[i][j][k].T20 = HydroGrid[i][j][kl].T20;
-			HydroGrid[i][j][k].T30 = HydroGrid[i][j][kl].T30;
-			
-			for(l=0;l<Npi;l++)
-				HydroGrid[i][j][k].pi[l] = HydroGrid[i][j][kl].pi[l];
-			
-			HydroGrid[i][j][k].PI = HydroGrid[i][j][kl].PI;
-			
-			HydroGrid[i][j][k].En = HydroGrid[i][j][kl].En;
-			HydroGrid[i][j][k].Vx = HydroGrid[i][j][kl].Vx;
-			HydroGrid[i][j][k].Vy = HydroGrid[i][j][kl].Vy;
-			HydroGrid[i][j][k].Ve = HydroGrid[i][j][kl].Ve;
-			HydroGrid[i][j][k].P  = HydroGrid[i][j][kl].P;
-			
-			HydroGrid[i][j][k].u[0] = HydroGrid[i][j][kl].u[0];
-			HydroGrid[i][j][k].u[1] = HydroGrid[i][j][kl].u[1];
-			HydroGrid[i][j][k].u[2] = HydroGrid[i][j][kl].u[2];
-			HydroGrid[i][j][k].u[3] = HydroGrid[i][j][kl].u[3];	
-			
-			HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][kl].prevu[0];
-			HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][kl].prevu[1];
-			HydroGrid[i][j][k].prevu[2] = HydroGrid[i][j][kl].prevu[2];
-			HydroGrid[i][j][k].prevu[3] = HydroGrid[i][j][kl].prevu[3];	
-		}
-	}
-	
-	if(MYZRIGHT == BOUNDARY)
-	{	
-		for(i=il;i<ir;i++)
-		for(j=jl;j<jr;j++)
-		for(k=0;k<BORDER;k++)
-		{
-			HydroGrid[i][j][kr+k].T00 = HydroGrid[i][j][kr-1].T00;
-			HydroGrid[i][j][kr+k].T10 = HydroGrid[i][j][kr-1].T10;
-			HydroGrid[i][j][kr+k].T20 = HydroGrid[i][j][kr-1].T20;
-			HydroGrid[i][j][kr+k].T30 = HydroGrid[i][j][kr-1].T30;
-
-			for(l=0;l<Npi;l++)
-				HydroGrid[i][j][kr+k].pi[l] = HydroGrid[i][j][kr-1].pi[l];
-			
-			HydroGrid[i][j][kr+k].PI = HydroGrid[i][j][kr-1].PI;
-			
-			HydroGrid[i][j][kr+k].En = HydroGrid[i][j][kr-1].En;
-			HydroGrid[i][j][kr+k].Vx = HydroGrid[i][j][kr-1].Vx;
-			HydroGrid[i][j][kr+k].Vy = HydroGrid[i][j][kr-1].Vy;
-			HydroGrid[i][j][kr+k].Ve = HydroGrid[i][j][kr-1].Ve;
-			HydroGrid[i][j][kr+k].P  = HydroGrid[i][j][kr-1].P;
-			
-			HydroGrid[i][j][kr+k].u[0] = HydroGrid[i][j][kr-1].u[0];
-			HydroGrid[i][j][kr+k].u[1] = HydroGrid[i][j][kr-1].u[1];
-			HydroGrid[i][j][kr+k].u[2] = HydroGrid[i][j][kr-1].u[2];
-			HydroGrid[i][j][kr+k].u[3] = HydroGrid[i][j][kr-1].u[3];	
-			
-			HydroGrid[i][j][kr+k].prevu[0] = HydroGrid[i][j][kr-1].prevu[0];
-			HydroGrid[i][j][kr+k].prevu[1] = HydroGrid[i][j][kr-1].prevu[1];
-			HydroGrid[i][j][kr+k].prevu[2] = HydroGrid[i][j][kr-1].prevu[2];
-			HydroGrid[i][j][kr+k].prevu[3] = HydroGrid[i][j][kr-1].prevu[3];	
-			 
-		}
-	}
-}
-
-#endif
-
-
+ 
 
 void boundary(GRID HydroGrid)
 {
 	XYBoundaryCopy(HydroGrid);
-	
-	
-#if !defined LBI
-	ZBoundaryCopy(HydroGrid);	
-#endif
 
 }
 
