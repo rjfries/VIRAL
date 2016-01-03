@@ -7,7 +7,7 @@ void CalcL0(GRID HydroGrid )
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].L0[l] =  (HydroGrid[i][j][k].Result[l] + HydroGrid[i][j][k].Source[l] ); 
 }
 
@@ -20,7 +20,7 @@ void CalcL1(GRID HydroGrid )
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].L1[l] =  (HydroGrid[i][j][k].Result[l] + HydroGrid[i][j][k].Source[l] ); 
 }
 
@@ -32,7 +32,7 @@ void CalcL2(GRID HydroGrid )
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].L2[l] =  (HydroGrid[i][j][k].Result[l] + HydroGrid[i][j][k].Source[l] ); 
 }
 
@@ -44,7 +44,7 @@ void CalcVar0(GRID HydroGrid )
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++) 
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].Var0[l] =  HydroGrid[i][j][k].Var[l]; 
 }
 
@@ -56,7 +56,7 @@ void CalcVar1(GRID HydroGrid,  double ts)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].Var1[l] =  HydroGrid[i][j][k].Var0[l]+ts*(HydroGrid[i][j][k].L0[l]); 
 }
 
@@ -68,7 +68,7 @@ void CalcVar2RK2(GRID HydroGrid,  double ts)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].Var2[l] =  0.5*HydroGrid[i][j][k].Var0[l]+  0.5*HydroGrid[i][j][k].Var1[l]+ 0.5*ts*HydroGrid[i][j][k].L1[l]; 
 }
 
@@ -80,7 +80,7 @@ void CalcVar2RK3(GRID HydroGrid,  double ts)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].Var2[l] =  0.75*HydroGrid[i][j][k].Var0[l]+  0.25*HydroGrid[i][j][k].Var1[l]+ 0.25*ts*HydroGrid[i][j][k].L1[l]; 
 }
 
@@ -93,7 +93,7 @@ void CalcVar3(GRID HydroGrid,  double ts)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].Var3[l] =  (1.0/3.0)*HydroGrid[i][j][k].Var0[l]+  (2.0/3.0)*HydroGrid[i][j][k].Var2[l]+ (2.0/3.0)*ts*HydroGrid[i][j][k].L2[l]; 
 }
 
@@ -104,7 +104,7 @@ void UpdatePrimaryVariablesFromVar1( GRID HydroGrid, double tau )
 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		HydroGrid[i][j][k].T00 =  (HydroGrid[i][j][k].Var1[0]) ;								
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var1[1]) ;								
@@ -125,7 +125,7 @@ void UpdatePrimaryVariablesFromVar2( GRID HydroGrid, double tau )
 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		HydroGrid[i][j][k].T00 =  (HydroGrid[i][j][k].Var2[0]) ;								
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var2[1]) ;								
@@ -147,7 +147,7 @@ void UpdatePrimaryVariablesFromVar3( GRID HydroGrid, double tau )
 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		HydroGrid[i][j][k].T00 =  (HydroGrid[i][j][k].Var3[0]) ;								
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var3[1]) ;								
@@ -170,7 +170,7 @@ void UpdatePrevU( GRID HydroGrid)
 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][k].u[0];
 		HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][k].u[1];

@@ -26,7 +26,7 @@ void PackToRight(GRID HydroGrid)
 		
 			for(m=0;m<BORDER;m++)
 			for(j=jl;j<jr;j++)
-			for(k=0;k<ZCMA;k++)
+			for(k=kl;k<kr;k++)
 			{
 				jj=j-jl; 
 
@@ -61,7 +61,7 @@ void PackToRight(GRID HydroGrid)
 		
 			for(m=0;m<BORDER;m++)
 			for(i=il;i<ir;i++)
-			for(k=0;k<ZCMA;k++)
+			for(k=kl;k<kr;k++)
 			{
 				ii=i-il; 
 

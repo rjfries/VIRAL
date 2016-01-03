@@ -227,7 +227,7 @@ void CheckPhysics(GRID HydroGrid, int stage )
 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		double vx = HydroGrid[i][j][k].Vx;
 		double vy = HydroGrid[i][j][k].Vy;
@@ -257,7 +257,7 @@ inline double MaxTempGev(GRID HydroGrid)
 	double tmax=0;
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		DECLePa;		
 		double temp =   GEVFM* FT(HydroGrid[i][j][k].En );// FT returns in 1/fm 

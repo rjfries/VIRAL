@@ -171,7 +171,7 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 		DECLu4;
 		DECLTmu0;
 		
- 	HydroGrid[i][j][k].Az[0] = u3/u0;  
+		HydroGrid[i][j][k].Az[0] = u3/u0;  
 
 	}
 }

@@ -108,7 +108,6 @@ void WENOY_##VAR(GRID HydroGrid , int NVAR  ){\
 		
 		
 #if !defined LBI
-
 #define WENOZ(VAR )\
 void WENOZ_##VAR(GRID HydroGrid , int NVAR  ){\
 	double w[3], q[3], d[3], alpha[3];\

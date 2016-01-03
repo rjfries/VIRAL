@@ -47,7 +47,7 @@ double tau;
 	#define ZL 5
 	#define ZS 0.1
 
-	#define PFREQ 0.1
+	#define PFREQ 0.01
 	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
 	
