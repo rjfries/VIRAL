@@ -273,12 +273,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		
 		DECLp5u4;
 		DECLcoord;
-		DECLePPIa;
-		
-#ifdef S95P
-		if(P==0)
-			cout<<std::scientific<<e<<" source.h *******  "<<s95p_p(e)<<"   "<<X<<"  "<<Y<<endl;
-#endif
+		DECLePPIa; 
 			
 		
 

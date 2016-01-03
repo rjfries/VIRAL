@@ -16,11 +16,15 @@
 
 #define XCMA ((int)(XL/XS+OFF))
 #define YCMA ((int)(YL/YS+OFF))
+  
+
 
 #if defined LBI 
-#define ZCMA 1
+	#define ZCM  1 
+	#define ZCMA 1
 #else 
-#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
+	#define ZCM ((int)(2*(ZL/ZS)+2*BORDER+OFF+1)) 
+	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
 #endif
 
 double ts;
@@ -28,30 +32,21 @@ double tau;
 
 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST) 
-//~ #define NSINIT
-//~ #define ZEROINIT   
-	#define LBI
-
-	#define NPX  4
-	#define NPY  4 
+#if  !defined(BJORKEN)   
+	#define NPX  1
+	#define NPY  1
 	#define NP (NPX*NPY*1)
 
-	#define TAUSTART 0.60 
+	#define TAUSTART 0.4
 	#define TS 0.01
-	#define XL 6
+	#define XL 1
 	#define XS 0.1
-	#define YL 6
+	#define YL 1
 	#define YS 0.1
 	
-#ifdef LBI
-	#define ZL 0
-	#define ZS 0.1
-#else
 	#define ZL 5
 	#define ZS 0.1
-#endif	
-	
+
 	#define PFREQ 0.1
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1)
@@ -62,7 +57,7 @@ double tau;
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
 
-	#define SCALE_VIS 1
+	#define SCALE_VIS 0.01
 	#define SCALE_TPI 1	
 	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
 	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
@@ -77,48 +72,6 @@ double tau;
 	
 #endif
 
-
-#if defined BULKTEST
-	#define BULK 
-	
-	#define NPX  1
-	#define NPY  1
-	#define NP (NPX*NPY*1)
-
-	#define TAUSTART 0.60 
-	#define TS 0.01
-	#define XL 1
-	#define XS 0.1
-	#define YL 1
-	#define YS 0.1 
-	#define ZL 2
-	#define ZS 0.1
-	 
-
-	#define PFREQ 0.2	
-	#define FREQ ((int)2)
-	#define FREQZ ((int)1) 
-	
-	inline double EOS(double en )                                       {return (en/3.0                        );}	
-	inline double DPDE(double en )                                      {return (1.0/3.0                       );}	 
-	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
-	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
-	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
-
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
-	inline double Feta( double s, double en)                            {return (0.2*s                         );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (0.01                          );}
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 1
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (1                             );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (0.1						   );}
-#endif
-
-
-#endif
 
 
 
@@ -160,119 +113,6 @@ double tau;
 
 #endif
 
-
-
-#if defined(GINIT) 
-	#define LBI
-	#define BULK
-	#define S95P
-	#define VORT
-	 
-	
-	#define PEDESTAL 0 	
-	
-	#define NOS  6 //per side	for ginit.h
-	#define NPX  10
-	#define NPY  10
-	#define NP (NPX*NPY*1)
-
-	#define TAUSTART 0.1
-	#define TS 0.002
-	#define XL 4
-	#define XS 0.1
-	#define YL 4
-	#define YS 0.1
-	
-#ifdef LBI
-	#define ZL 0
-	#define ZS 0.1
-#else
-	#define ZL 5
-	#define ZS 0.1
-#endif	
-
-	#define PFREQ 0.1
-	#define FREQ ((int)5)
-	#define FREQZ ((int)1)
-	
-	inline double EOS(double en )                                       {return (s95p_p(en)                    );}	
-	inline double DPDE(double en )                                      {return (s95p_a(en)                    );}	 
-	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
-	inline double FT(double en)                                       {return (s95p_T(en)                    );}
-	inline double FS( double en, double Pr, double T)                   {return (s95p_s(en)                    );}
-
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
-	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
-
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 0.01
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_BULK_TPI*zeta/p     );}
-#endif
-
-
-#endif
-
-
-
-#if defined(GUBSER) 
-	#define LBI
-	
-	
-	#define NPX  6
-	#define NPY  6
-	#define NP (NPX*NPY*1)
-
-	#define TAUSTART 1.00 
-	#define TS 0.005
-	#define XL 5
-	#define XS 0.05
-	#define YL 5
-	#define YS 0.05 
-	#define ZL 0
-	#define ZS 0.1 
-
-
-	#define PFREQ 0.1		
-	#define FREQ ((int)2)
-	#define FREQZ ((int)1) 
-	
-	inline double EOS(double en )                                       {return (en/3.0                        );}	
-	inline double DPDE(double en )                                      {return (1.0/3.0                       );}	 
-	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
-	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
-	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
-
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
-	inline double Feta( double s, double en)                            {return (0.2*s                         );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (5*eta/(en+p) 			       );}
-
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 0.01
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
-#endif
-#endif 
-	
-	
-	
-
-
-
-
-
-
-
-
-
-	
 #define DIM 3
 #define WENOP 2
 #define WENOEPS 1E-6
@@ -280,10 +120,7 @@ double tau;
 #ifdef SHAS
 #define BORDER 3
 #endif
-
-#ifdef ZAL
-#define BORDER 4
-#endif
+ 
 
 #ifdef KT
 #define GMINV 1.1
@@ -301,29 +138,19 @@ double tau;
 #define SVAR (VARN+Npi+NPI)  //15
 #define TEMPVAR 15
 
-
-#if defined CON
-	#define EVAR 2
-#else
-	#define EVAR 1
-#endif
-
+ 
+#define EVAR 1
 typedef struct
 {
 	bool RELEVANT;
-	double X,Y,eta,r;
-
-//for debugging
-	double temp[TEMPVAR];
-	
+	double X,Y,eta,r; 
 	double T00,T10,T20,T30;
 	double En,P,Vx,Vy,Ve,Temp;
 	double u[VARN];
 	double prevu[VARN], du[VARN][VARN];	//4 velocity and its derivative
 
 //for viscosity	
-	double pi[Npi], PI; 
-	double nspi[Npi], nsPI;	
+	double pi[Npi], PI;  
 	
 //for source terms	
 	double Source [SVAR];
@@ -385,7 +212,7 @@ typedef struct
 
 double BMax;
 
-typedef cell (*GRID) [YCM][ZCMA];
+typedef cell (*GRID) [YCM][ZCM];
 GRID HydroGrid;
 
 
@@ -418,8 +245,9 @@ inline double fmtoMev(double temp)
 #define DECLp5        double p1 = HydroGrid[i][j][k].pi[0];double p2 = HydroGrid[i][j][k].pi[1];double p3 = HydroGrid[i][j][k].pi[2];double p4 = HydroGrid[i][j][k].pi[3];double p5 = HydroGrid[i][j][k].pi[4]
 #define DECLu4        double u0 = HydroGrid[i][j][k].u[0]; double u1 = HydroGrid[i][j][k].u[1]; double u2 = HydroGrid[i][j][k].u[2];double u3 = HydroGrid[i][j][k].u[3]
 #define DECLcoord     double X = HydroGrid[i][j][k].X;     double Y = HydroGrid[i][j][k].Y;     double eta = HydroGrid[i][j][k].eta;double r = HydroGrid[i][j][k].r
-#define A1 (-((2*p3*u1*u2 + p1*pow(u1,2) + p2*pow(u2,2) + pow(tau,2)*(2*(p4*u1 + p5*u2)*u3 - (p1 + p2)*pow(u3,2)))*pow(-pow(u0,2) + pow(tau,2)*pow(u3,2),-1)))      
-#define A2 ((p1*u1 + p3*u2 + p4*u3*pow(tau,2))*pow(u0,-1))             
-#define A3 ((p3*u1 + p2*u2 + p5*u3*pow(tau,2))*pow(u0,-1))             
-#define A4 (pow(u0,-1)*(2*p3*u1*u2*u3 + (p4*u1 + p5*u2 - (p1 + p2)*u3)*pow(u0,2) + p1*u3*pow(u1,2) + p2*u3*pow(u2,2) + p4*u1*pow(tau,2)*pow(u3,2) + p5*u2*pow(tau,2)*pow(u3,2))*pow(pow(u0,2) - pow(tau,2)*pow(u3,2),-1))     
-#define A5 (-(pow(tau,-2)*(2*p3*u1*u2 + 2*(p4*u1 + p5*u2)*u3*pow(tau,2) - (p1 + p2)*pow(u0,2) + p1*pow(u1,2) + p2*pow(u2,2))*pow(-pow(u0,2) + pow(tau,2)*pow(u3,2),-1)))     
+      
+#define A1 (-((2*p3*u1*u2 + 2*p4*u1*u3 + 2*p5*u2*u3 + p1*pow(u1,2) + p2*pow(u2,2) - p1*pow(u3,2) - p2*pow(u3,2))*pow(-pow(u0,2) + pow(u3,2),-1)))    
+#define A2 ((p1*u1 + p3*u2 + p4*u3)*pow(u0,-1))     
+#define A3 ((p3*u1 + p2*u2 + p5*u3)*pow(u0,-1))     
+#define A4 (pow(u0,-1)*(2*p3*u1*u2*u3 + (p4*u1 + p5*u2 - (p1 + p2)*u3)*pow(u0,2) + p1*u3*pow(u1,2) + p2*u3*pow(u2,2) + p4*u1*pow(u3,2) + p5*u2*pow(u3,2))*pow(pow(u0,2) - pow(u3,2),-1))     
+#define A5 (-((2*p3*u1*u2 + 2*p4*u1*u3 + 2*p5*u2*u3 - (p1 + p2)*pow(u0,2) + p1*pow(u1,2) + p2*pow(u2,2))*pow(-pow(u0,2) + pow(u3,2),-1)))     

@@ -50,17 +50,13 @@
 #define PIE 3.141592653589793
 
 
-using namespace std; 
-#include "s95p.h" 
+using namespace std;  
 #include "maindef.h"
 
 
 #include "alloc.h"
 #include "init.h"
-
-#ifdef GINIT
-#include "ginit.h"
-#endif
+ 
 
 #include "utils.h"
 #include "pack.h"
@@ -72,11 +68,7 @@ using namespace std;
 #ifdef SHAS
 #include "hydroshasta.h"
 #endif
-
-#ifdef ZAL
-#include "hydrozalesak.h"
-#endif
-
+  
 #ifdef KT
 #include "hydroKT.h"
 #endif
@@ -159,9 +151,7 @@ int main(int argc, char* argv[])
 		tau += ts;
 
 		CheckRoot( HydroGrid ,  tau);
-		
-		//~ if(rank==root)
-		//~ cout<<NP*sizeof(cell)*XCM*YCM*ZCMA/(1024*1024) <<" mega bytes"<<endl;
+		 
 			
 		double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
 		
@@ -182,24 +172,11 @@ int main(int argc, char* argv[])
 		{	WriteResultsXY(tau,HydroGrid);}
 #else
 		if( fabs( (tau-tauPrint) - printFreq) < 1e-6)
-		{	tauPrint += printFreq;	WriteResults(tau,HydroGrid);}
-		
-	
+		{	tauPrint += printFreq;	WriteResults(tau,HydroGrid);} 
 #endif
 		l++;
-		
-		
-#ifdef GUBSER
-		if(tau>9)
-			break;
-#endif
-
-#ifdef GINIT
-		if(tmaxMev<120)
-			break;
-#endif
-
-#if defined BJORKEN || BULKTEST
+ 
+#if defined BJORKEN  
 		if(tau>10)
 			break;
 #endif
@@ -208,7 +185,7 @@ int main(int argc, char* argv[])
 			break;
 	}
 	
-#if defined BJORKEN || BULKTEST 
+#if defined BJORKEN  
 		myfile.close();
 #endif		
 
