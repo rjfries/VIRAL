@@ -1,6 +1,4 @@
-void StoreInHeap();
-void NSInit(GRID HydroGrid, double tau, double ts);
-void ZeroInit(GRID HydroGrid, double tau, double ts);
+void StoreInHeap(); 
 void CheckRoot(GRID HydroGrid , double tau);
 double DebugMSG(GRID HydroGrid);
 double MaxTempGev(GRID HydroGrid);
@@ -115,9 +113,7 @@ inline int RANK(int i, int j,int k)
 
 
 
-void initvar(GRID HydroGrid);
-void ginit(GRID HydroGrid, double tau);
-
+void initvar(GRID HydroGrid); 
 
 void mpi_init()
 {
@@ -257,9 +253,7 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 		HydroGrid[i][j][k].prevu[2] = u2; //value 1 "ts" earlier
 		HydroGrid[i][j][k].prevu[3] = u3; //value 1 "ts" earlier
 	}
-	
-	//~ CalcNS(HydroGrid,tau,ts);
-	
+	 
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
@@ -305,6 +299,10 @@ void init(double tau, double ts)
 	jr=jl+YCMA;
 	kr=kl+ZCMA;
 	
+#ifdef LBI
+	kl=0;
+	kr=1;
+#endif
 	for(i = 0; i< XCM; i++)
 	for(j = 0; j< YCM; j++)
 	for(k = 0; k< ZCM; k++)

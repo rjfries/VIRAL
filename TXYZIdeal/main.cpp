@@ -42,10 +42,7 @@
 #include <fenv.h> 
 #endif
 
-
-#ifdef SHAS
-	#define CON
-#endif
+ 
 #define GEVFM 0.1973 
 #define PIE 3.141592653589793
 
@@ -143,9 +140,6 @@ int main(int argc, char* argv[])
 #endif
 		 
 		
-#ifdef BULKTEST
-		myfile<<tau<< "  "<<  HydroGrid[XCM/2][YCM/2][ZCMA/2].PI<<endl;
-#endif
 		 
 		
 		tau += ts;

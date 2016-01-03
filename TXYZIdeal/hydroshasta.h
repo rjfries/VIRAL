@@ -40,10 +40,10 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 	for( int j=0; j<YCM ; j++)
 	for( int k=0; k<ZCM ; k++)
 	{
-		HydroGrid[i][j][k].Var[0]= tau*HydroGrid[i][j][k].T00;
-		HydroGrid[i][j][k].Var[1]= tau*HydroGrid[i][j][k].T10;
-		HydroGrid[i][j][k].Var[2]= tau*HydroGrid[i][j][k].T20;
-		HydroGrid[i][j][k].Var[3]= tau*HydroGrid[i][j][k].T30; 
+		HydroGrid[i][j][k].Var[0]= HydroGrid[i][j][k].T00;
+		HydroGrid[i][j][k].Var[1]= HydroGrid[i][j][k].T10;
+		HydroGrid[i][j][k].Var[2]= HydroGrid[i][j][k].T20;
+		HydroGrid[i][j][k].Var[3]= HydroGrid[i][j][k].T30; 
 	}
 }
 

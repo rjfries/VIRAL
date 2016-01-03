@@ -32,22 +32,22 @@ double tau;
 
 
 
-#if  !defined(BJORKEN)   
+#if  !defined(BJORKEN) 
 	#define NPX  1
 	#define NPY  1
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0 
 	#define TS 0.01
-	#define XL 1
+	#define XL 0.6
 	#define XS 0.1
-	#define YL 1
+	#define YL 0.6
 	#define YS 0.1
 	
-	#define ZL 5
-	#define ZS 0.1
+	#define ZL 4
+	#define ZS 0.01
 
-	#define PFREQ 0.01
+	#define PFREQ 0.2
 	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
 	
@@ -56,20 +56,6 @@ double tau;
 	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
-
-	#define SCALE_VIS 0.01
-	#define SCALE_TPI 1	
-	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 1
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
-#endif
-
-	
 #endif
 
 
@@ -98,19 +84,6 @@ double tau;
 	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
-
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
-	inline double Feta( double s, double en)                            {return (0.2*s                         );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (0.01                          );}
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 1
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
-#endif
-
 #endif
 
 #define DIM 3
@@ -120,7 +93,6 @@ double tau;
 #ifdef SHAS
 #define BORDER 3
 #endif
- 
 
 #ifdef KT
 #define GMINV 1.1
@@ -180,11 +152,7 @@ typedef struct
 	double AyLY[EVAR], AyRY[EVAR]; //reconstruct all of the center eigen values
 	double AzLZ[EVAR], AzRZ[EVAR]; //reconstruct all of the center eigen values
  
- 
-	double RightZeroFz[SVAR];
-	double RightZeroVar[SVAR];
-	double RightZeroAz[EVAR];
-	
+  
 	double AxLXMAX, AxRXMAX;
 	double AyLYMAX, AyRYMAX;
 	double AzLZMAX, AzRZMAX;
@@ -207,10 +175,11 @@ typedef double (*PCKZ) [BORDER][XCMA][YCMA];
 typedef double (*PCKXY) [BORDER][BORDER][ZCMA];
 
 
-typedef double (*CAPXY) [XCM][YCM];
 
 #define WOODSAXON(r , width, loc)   (1.0/(1 + exp( (r - loc)/width) ) )
 #define HeaviSideTheta(num)   ( (num>=0)?1:0) 
+
+
 inline double fmtoMev(double temp)
 {
 	double ret;

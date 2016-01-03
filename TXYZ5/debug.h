@@ -1,5 +1,4 @@
-
-int CFLRank;
+ 
 double DebugMSG(GRID HydroGrid)
 {
 	int i,j,k,l,m;

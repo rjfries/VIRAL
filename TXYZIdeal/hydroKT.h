@@ -133,11 +133,8 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)  
-	{
-		DECLePa;
-		DECLu4;
-		DECLTmu0;
-		 
+	{ 
+		DECLu4; 
 		HydroGrid[i][j][k].Ax[0] = u1/u0;  
 	}
 }
@@ -149,10 +146,8 @@ void FindEigenValuesY(GRID HydroGrid, double tau)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++) 
-	{
-		DECLePa;
-		DECLu4;
-		DECLTmu0;
+	{ 
+		DECLu4; 
 		HydroGrid[i][j][k].Ay[0] = u2/u0;  
 	}
 }
@@ -166,12 +161,9 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++) 
-	{  
-		DECLePa;
-		DECLu4;
-		DECLTmu0;
-		
-		HydroGrid[i][j][k].Az[0] = u3/u0;  
+	{   
+		DECLu4;  
+		HydroGrid[i][j][k].Az[0] = 2*u3/u0;  
 
 	}
 }
@@ -306,8 +298,7 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	AddPartialResultToFinalResult( HydroGrid);
 	
 	fvY( HydroGrid, tau );
-	AddPartialResultToFinalResult( HydroGrid);
-	
+	AddPartialResultToFinalResult( HydroGrid); 
  
 #if !defined LBI
 	fvZ( HydroGrid, tau);	

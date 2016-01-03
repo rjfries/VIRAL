@@ -142,8 +142,7 @@ void UpdatePrimaryVariablesFromVar3( GRID HydroGrid, double tau )
 		HydroGrid[i][j][k].T00 =  (HydroGrid[i][j][k].Var3[0]) ;								
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var3[1]) ;								
 		HydroGrid[i][j][k].T20 =  (HydroGrid[i][j][k].Var3[2]) ;								
-		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var3[3]) ;	
- 
+		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var3[3]) ; 
 	}
 }
 

@@ -58,8 +58,7 @@ double feps(double eps, void * params)
 
 	int i = p->i;
 	int j = p->j;
-	int k = p->k;
-	double tau =p->tau;
+	int k = p->k; 
 
 	double Ttt = HG[i][j][k].T00;
 	double Ttx = HG[i][j][k].T10;
@@ -84,27 +83,16 @@ double dfeps(double eps, void * params)
 
 	int i = p->i;
 	int j = p->j;
-	int k = p->k;
-	double tau =p->tau;
-	
-	
-	 
-
+	int k = p->k; 
 
 	double en = HG[i][j][k].En;
 	double Ttt = HG[i][j][k].T00;
 	double Ttx = HG[i][j][k].T10;
 	double Tty = HG[i][j][k].T20;
 	double Ttz = HG[i][j][k].T30;
-
 	double M2 = Ttx*Ttx + Tty*Tty +   Ttz*Ttz; 
-
-	double res = 1   - ( M2 / pow( Ttt + EOS(eps ), 2) )*DPDE(en ) ;
-
-	
-	
+	double res = 1 -( M2 / pow( Ttt + EOS(eps ), 2) )*DPDE(en ) ;
 	return(	res) ;
-
 }
 
 
@@ -171,7 +159,7 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 			status = gsl_root_fdfsolver_iterate (s);
 			double r0 = r;
 			r = gsl_root_fdfsolver_root (s);
-			status = gsl_root_test_delta (r, r0, 0, 1e-25);
+			status = gsl_root_test_delta (r, r0, 0, 1e-20);
 	                                       
 			if(status != GSL_SUCCESS && status != GSL_CONTINUE )
 			{	
@@ -183,6 +171,7 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	    } while (status == GSL_CONTINUE && iter < max_iter);
 	
 		HydroGrid[i][j][k].En = r;    //find the new energy from root finding algorithm
+		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En);    //find the new energy from root finding algorithm
 		gsl_root_fdfsolver_free (s);
 
 	}
@@ -198,13 +187,21 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		double Ttx = HydroGrid[i][j][k].T10;
 		double Tty = HydroGrid[i][j][k].T20;
 		double Ttz = HydroGrid[i][j][k].T30; 
-		double P = EOS(HydroGrid[i][j][k].En  ) ;
-		
-		HydroGrid[i][j][k].P = P;
-		HydroGrid[i][j][k].Vx = Ttx/(Ttt + P );
-		HydroGrid[i][j][k].Vy = Tty/(Ttt + P );
-		HydroGrid[i][j][k].Ve = Ttz/(Ttt + P );
-	
-		
+		double P = HydroGrid[i][j][k].P ;
+		 
+		HydroGrid[i][j][k].Vx = Ttx/(Ttt + P ); 
+		HydroGrid[i][j][k].Vy = Tty/(Ttt + P ); 
+		HydroGrid[i][j][k].Ve = Ttz/(Ttt + P );  
+				
+		HydroGrid[i][j][k].u[0]= 1.0/(sqrt(1 - HydroGrid[i][j][k].Vx*HydroGrid[i][j][k].Vx
+											 - HydroGrid[i][j][k].Vy*HydroGrid[i][j][k].Vy
+											 -  HydroGrid[i][j][k].Ve*HydroGrid[i][j][k].Ve
+											 )
+									 );
+									 
+		HydroGrid[i][j][k].u[1] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Vx;
+		HydroGrid[i][j][k].u[2] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Vy;
+		HydroGrid[i][j][k].u[3] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Ve;			
+		 
 	}
 }

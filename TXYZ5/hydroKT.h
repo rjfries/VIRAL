@@ -329,8 +329,7 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	AddPartialResultToFinalResult( HydroGrid);
 	
 	fvY( HydroGrid, tau );
-	AddPartialResultToFinalResult( HydroGrid);
-	
+	AddPartialResultToFinalResult( HydroGrid); 
  
 #if !defined LBI
 	fvZ( HydroGrid, tau);	
