@@ -64,7 +64,7 @@ using namespace std;
 #include "debug.h"
 #include "Source.h"
 #include "write.h"
-#include "multiroot.h"
+#include "root.h"
 #ifdef SHAS
 #include "hydroshasta.h"
 #endif

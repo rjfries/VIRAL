@@ -1,6 +1,6 @@
 
 
-#define PRINTVAR (12) 
+#define PRINTVAR (6) 
 
 /*********Write out only XY plane*********/
 inline int OFFSETXYALLVARS(int gi)  
@@ -90,14 +90,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].P;
 			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Vx;
 			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].Vy;
-			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;
-			
-			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].pi[0];
-			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[1];
-			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[2];
-			buf[jj*PRINTVAR+9]=HydroGrid[i][j][k0+off].pi[3];
-			buf[jj*PRINTVAR+10]=HydroGrid[i][j][k0+off].pi[4];
-			buf[jj*PRINTVAR+11]=HydroGrid[i][j][k0+off].PI;			
+			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve; 	
 		}
 
 
@@ -187,14 +180,7 @@ void WriteResults(double tau, GRID HydroGrid)
 			buf[kk*PRINTVAR+2]=HydroGrid[i][j][k].P;	
 			buf[kk*PRINTVAR+3]=HydroGrid[i][j][k].Vx;
 			buf[kk*PRINTVAR+4]=HydroGrid[i][j][k].Vy;
-			buf[kk*PRINTVAR+5]=HydroGrid[i][j][k].Ve; 
-					
-			buf[kk*PRINTVAR+6]=HydroGrid[i][j][k].pi[0]; 
-			buf[kk*PRINTVAR+7]=HydroGrid[i][j][k].pi[1];
-			buf[kk*PRINTVAR+8]=HydroGrid[i][j][k].pi[2];
-			buf[kk*PRINTVAR+9]=HydroGrid[i][j][k].pi[3];
-			buf[kk*PRINTVAR+10]=HydroGrid[i][j][k].pi[4];
-			buf[kk*PRINTVAR+11]=HydroGrid[i][j][k].PI;
+			buf[kk*PRINTVAR+5]=HydroGrid[i][j][k].Ve;  
 						
 		}
 

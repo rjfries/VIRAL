@@ -34,11 +34,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 			HydroGrid[i][j][k].prevu[1] = HydroGrid[il][j][k].prevu[1];
 			HydroGrid[i][j][k].prevu[2] = HydroGrid[il][j][k].prevu[2];
 			HydroGrid[i][j][k].prevu[3] = HydroGrid[il][j][k].prevu[3];
-			
-			for(l=0;l<Npi;l++)
-				HydroGrid[i][j][k].pi[l] = HydroGrid[il][j][k].pi[l];
-			
-			HydroGrid[i][j][k].PI = HydroGrid[il][j][k].PI;
+		 
 			
 
 		}
@@ -73,11 +69,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 			HydroGrid[ir+i][j][k].prevu[1] = HydroGrid[ir-1][j][k].prevu[1];
 			HydroGrid[ir+i][j][k].prevu[2] = HydroGrid[ir-1][j][k].prevu[2];
 			HydroGrid[ir+i][j][k].prevu[3] = HydroGrid[ir-1][j][k].prevu[3];	
-
-			for(l=0;l<Npi;l++)
-				HydroGrid[ir+i][j][k].pi[l] = HydroGrid[ir-1][j][k].pi[l];
-			
-			HydroGrid[ir+i][j][k].PI = HydroGrid[ir-1][j][k].PI;
+ 
 		}
 	}
 
@@ -110,11 +102,7 @@ void XYBoundaryCopy(GRID HydroGrid)
 			HydroGrid[i][j][k].prevu[1] = HydroGrid[i][jl][k].prevu[1];
 			HydroGrid[i][j][k].prevu[2] = HydroGrid[i][jl][k].prevu[2];
 			HydroGrid[i][j][k].prevu[3] = HydroGrid[i][jl][k].prevu[3];	
-
-			for(l=0;l<Npi;l++)
-				HydroGrid[i][j][k].pi[l] = HydroGrid[i][jl][k].pi[l];
-			
-			HydroGrid[i][j][k].PI = HydroGrid[i][jl][k].PI;
+ 
 		}
 	}
 	
@@ -145,16 +133,9 @@ void XYBoundaryCopy(GRID HydroGrid)
 			HydroGrid[i][jr+j][k].prevu[0] = HydroGrid[i][jr-1][k].prevu[0];
 			HydroGrid[i][jr+j][k].prevu[1] = HydroGrid[i][jr-1][k].prevu[1];
 			HydroGrid[i][jr+j][k].prevu[2] = HydroGrid[i][jr-1][k].prevu[2];
-			HydroGrid[i][jr+j][k].prevu[3] = HydroGrid[i][jr-1][k].prevu[3];
-			
-			for(l=0;l<Npi;l++)
-				HydroGrid[i][jr+j][k].pi[l] = HydroGrid[i][jr-1][k].pi[l];
-			
-			HydroGrid[i][jr+j][k].PI = HydroGrid[i][jr-1][k].PI;
+			HydroGrid[i][jr+j][k].prevu[3] = HydroGrid[i][jr-1][k].prevu[3]; 
 		}
-	}
-	
-	
+	} 
 }
 
 
@@ -187,12 +168,7 @@ void ZBoundaryCopy(GRID HydroGrid)
 		HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][kl].prevu[0];
 		HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][kl].prevu[1];
 		HydroGrid[i][j][k].prevu[2] = HydroGrid[i][j][kl].prevu[2];
-		HydroGrid[i][j][k].prevu[3] = HydroGrid[i][j][kl].prevu[3];	
-
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] = HydroGrid[i][j][kl].pi[l];
-		
-		HydroGrid[i][j][k].PI = HydroGrid[i][j][kl].PI;
+		HydroGrid[i][j][k].prevu[3] = HydroGrid[i][j][kl].prevu[3];	 
 	}
 		 
  
@@ -221,12 +197,7 @@ void ZBoundaryCopy(GRID HydroGrid)
 		HydroGrid[i][j][kr+k].prevu[0] = HydroGrid[i][j][kr-1].prevu[0];
 		HydroGrid[i][j][kr+k].prevu[1] = HydroGrid[i][j][kr-1].prevu[1];
 		HydroGrid[i][j][kr+k].prevu[2] = HydroGrid[i][j][kr-1].prevu[2];
-		HydroGrid[i][j][kr+k].prevu[3] = HydroGrid[i][j][kr-1].prevu[3];
-		
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][kr+k].pi[l] = HydroGrid[i][j][kr-1].pi[l];
-		
-		HydroGrid[i][j][kr+k].PI = HydroGrid[i][j][kr-1].PI;
+		HydroGrid[i][j][kr+k].prevu[3] = HydroGrid[i][j][kr-1].prevu[3]; 
 	} 
  }
  

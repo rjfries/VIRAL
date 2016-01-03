@@ -109,12 +109,7 @@ void UpdatePrimaryVariablesFromVar1( GRID HydroGrid, double tau )
 		HydroGrid[i][j][k].T00 =  (HydroGrid[i][j][k].Var1[0]) ;								
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var1[1]) ;								
 		HydroGrid[i][j][k].T20 =  (HydroGrid[i][j][k].Var1[2]) ;								
-		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var1[3]) ;	
-
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] =  ( HydroGrid[i][j][k].Var1[VARN+l]);
-			
-		HydroGrid[i][j][k].PI = (HydroGrid[i][j][k].Var1[VARN+Npi]);
+		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var1[3]) ;	 
 	}
 }
 
@@ -130,12 +125,7 @@ void UpdatePrimaryVariablesFromVar2( GRID HydroGrid, double tau )
 		HydroGrid[i][j][k].T00 =  (HydroGrid[i][j][k].Var2[0]) ;								
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var2[1]) ;								
 		HydroGrid[i][j][k].T20 =  (HydroGrid[i][j][k].Var2[2]) ;								
-		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var2[3]) ;	
-
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] =  ( HydroGrid[i][j][k].Var2[VARN+l]);
-			
-		HydroGrid[i][j][k].PI = (HydroGrid[i][j][k].Var2[VARN+Npi]);
+		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var2[3]) ;	 
 	}
 }
  
@@ -153,11 +143,7 @@ void UpdatePrimaryVariablesFromVar3( GRID HydroGrid, double tau )
 		HydroGrid[i][j][k].T10 =  (HydroGrid[i][j][k].Var3[1]) ;								
 		HydroGrid[i][j][k].T20 =  (HydroGrid[i][j][k].Var3[2]) ;								
 		HydroGrid[i][j][k].T30 =  (HydroGrid[i][j][k].Var3[3]) ;	
-
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] =  ( HydroGrid[i][j][k].Var3[VARN+l]);
-			
-		HydroGrid[i][j][k].PI = (HydroGrid[i][j][k].Var3[VARN+Npi]);
+ 
 	}
 }
 
@@ -203,7 +189,7 @@ void FirstOrder(GRID HydroGrid, double tau, double ts)
 	CalcVar1( HydroGrid,ts);	
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts); //update PV's, pi and PI to "tau+ts"	from "tau"	
 	UpdatePrevU(HydroGrid);
-	MultiRootSearchForEnVelUsingDerivatives(HydroGrid, tau+ts );	//Finds En,P,V's, 4vel, 3vel everywhere excluding boundary region
+	RootSearchForEnVelUsingDerivatives(HydroGrid, tau+ts );	//Finds En,P,V's, 4vel, 3vel everywhere excluding boundary region
 	
 		
 	pack(HydroGrid);  //Exchanges En&Vel, pi and PI and updates P,4vel,Tmunu at the cell interfaces
@@ -254,7 +240,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	
 	
 	UpdatePrimaryVariablesFromVar2(HydroGrid,  tau+ts);  
-    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+    RootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 
 		
@@ -292,7 +278,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts);  
 	UpdatePrevU(HydroGrid);
 	
-	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
+	RootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
 	
 	
 	
@@ -312,7 +298,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar2RK3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar2(HydroGrid,  tau+ts/2.0);  
-    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2.0); 
+    RootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2.0); 
     	
 
 
@@ -334,7 +320,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar3(HydroGrid,  tau+ts);  
-    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+    RootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 		
 	pack(HydroGrid);

@@ -13,14 +13,14 @@ void CalcNumVel(GRID HydroGrid, double tau)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		DECLp5u4;
-		DECLePPIa;
+		DECLu4;
+		DECLePa;
 		
 		if(l==0)
 		{
-			HydroGrid[i][j][k].NVx[l] = ( A2 + u1*u0*(e+P-PI) )/HydroGrid[i][j][k].T00;
-			HydroGrid[i][j][k].NVy[l] = ( A3 + u2*u0*(e+P-PI) )/HydroGrid[i][j][k].T00;
-			HydroGrid[i][j][k].NVz[l] = ( A4 + u3*u0*(e+P-PI) )/HydroGrid[i][j][k].T00;		
+			HydroGrid[i][j][k].NVx[l] = (  u1*u0*(e+P ) )/HydroGrid[i][j][k].T00;
+			HydroGrid[i][j][k].NVy[l] = (  u2*u0*(e+P ) )/HydroGrid[i][j][k].T00;
+			HydroGrid[i][j][k].NVz[l] = (  u3*u0*(e+P ) )/HydroGrid[i][j][k].T00;		
 		}
 		else
 		{
@@ -43,12 +43,7 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Var[0]= tau*HydroGrid[i][j][k].T00;
 		HydroGrid[i][j][k].Var[1]= tau*HydroGrid[i][j][k].T10;
 		HydroGrid[i][j][k].Var[2]= tau*HydroGrid[i][j][k].T20;
-		HydroGrid[i][j][k].Var[3]= tau*HydroGrid[i][j][k].T30;
-		
-		for(int l=0;l<Npi;l++)
-			HydroGrid[i][j][k].Var[VARN+l]=  HydroGrid[i][j][k].pi[l];
-		
-		HydroGrid[i][j][k].Var[VARN+Npi]=  HydroGrid[i][j][k].PI;
+		HydroGrid[i][j][k].Var[3]= tau*HydroGrid[i][j][k].T30; 
 	}
 }
 

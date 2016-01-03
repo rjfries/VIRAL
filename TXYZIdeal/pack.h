@@ -45,12 +45,8 @@ void PackToRight(GRID HydroGrid)
 					rightX[2*VARN+l][m][jj][k] =	HydroGrid[ir-m-1][j][k].u[l];
 					rightX[3*VARN+l][m][jj][k] =	HydroGrid[ir-m-1][j][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					rightX[4*VARN+l][m][jj][k] =	HydroGrid[ir-m-1][j][k].pi[l];
-					
-				rightX[4*VARN+Npi][m][jj][k] =	HydroGrid[ir-m-1][j][k].PI;
-				rightX[4*VARN+Npi+NPI][m][jj][k] =	HydroGrid[ir-m-1][j][k].P;
+				 
+				rightX[4*VARN ][m][jj][k] =	HydroGrid[ir-m-1][j][k].P;
 			}
 				
 		}
@@ -80,12 +76,8 @@ void PackToRight(GRID HydroGrid)
 					rightY[2*VARN+l][m][ii][k] =	HydroGrid[i][jr-m-1][k].u[l];
 					rightY[3*VARN+l][m][ii][k] =	HydroGrid[i][jr-m-1][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					rightY[4*VARN+l][m][ii][k] =  HydroGrid[i][jr-m-1][k].pi[l];
-					
-				rightY[4*VARN+Npi][m][ii][k] =	HydroGrid[i][jr-m-1][k].PI;
-				rightY[4*VARN+Npi+NPI][m][ii][k] =	HydroGrid[i][jr-m-1][k].P;
+				 
+				rightY[4*VARN ][m][ii][k] =	HydroGrid[i][jr-m-1][k].P;
 			}
 		}
 	}
@@ -126,12 +118,8 @@ void UnPackFromLeft(GRID HydroGrid)
 					HydroGrid[i][j][k].u[l] = leftX[2*VARN+l][m][jj][k];
 					HydroGrid[i][j][k].prevu[l] = leftX[3*VARN+l][m][jj][k];
 				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l]= leftX[4*VARN+l][m][jj][k];
-				
-				HydroGrid[i][j][k].PI= leftX[4*VARN+Npi][m][jj][k];	
-				HydroGrid[i][j][k].P= leftX[4*VARN+Npi+NPI][m][jj][k];	
+				 
+				HydroGrid[i][j][k].P= leftX[4*VARN ][m][jj][k];	
 			}
 		}
 		 
@@ -160,12 +148,8 @@ void UnPackFromLeft(GRID HydroGrid)
 					HydroGrid[i][j][k].u[l] = leftY[2*VARN+l][m][ii][k];
 					HydroGrid[i][j][k].prevu[l] = leftY[3*VARN+l][m][ii][k];
 				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l] = leftY[4*VARN+l][m][ii][k];
-				
-				HydroGrid[i][j][k].PI = leftY[4*VARN+Npi][m][ii][k];	
-				HydroGrid[i][j][k].P = leftY[4*VARN+Npi+NPI][m][ii][k];	
+				 
+				HydroGrid[i][j][k].P = leftY[4*VARN ][m][ii][k];	
 				
 				
 								
@@ -207,12 +191,8 @@ void PackToLeft(GRID HydroGrid)
 					leftX[2*VARN+l][m][jj][k] =	HydroGrid[il+m][j][k].u[l];
 					leftX[3*VARN+l][m][jj][k] =	HydroGrid[il+m][j][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					leftX[4*VARN+l][m][jj][k] =	HydroGrid[il+m][j][k].pi[l];
-					
-				leftX[4*VARN+Npi][m][jj][k] =	HydroGrid[il+m][j][k].PI;
-				leftX[4*VARN+Npi+NPI][m][jj][k] =	HydroGrid[il+m][j][k].P;
+				 
+				leftX[4*VARN ][m][jj][k] =	HydroGrid[il+m][j][k].P;
 			}
 		}
 	
@@ -240,12 +220,8 @@ void PackToLeft(GRID HydroGrid)
 					leftY[2*VARN+l][m][ii][k] =	HydroGrid[i][jl+m][k].u[l];
 					leftY[3*VARN+l][m][ii][k] =	HydroGrid[i][jl+m][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					leftY[4*VARN+l][m][ii][k] =  HydroGrid[i][jl+m][k].pi[l];
-					
-				leftY[4*VARN+Npi][m][ii][k] =	HydroGrid[i][jl+m][k].PI;
-				leftY[4*VARN+Npi+NPI][m][ii][k] =	HydroGrid[i][jl+m][k].P;
+				 
+				leftY[4*VARN ][m][ii][k] =	HydroGrid[i][jl+m][k].P;
 			}
 		}
 	}
@@ -286,12 +262,8 @@ void UnPackFromRight(GRID HydroGrid)
 					HydroGrid[i][j][k].u[l] = rightX[2*VARN+l][m][jj][k];
 					HydroGrid[i][j][k].prevu[l] = rightX[3*VARN+l][m][jj][k];
 				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l]= rightX[4*VARN+l][m][jj][k];
-				
-				HydroGrid[i][j][k].PI= rightX[4*VARN+Npi][m][jj][k];	
-				HydroGrid[i][j][k].P = rightX[4*VARN+Npi+NPI][m][jj][k];	
+				 
+				HydroGrid[i][j][k].P = rightX[4*VARN ][m][jj][k];	
 				
 						
 			}
@@ -320,13 +292,8 @@ void UnPackFromRight(GRID HydroGrid)
 				{
 					HydroGrid[i][j][k].u[l] = rightY[2*VARN+l][m][ii][k];
 					HydroGrid[i][j][k].prevu[l] = rightY[3*VARN+l][m][ii][k];
-				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[i][j][k].pi[l] = rightY[4*VARN+l][m][ii][k];
-				
-				HydroGrid[i][j][k].PI = rightY[4*VARN+Npi][m][ii][k];				
-				HydroGrid[i][j][k].P  = rightY[4*VARN+Npi+NPI][m][ii][k];				
+				} 			
+				HydroGrid[i][j][k].P  = rightY[4*VARN ][m][ii][k];				
 			}
 		}
 	}
@@ -372,12 +339,8 @@ void PackXL( GRID HydroGrid )
 				xlyl[2*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].u[l];
 				xlyl[3*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].prevu[l];
 			}
-			
-			for(l=0;l<Npi;l++)
-				xlyl[4*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].pi[l];
-			
-			xlyl[4*VARN+Npi][m][n][k] = HydroGrid[ioff + m][joff + n][k].PI;
-			xlyl[4*VARN+Npi+NPI][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
+			 
+			xlyl[4*VARN ][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
 		}
 	}		
 	 
@@ -412,12 +375,8 @@ void PackXL( GRID HydroGrid )
 					xlyr[2*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].u[l];
 					xlyr[3*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					xlyr[4*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].pi[l];
-				
-				xlyr[4*VARN+Npi][m][n][k] = HydroGrid[ioff + m][joff + n][k].PI;
-				xlyr[4*VARN+Npi+NPI][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
+				 
+				xlyr[4*VARN ][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
 			}
 		}		
 	}
@@ -460,12 +419,8 @@ void PackXR( GRID HydroGrid )
 					xryl[2*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].u[l];
 					xryl[3*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					xryl[4*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].pi[l];
-				
-				xryl[4*VARN+Npi][m][n][k] = HydroGrid[ioff + m][joff + n][k].PI;
-				xryl[4*VARN+Npi+NPI][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
+				 
+				xryl[4*VARN ][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
 			}
 		}	
 	
@@ -496,12 +451,8 @@ void PackXR( GRID HydroGrid )
 					xryr[2*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].u[l];
 					xryr[3*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].prevu[l];
 				}
-				
-				for(l=0;l<Npi;l++)
-					xryr[4*VARN+l][m][n][k] = HydroGrid[ioff + m][joff + n][k].pi[l];
-				
-				xryr[4*VARN+Npi][m][n][k] = HydroGrid[ioff + m][joff + n][k].PI;
-				xryr[4*VARN+Npi+NPI][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
+				 
+				xryr[4*VARN ][m][n][k] = HydroGrid[ioff + m][joff + n][k].P;
 			}
 		}	
 	}
@@ -543,12 +494,8 @@ void UnpackXR(GRID  HydroGrid )
 					HydroGrid[ioff + m][joff + n][k].u[l] = xryl[2*VARN+l][m][n][k];
 					HydroGrid[ioff + m][joff + n][k].prevu[l] = xryl[3*VARN+l][m][n][k];
 				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[ioff + m][joff + n][k].pi[l] = xryl[4*VARN+l][m][n][k];
-				
-				HydroGrid[ioff + m][joff + n][k].PI = xryl[4*VARN+Npi][m][n][k];
-				HydroGrid[ioff + m][joff + n][k].P = xryl[4*VARN+Npi+NPI][m][n][k];
+				 
+				HydroGrid[ioff + m][joff + n][k].P = xryl[4*VARN ][m][n][k];
 			}
 		}	
 	
@@ -578,13 +525,8 @@ void UnpackXR(GRID  HydroGrid )
 				{
 					HydroGrid[ioff + m][joff + n][k].u[l] = xryr[2*VARN+l][m][n][k];
 					HydroGrid[ioff + m][joff + n][k].prevu[l] = xryr[3*VARN+l][m][n][k];
-				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[ioff + m][joff + n][k].pi[l] = xryr[4*VARN+l][m][n][k];
-				
-				HydroGrid[ioff + m][joff + n][k].PI = xryr[4*VARN+Npi][m][n][k];
-				HydroGrid[ioff + m][joff + n][k].P = xryr[4*VARN+Npi+NPI][m][n][k];
+				} 
+				HydroGrid[ioff + m][joff + n][k].P = xryr[4*VARN ][m][n][k];
 			}
 		}	
 	}	
@@ -623,12 +565,8 @@ void UnpackXL( GRID HydroGrid )
 					HydroGrid[ioff + m][joff + n][k].u[l] = xlyl[2*VARN+l][m][n][k];
 					HydroGrid[ioff + m][joff + n][k].prevu[l] = xlyl[3*VARN+l][m][n][k];
 				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[ioff + m][joff + n][k].pi[l] = xlyl[4*VARN+l][m][n][k];
-				
-				HydroGrid[ioff + m][joff + n][k].PI = xlyl[4*VARN+Npi][m][n][k];
-				HydroGrid[ioff + m][joff + n][k].P = xlyl[4*VARN+Npi+NPI][m][n][k];
+				 
+				HydroGrid[ioff + m][joff + n][k].P = xlyl[4*VARN ][m][n][k];
 			}
 		}	
 	
@@ -658,13 +596,8 @@ void UnpackXL( GRID HydroGrid )
 				{
 					HydroGrid[ioff + m][joff + n][k].u[l] = xlyr[2*VARN+l][m][n][k];
 					HydroGrid[ioff + m][joff + n][k].prevu[l] = xlyr[3*VARN+l][m][n][k];
-				}
-				
-				for(l=0;l<Npi;l++)
-					HydroGrid[ioff + m][joff + n][k].pi[l] = xlyr[4*VARN+l][m][n][k];
-				
-				HydroGrid[ioff + m][joff + n][k].PI = xlyr[4*VARN+Npi][m][n][k];
-				HydroGrid[ioff + m][joff + n][k].P = xlyr[4*VARN+Npi+NPI][m][n][k];
+				} 
+				HydroGrid[ioff + m][joff + n][k].P = xlyr[4*VARN ][m][n][k];
 			}
 		}	
 	}	

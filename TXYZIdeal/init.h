@@ -201,18 +201,15 @@ void initvar(GRID HydroGrid, double tau, double ts)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		HydroGrid[i][j][k].PI =   0;		
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] =   0;
 			
- 		DECLePPIa;
-		DECLp5u4;
+ 		DECLePa;
+		DECLu4;
 
 
-        HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + A1;
-        HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
-        HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + A3;
-        HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
+        HydroGrid[i][j][k].T00 = -P + (e + P )*pow(u0,2);
+        HydroGrid[i][j][k].T10 = (e + P )*u0*u1 ;
+        HydroGrid[i][j][k].T20 = (e + P )*u0*u2;
+        HydroGrid[i][j][k].T30 = (e + P)*u0*u3 ;
 	}
 }
 
@@ -247,7 +244,7 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 		
 		HydroGrid[i][j][k].u[0]= 1.0/(sqrt(1 - HydroGrid[i][j][k].Vx*HydroGrid[i][j][k].Vx
 											 - HydroGrid[i][j][k].Vy*HydroGrid[i][j][k].Vy
-											 - tau*tau*HydroGrid[i][j][k].Ve*HydroGrid[i][j][k].Ve
+											 - HydroGrid[i][j][k].Ve*HydroGrid[i][j][k].Ve
 											 )
 									 );
 		HydroGrid[i][j][k].u[1] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Vx;
@@ -266,18 +263,15 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
-	{
-		HydroGrid[i][j][k].PI =   0;
-		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] =   0;
+	{ 
 			
- 		DECLePPIa;
-		DECLp5u4;		
+ 		DECLePa;
+		DECLu4;		
 
-        HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + A1;
-        HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
-        HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + A3;
-        HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
+        HydroGrid[i][j][k].T00 = -P   + (e + P)*pow(u0,2);
+        HydroGrid[i][j][k].T10 = (e + P )*u0*u1;
+        HydroGrid[i][j][k].T20 = (e + P )*u0*u2;
+        HydroGrid[i][j][k].T30 = (e + P )*u0*u3;
 	}
 }
 #endif

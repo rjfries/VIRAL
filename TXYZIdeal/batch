@@ -1,0 +1,27 @@
+#BSUB -J hydro
+#BSUB -o stdout
+#BSUB -P 082858712092
+#BSUB -L /bin/bash
+#BSUB -W 120
+#BSUB -n 100
+#BSUB -u sidharthsp@gmail.com
+#BSUB -M 2700    
+
+
+## 20 cores/node
+
+#BSUB -R 'span[ptile=20]'
+
+# load intel toolchain
+module load GSL 
+module load ictce
+
+## ONLY SET THESE VARIABLES FOR RUNNING INTEL MPI JOBS (WITH MORE THAN 100 CORES)
+#export I_MPI_HYDRA_BOOTSTRAP=lsf
+#export I_MPI_LSF_USE_COLLECTIVE_LAUNCH=1
+#set this variable to the number of hosts ie. (-n value) divided by (ptile value)
+#export I_MPI_HYDRA_BRANCH_COUNT=40
+
+# launch MPI program using the hydra launcher
+mpiexec.hydra ./hydro
+#mpiexec.hydra amplxe-cl -c hotspots -r result_2 -- ./hydro

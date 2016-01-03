@@ -129,15 +129,10 @@ double tau;
 
 
 
-#define VARN 4
-#define Npi 5
-#define NPI 1
+#define VARN 4 
 
-#define PACKVAR    (4*VARN+Npi+NPI+1)//23
-#define BACKUPVAR (4*VARN+Npi+NPI+1) //23
-#define SVAR (VARN+Npi+NPI)  //15
-#define TEMPVAR 15
-
+#define PACKVAR    (4*VARN + 1) 
+#define SVAR (VARN )  
  
 #define EVAR 1
 typedef struct
@@ -148,16 +143,10 @@ typedef struct
 	double En,P,Vx,Vy,Ve,Temp;
 	double u[VARN];
 	double prevu[VARN], du[VARN][VARN];	//4 velocity and its derivative
-
-//for viscosity	
-	double pi[Npi], PI;  
-	
+ 
 //for source terms	
 	double Source [SVAR];
-
-//for backup variable	
-	double BackUp[BACKUPVAR];
-
+ 
 
 //Common For all hydro schemes
 	double Var[SVAR],  Result[SVAR],  PartialResult[SVAR];
@@ -167,15 +156,11 @@ typedef struct
 	double L0[SVAR],  L1[SVAR],  L2[SVAR];
 	
 	
-#if defined SHAS || defined ZAL
+#if defined SHAS  
 	double UTD,Ubar,A,Ac;
 	double NVx[SVAR],NVy[SVAR],NVz[SVAR];
 #endif
-	
-
-#ifdef VORT
-	double Vort[Npi];
-#endif
+	 
 
 #if defined KT
 	double Fx[SVAR], Fy[SVAR], Fz[SVAR];  //centered fluxes
@@ -225,12 +210,7 @@ typedef double (*PCKXY) [BORDER][BORDER][ZCMA];
 typedef double (*CAPXY) [XCM][YCM];
 
 #define WOODSAXON(r , width, loc)   (1.0/(1 + exp( (r - loc)/width) ) )
-#define HeaviSideTheta(num)   ( (num>=0)?1:0)
-
-
-void CalcNS(GRID HydroGrid, double tau, double ts);
-
-
+#define HeaviSideTheta(num)   ( (num>=0)?1:0) 
 inline double fmtoMev(double temp)
 {
 	double ret;
@@ -240,14 +220,7 @@ inline double fmtoMev(double temp)
 
 
 #define DECLTmu0      double T00 = HydroGrid[i][j][k].T00;double T10 = HydroGrid[i][j][k].T10;double T20 = HydroGrid[i][j][k].T20;double T30 = HydroGrid[i][j][k].T30
-#define DECLePPIa     double e = HydroGrid[i][j][k].En;double P = HydroGrid[i][j][k].P;double PI = HydroGrid[i][j][k].PI;double a = DPDE(HydroGrid[i][j][k].P )
-#define DECLp5u4      double p1 = HydroGrid[i][j][k].pi[0];double p2 = HydroGrid[i][j][k].pi[1];double p3 = HydroGrid[i][j][k].pi[2];double p4 = HydroGrid[i][j][k].pi[3];double p5 = HydroGrid[i][j][k].pi[4];double u0 = HydroGrid[i][j][k].u[0];double u1 = HydroGrid[i][j][k].u[1];double u2 = HydroGrid[i][j][k].u[2];double u3 = HydroGrid[i][j][k].u[3]
-#define DECLp5        double p1 = HydroGrid[i][j][k].pi[0];double p2 = HydroGrid[i][j][k].pi[1];double p3 = HydroGrid[i][j][k].pi[2];double p4 = HydroGrid[i][j][k].pi[3];double p5 = HydroGrid[i][j][k].pi[4]
+#define DECLePa     double e = HydroGrid[i][j][k].En;double P = HydroGrid[i][j][k].P; double a = DPDE(HydroGrid[i][j][k].P )
 #define DECLu4        double u0 = HydroGrid[i][j][k].u[0]; double u1 = HydroGrid[i][j][k].u[1]; double u2 = HydroGrid[i][j][k].u[2];double u3 = HydroGrid[i][j][k].u[3]
 #define DECLcoord     double X = HydroGrid[i][j][k].X;     double Y = HydroGrid[i][j][k].Y;     double eta = HydroGrid[i][j][k].eta;double r = HydroGrid[i][j][k].r
-      
-#define A1 (-((2*p3*u1*u2 + 2*p4*u1*u3 + 2*p5*u2*u3 + p1*pow(u1,2) + p2*pow(u2,2) - p1*pow(u3,2) - p2*pow(u3,2))*pow(-pow(u0,2) + pow(u3,2),-1)))    
-#define A2 ((p1*u1 + p3*u2 + p4*u3)*pow(u0,-1))     
-#define A3 ((p3*u1 + p2*u2 + p5*u3)*pow(u0,-1))     
-#define A4 (pow(u0,-1)*(2*p3*u1*u2*u3 + (p4*u1 + p5*u2 - (p1 + p2)*u3)*pow(u0,2) + p1*u3*pow(u1,2) + p2*u3*pow(u2,2) + p4*u1*pow(u3,2) + p5*u2*pow(u3,2))*pow(pow(u0,2) - pow(u3,2),-1))     
-#define A5 (-((2*p3*u1*u2 + 2*p4*u1*u3 + 2*p5*u2*u3 - (p1 + p2)*pow(u0,2) + p1*pow(u1,2) + p2*pow(u2,2))*pow(-pow(u0,2) + pow(u3,2),-1)))     
+       

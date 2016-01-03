@@ -21,43 +21,25 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		DECLp5u4;
-		DECLePPIa;
+		DECLu4;
+		DECLePa;
  
-		HydroGrid[i][j][k].Fx[0] =  (  A2 + u1*u0*(e+P-PI)            );
-		HydroGrid[i][j][k].Fx[1] =  (  p1 + (P-PI) + u1*u1*(e+P-PI)   );
-		HydroGrid[i][j][k].Fx[2] =  (  p3 + u1*u2*(e+P-PI)            );
-		HydroGrid[i][j][k].Fx[3] =  (  p4 + u1*u3*(e+P-PI)            ); 
-        HydroGrid[i][j][k].Fx[4]=  (p1*u1)/u0;
-        HydroGrid[i][j][k].Fx[5]=  (p2*u1)/u0;
-        HydroGrid[i][j][k].Fx[6]=  (p3*u1)/u0;
-        HydroGrid[i][j][k].Fx[7]=  (p4*u1)/u0;
-        HydroGrid[i][j][k].Fx[8]=  (p5*u1)/u0;
-        HydroGrid[i][j][k].Fx[9]=  (PI*u1)/u0;
+		HydroGrid[i][j][k].Fx[0] =  (  u1*u0*(e+P)            );
+		HydroGrid[i][j][k].Fx[1] =  (  P + u1*u1*(e+P)        );
+		HydroGrid[i][j][k].Fx[2] =  (  u1*u2*(e+P)            );
+		HydroGrid[i][j][k].Fx[3] =  (  u1*u3*(e+P)            );  
 
  
-		HydroGrid[i][j][k].Fy[0] =  (  A3 + u2*u0*(e+P-PI)            );
-		HydroGrid[i][j][k].Fy[1] =  (  p3 + u2*u1*(e+P-PI)            );
-		HydroGrid[i][j][k].Fy[2] =  (  p2 + (P-PI) + u2*u2*(e+P-PI)   );
-		HydroGrid[i][j][k].Fy[3] =  (  p5 + u2*u3*(e+P-PI)            ); 
-		HydroGrid[i][j][k].Fy[4]=  (p1*u2)/u0;
-        HydroGrid[i][j][k].Fy[5]=  (p2*u2)/u0;
-        HydroGrid[i][j][k].Fy[6]=  (p3*u2)/u0;
-        HydroGrid[i][j][k].Fy[7]=  (p4*u2)/u0;
-        HydroGrid[i][j][k].Fy[8]=  (p5*u2)/u0;
-        HydroGrid[i][j][k].Fy[9]=  (PI*u2)/u0;
+		HydroGrid[i][j][k].Fy[0] =  (  u2*u0*(e+P)            );
+		HydroGrid[i][j][k].Fy[1] =  (  u2*u1*(e+P)            );
+		HydroGrid[i][j][k].Fy[2] =  (  P + u2*u2*(e+P)        );
+		HydroGrid[i][j][k].Fy[3] =  (  u2*u3*(e+P)            );  
 
  
-  		HydroGrid[i][j][k].Fz[0] =  (  A4 + u3*u0*(e+P-PI)                     );
-		HydroGrid[i][j][k].Fz[1] =  (  p4 + u3*u1*(e+P-PI)                     );
-		HydroGrid[i][j][k].Fz[2] =  (  p5 + u3*u2*(e+P-PI)                     );
-		HydroGrid[i][j][k].Fz[3] =  (  A5 + (P-PI)   + u3*u3*(e+P-PI)     );	 
-		HydroGrid[i][j][k].Fz[4]=  (p1*u3)/u0;
-        HydroGrid[i][j][k].Fz[5]=  (p2*u3)/u0;
-        HydroGrid[i][j][k].Fz[6]=  (p3*u3)/u0;
-        HydroGrid[i][j][k].Fz[7]=  (p4*u3)/u0;
-        HydroGrid[i][j][k].Fz[8]=  (p5*u3)/u0;
-        HydroGrid[i][j][k].Fz[9]=  (PI*u3)/u0;
+  		HydroGrid[i][j][k].Fz[0] =  (  u3*u0*(e+P)            );
+		HydroGrid[i][j][k].Fz[1] =  (  u3*u1*(e+P)            );
+		HydroGrid[i][j][k].Fz[2] =  (  u3*u2*(e+P)            );
+		HydroGrid[i][j][k].Fz[3] =  (  P + u3*u3*(e+P)        );	  
 	}	
 }
 
@@ -108,7 +90,6 @@ void WENOY_##VAR(GRID HydroGrid , int NVAR  ){\
 		
 		
 #if !defined LBI
-
 #define WENOZ(VAR )\
 void WENOZ_##VAR(GRID HydroGrid , int NVAR  ){\
 	double w[3], q[3], d[3], alpha[3];\
@@ -153,8 +134,8 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)  
 	{
-		DECLePPIa;
-		DECLp5u4;
+		DECLePa;
+		DECLu4;
 		DECLTmu0;
 		 
 		HydroGrid[i][j][k].Ax[0] = u1/u0;  
@@ -169,8 +150,8 @@ void FindEigenValuesY(GRID HydroGrid, double tau)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++) 
 	{
-		DECLePPIa;
-		DECLp5u4;
+		DECLePa;
+		DECLu4;
 		DECLTmu0;
 		HydroGrid[i][j][k].Ay[0] = u2/u0;  
 	}
@@ -186,8 +167,8 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++) 
 	{  
-		DECLePPIa;
-		DECLp5u4;
+		DECLePa;
+		DECLu4;
 		DECLTmu0;
 		
  	HydroGrid[i][j][k].Az[0] = u3/u0;  
@@ -278,12 +259,7 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Var[0]= HydroGrid[i][j][k].T00;
 		HydroGrid[i][j][k].Var[1]= HydroGrid[i][j][k].T10;
 		HydroGrid[i][j][k].Var[2]= HydroGrid[i][j][k].T20;
-		HydroGrid[i][j][k].Var[3]= HydroGrid[i][j][k].T30;
-		
-		for(int l=0;l<Npi;l++)
-			HydroGrid[i][j][k].Var[VARN+l]=  HydroGrid[i][j][k].pi[l];
-		
-		HydroGrid[i][j][k].Var[VARN+Npi]=  HydroGrid[i][j][k].PI;
+		HydroGrid[i][j][k].Var[3]= HydroGrid[i][j][k].T30; 
 	}
 }
 
