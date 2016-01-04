@@ -42,8 +42,8 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Fz[3] =  (  P + u3*u3*(e+P)        );	  
 	}	
 }
-
-
+  
+		
 #define WENOX(VAR )\
 void WENOX_##VAR(GRID HydroGrid , int NVAR  ){\
 	double w[3], q[3], d[3], alpha[3];\
@@ -62,7 +62,8 @@ void WENOX_##VAR(GRID HydroGrid , int NVAR  ){\
 		else if(i==1){qm2=qm1=HydroGrid[i-1][j][k].VAR[l]; qp1=HydroGrid[i+1][j][k].VAR[l];qp2=HydroGrid[i+2][j][k].VAR[l];}\
 		else if(i==XCM-2){qm2=HydroGrid[i-2][j][k].VAR[l]; qm1=HydroGrid[i-1][j][k].VAR[l];qp1=qp2=HydroGrid[i+1][j][k].VAR[l];}\
 		else if(i==XCM-1){qm2=HydroGrid[i-2][j][k].VAR[l]; qm1=HydroGrid[i-1][j][k].VAR[l];qp1=qp2=qc;}\
-		HydroGrid[i][j][k].VAR##LX[l] = genWENOL(qm2,qm1,qc,qp1,qp2);HydroGrid[i-1][j][k].VAR##RX[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+		HydroGrid[i][j][k].VAR##LX[l] = genWENOL(qm2,qm1,qc,qp1,qp2);HydroGrid[i-1][j][k].VAR##RX[l] = genWENOR(qm2,qm1,qc,qp1,qp2);/*	
+		HydroGrid[i][j][k].VAR##LX[l] = genminmodL(qm1,qc,qp1,XS,1.1);HydroGrid[i-1][j][k].VAR##RX[l]= genminmodR(qm1,qc,qp1,XS,1.1);*/\
 	}\
 } 
 
@@ -84,7 +85,8 @@ void WENOY_##VAR(GRID HydroGrid , int NVAR  ){\
 		else if(j==1){qm2=qm1=HydroGrid[i][j-1][k].VAR[l]; qp1=HydroGrid[i][j+1][k].VAR[l];qp2=HydroGrid[i][j+2][k].VAR[l];}\
 		else if(j==YCM-2){qm2=HydroGrid[i][j-2][k].VAR[l]; qm1=HydroGrid[i][j-1][k].VAR[l];qp1=qp2=HydroGrid[i][j+1][k].VAR[l];}\
 		else if(j==YCM-1){qm2=HydroGrid[i][j-2][k].VAR[l]; qm1=HydroGrid[i][j-1][k].VAR[l];qp1=qp2=qc;}\
-		HydroGrid[i][j][k].VAR##LY[l] = genWENOL(qm2,qm1,qc,qp1,qp2);	HydroGrid[i][j-1][k].VAR##RY[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+		HydroGrid[i][j][k].VAR##LY[l] = genWENOL(qm2,qm1,qc,qp1,qp2);	HydroGrid[i][j-1][k].VAR##RY[l] = genWENOR(qm2,qm1,qc,qp1,qp2);/*
+		HydroGrid[i][j][k].VAR##LY[l] = genminmodL(qm1,qc,qp1,YS,1.1);HydroGrid[i-1][j][k].VAR##RY[l]= genminmodR(qm1,qc,qp1,YS,1.1);*/\
 	}\
 } 
 		
@@ -108,7 +110,8 @@ void WENOZ_##VAR(GRID HydroGrid , int NVAR  ){\
 		else if(k==1){qm2=qm1=HydroGrid[i][j][k-1].VAR[l]; qp1=HydroGrid[i][j][k+1].VAR[l];qp2=HydroGrid[i][j][k+2].VAR[l];}\
 		else if(k==ZCM-2){qm2=HydroGrid[i][j][k-2].VAR[l]; qm1=HydroGrid[i][j][k-1].VAR[l];qp1=qp2=HydroGrid[i][j+1][k].VAR[l];}\
 		else if(k==ZCM-1){qm2=HydroGrid[i][j][k-2].VAR[l]; qm1=HydroGrid[i][j][k-1].VAR[l];qp1=qp2=qc;}\
-		HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2);	HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2);\
+		HydroGrid[i][j][k].VAR##LZ[l] = genWENOL(qm2,qm1,qc,qp1,qp2);	HydroGrid[i][j][k-1].VAR##RZ[l] = genWENOR(qm2,qm1,qc,qp1,qp2);/*
+		HydroGrid[i][j][k].VAR##LZ[l] = genminmodL(qm1,qc,qp1,ZS,1.1);HydroGrid[i-1][j][k].VAR##RZ[l]= genminmodR(qm1,qc,qp1,ZS,1.1);*/ \
 	}\
 } 
 	
@@ -163,7 +166,7 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 	for(k=kl;k<kr;k++) 
 	{   
 		DECLu4;  
-		HydroGrid[i][j][k].Az[0] = 2*u3/u0;  
+		HydroGrid[i][j][k].Az[0] = u3/u0;  
 
 	}
 }

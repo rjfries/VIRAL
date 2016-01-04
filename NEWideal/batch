@@ -2,14 +2,15 @@
 #BSUB -o stdout
 #BSUB -P 082858712092
 #BSUB -L /bin/bash
-#BSUB -W 30
-#BSUB -n 25
+#BSUB -W 55
+#BSUB -n 16
 #BSUB -u sidharthsp@gmail.com
+#BSUB -M 1000
 
 ## 20 cores/node
 ## tau step no. 2520 at time 249.65000 seconds
 
-#BSUB -R 'span[ptile=20]'
+#BSUB -R 'span[ptile=16]'
 
 # load intel toolchain
 module load GSL 

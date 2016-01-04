@@ -54,6 +54,34 @@ inline double genminmod(double um, double u, double up, double dx, double gminv 
 	return ret;
 }
 
+
+
+inline double genminmodL(double um, double u, double up, double dx, double gminv )
+{
+
+	if(gminv<0)
+		return ((up-um)/(2*dx));
+		
+	double diff = gminv;	
+	double ret = minmod(diff*((u-um)/dx) , ((up-um)/(2*dx)) ,diff*((up-u)/dx));
+
+	return u+ret*dx/2;
+}
+
+
+inline double genminmodR(double um, double u, double up, double dx, double gminv )
+{
+
+
+	if(gminv<0)
+		return ((up-um)/(2*dx));
+		
+	double diff = gminv;	
+	double ret = minmod(diff*((u-um)/dx) , ((up-um)/(2*dx)) ,diff*((up-u)/dx));
+
+	return u-ret*dx/2;
+}
+
  inline double genWENOder(double qm2, double qm1, double qc, double qp1, double qp2, double dx  )
 { 	
 	double w[3], q[3], d[3], alpha[3];

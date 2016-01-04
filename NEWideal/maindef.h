@@ -68,10 +68,10 @@ double tau;
 	#define NP (NPX*NPY*NPZ)
 
 	#define TAUSTART 1.00 
-	#define XL 6
+	#define XL 8
 	#define XS 0.1
 
-	#define YL 6
+	#define YL 8
 	#define YS 0.1
 
 	#define ZL 0.1
