@@ -18,9 +18,11 @@
 #define YCMA ((int)(YL/YS+OFF))
 
 #if defined LBI 
-#define ZCMA 1
+	#define ZCM 1
+	#define ZCMA 1
 #else 
-#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
+	#define ZCM ((int)(2*(ZL/ZS)+OFF+1+2*BORDER)) 
+	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
 #endif
 
 double ts;
@@ -29,19 +31,19 @@ double tau;
 
 
 #if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST) 
-//~ #define NSINIT
-//~ #define ZEROINIT   
+	//~ #define NSINIT
+	//~ #define ZEROINIT   
 	#define LBI
 
-	#define NPX  4
-	#define NPY  4 
+	#define NPX  1
+	#define NPY  1 
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0.60 
-	#define TS 0.01
-	#define XL 6
+	#define TS 0.002
+	#define XL 1
 	#define XS 0.1
-	#define YL 6
+	#define YL 1
 	#define YS 0.1
 	
 #ifdef LBI
@@ -53,7 +55,7 @@ double tau;
 #endif	
 	
 	#define PFREQ 0.1
-	#define FREQ ((int)2)
+	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
 	
 	inline double EOS(double en )                                       {return (en/3.0                        );}	
@@ -162,8 +164,7 @@ double tau;
 
 
 
-#if defined(GINIT) 
-	#define LBI
+#if defined(GINIT)  
 	#define BULK
 	#define S95P
 	#define VORT
@@ -172,33 +173,33 @@ double tau;
 	#define PEDESTAL 0 	
 	
 	#define NOS  6 //per side	for ginit.h
-	#define NPX  10
-	#define NPY  10
+	#define NPX  4
+	#define NPY  4
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0.1
 	#define TS 0.002
-	#define XL 4
+	#define XL 5
 	#define XS 0.1
-	#define YL 4
+	#define YL 5
 	#define YS 0.1
 	
 #ifdef LBI
 	#define ZL 0
 	#define ZS 0.1
 #else
-	#define ZL 5
+	#define ZL 2
 	#define ZS 0.1
 #endif	
 
 	#define PFREQ 0.1
-	#define FREQ ((int)5)
-	#define FREQZ ((int)1)
+	#define FREQ ((int)2)
+	#define FREQZ ((int)5)
 	
 	inline double EOS(double en )                                       {return (s95p_p(en)                    );}	
 	inline double DPDE(double en )                                      {return (s95p_a(en)                    );}	 
 	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
-	inline double FT(double en)                                       {return (s95p_T(en)                    );}
+	inline double FT(double en)                                         {return (s95p_T(en)                    );}
 	inline double FS( double en, double Pr, double T)                   {return (s95p_s(en)                    );}
 
 	#define SCALE_VIS 1
@@ -385,7 +386,7 @@ typedef struct
 
 double BMax;
 
-typedef cell (*GRID) [YCM][ZCMA];
+typedef cell (*GRID) [YCM][ZCM];
 GRID HydroGrid;
 
 

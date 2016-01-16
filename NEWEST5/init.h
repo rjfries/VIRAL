@@ -12,80 +12,72 @@ int rank, size, root=0;
 //mpi_init
 int xcord,ycord,zcord;
 MPI_Comm mpi_grid;
-int il,jl,ir,jr;
+int il,jl,kl,ir,jr,kr;
 int debug = 0;
+ 
+#define BOUNDARY -1 
 
 #define GRIDXPOINTS  (NPX*XCMA)
 #define GRIDYPOINTS  (NPY*YCMA)
-#define GRIDZPOINTS  (ZCMA)
-
 #define GRIDXMAX ((GRIDXPOINTS/2 )*XS)
-#define GRIDYMAX ((GRIDYPOINTS/2 )*YS)
-#define GRIDZMAX ((GRIDZPOINTS/2 )*ZS)
+#define GRIDYMAX ((GRIDYPOINTS/2 )*YS) 
 
- 
-
-//Define's which inherit values based on global dependence aka (xcord,ycord,zcord)
 #define XSTART   (-GRIDXMAX + xcord*(XL))
 #define XEND	(XSTART+(XCMA-1)*XS)
 #define YSTART   (-GRIDYMAX + ycord*(YL))
 #define YEND	(YSTART+(YCMA-1)*YS)
-
-#define ZSTART   ( -GRIDZMAX + zcord*(ZL) )
-#define ZEND	( ZSTART+(ZCMA-1)*ZS )
-
 
 #define iSTART   (xcord*(XCMA))
 #define iEND	(iSTART+(XCMA-1))
 #define jSTART  ( ycord*(YCMA))
 #define jEND	(jSTART+(YCMA-1))
 
-#if !defined  LBI
-#define kSTART  ( zcord*(ZCMA))
-#define kEND	(kSTART+(ZCMA-1))
-#endif
-
-
-#if defined  LBI
-#define kSTART  (0)
-#define kEND	(1)
-#endif
-
-
 #define iSTARTWB   (iSTART)
 #define iENDWB	(iEND+2*(BORDER))
 #define jSTARTWB  (jSTART)
 #define jENDWB	(jEND+2*(BORDER))
 
-//~ #define kSTARTWB  (kSTART)
-//~ #define kENDWB	(kEND+2*(BORDER))
-
-
 inline int MYGLOBALi(int i)   {return(iSTARTWB+i);}
 inline int MYGLOBALj(int j)   {return(jSTARTWB+j);}
-//~ inline int MYGLOBALk(int k)   {return(kSTARTWB+k);} 
-
 inline int MYGLOBALiWB(int i)   {return(iSTART+(i-BORDER)); }
 inline int MYGLOBALjWB(int j)   {return(jSTART+(j-BORDER)); }
-//~ inline int MYGLOBALkWB(int k)   {return(kSTART+(k-BORDER)); }
-
- 
 
 inline double  XCORD(int i)  {return(XSTART + (i)*XS); }
-inline double  YCORD(int j)  {return(YSTART + (j)*YS); }
- 
-inline double  ZCORD(int k)  {return(ZSTART + (k)*ZS); } 
-
+inline double  YCORD(int j)  {return(YSTART + (j)*YS); } 
 inline double  XCORDWB(int i)  {return(XSTART + (i-BORDER)*XS); }
 inline double  YCORDWB(int j)  {return(YSTART + (j-BORDER)*YS); }
+ 
 
-#if !defined  LBI
-inline double ZCORDWB(int k)  {return(ZSTART + (k)*ZS); }
-#else
-inline double ZCORDWB(int k) {return ZSTART;}
+
+#if defined  LBI
+	#define GRIDZPOINTS  (1)
+	#define GRIDZMAX ( 0 )
+	#define kSTART  (0)
+	#define kEND	(1)
+	#define kSTARTWB  (0)
+	#define kENDWB	(1)
+	#define ZSTART   ( 0 )
+	#define ZEND	( 0 )
+	inline int MYGLOBALk(int k)   {return(kSTARTWB+k);} 
+	inline int MYGLOBALkWB(int k)   {return(kSTART+(k-BORDER)); }
+	inline double ZCORD(int k)  {return(ZSTART ); }
+	inline double ZCORDWB(int k)  {return(ZSTART); }
+#else 
+	#define GRIDZPOINTS  (ZCMA)
+	#define GRIDZMAX ((GRIDZPOINTS/2 )*ZS)
+	#define kSTART  (0)
+	#define kEND	(ZCMA-1)
+	#define kSTARTWB  (0)
+	#define kENDWB	(kEND+2*(BORDER))
+	#define ZSTART   ( -GRIDZMAX )
+	#define ZEND	( ZSTART+(ZCMA-1)*ZS )
+	inline int MYGLOBALk(int k)   {return(kSTARTWB+k);} 
+	inline int MYGLOBALkWB(int k)   {return(kSTART+(k-BORDER)); }
+	inline double ZCORD(int k)  {return(ZSTART + (k)*ZS); }
+	inline double ZCORDWB(int k) {return (ZSTART + (k-BORDER)*ZS); }
 #endif
+ 
 
-#define BOUNDARY -1
 
 inline int RANK(int i, int j,int k) 
 {
@@ -104,26 +96,18 @@ inline int RANK(int i, int j,int k)
 #define MYYLEFT ((!ycord)?BOUNDARY:RANK(xcord,ycord-1,zcord) )
 #define MYYRIGHT ((!(ycord-(NPY-1))?BOUNDARY:RANK(xcord,ycord+1,zcord) ))
 
-
-
 #define MYXLYL (     (MYXLEFT != BOUNDARY && MYYLEFT != BOUNDARY )?  RANK(xcord-1,ycord-1,zcord) : BOUNDARY  )
 #define MYXLYR (     (MYXLEFT != BOUNDARY && MYYRIGHT != BOUNDARY )?  RANK(xcord-1,ycord+1,zcord) : BOUNDARY  ) 
 
-
 #define MYXRYL (     (MYXRIGHT != BOUNDARY && MYYLEFT != BOUNDARY )?  RANK(xcord+1,ycord-1,zcord) : BOUNDARY  )
 #define MYXRYR (     (MYXRIGHT != BOUNDARY && MYYRIGHT != BOUNDARY )?  RANK(xcord+1,ycord+1,zcord) : BOUNDARY  ) 
-
-
 
 #define MYZLEFT  ( BOUNDARY )
 #define MYZRIGHT ( BOUNDARY )
 
 
-
-
 void initvar(GRID HydroGrid);
 void ginit(GRID HydroGrid, double tau);
-
 
 void mpi_init()
 {
@@ -161,7 +145,7 @@ void initvar(GRID HydroGrid, double tau, double ts)
 //define your initial conditions
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		double step = 16;
 		double x =  HydroGrid[i][j][k].X;
@@ -170,7 +154,12 @@ void initvar(GRID HydroGrid, double tau, double ts)
 		double r =  HydroGrid[i][j][k].r;
 		
 		
-		HydroGrid[i][j][k].En = 16*exp(-r*r);
+		HydroGrid[i][j][k].En = 16;
+		double AbsE = fabs(eta);
+		double EtaF = 4; //flat part of eta
+		double sig = 1;		
+		double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
+		HydroGrid[i][j][k].En *= cutoff;
 		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En  );
 	
 		
@@ -202,7 +191,7 @@ void initvar(GRID HydroGrid, double tau, double ts)
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		HydroGrid[i][j][k].PI =   0;		
 		for(l=0;l<Npi;l++)
@@ -230,7 +219,7 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 //define your initial conditions
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		double x =  HydroGrid[i][j][k].X;
 		double y =  HydroGrid[i][j][k].Y;
@@ -268,7 +257,7 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		HydroGrid[i][j][k].PI =   0;
 		for(l=0;l<Npi;l++)
@@ -294,7 +283,7 @@ void initBulktest(GRID HydroGrid, double tau, double ts)
 //define your initial conditions
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		double x =  HydroGrid[i][j][k].X;
 		double y =  HydroGrid[i][j][k].Y;
@@ -332,7 +321,7 @@ void initBulktest(GRID HydroGrid, double tau, double ts)
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		HydroGrid[i][j][k].PI =   0;
 		for(l=0;l<Npi;l++)
@@ -401,7 +390,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		//~ DECLcoord;
 		
@@ -428,7 +417,6 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 			HydroGrid[i][j][k].u[1] = 0;
 			HydroGrid[i][j][k].u[2] = 0;
 		}		
-				
 		HydroGrid[i][j][k].P        = EOS(HydroGrid[i][j][k].En   );		
 		HydroGrid[i][j][k].u[0]     = cosh(kappa);
 		HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][k].u[0];		
@@ -438,7 +426,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 	  
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		DECLcoord;
 		 	
@@ -453,6 +441,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		{
 			HydroGrid[i][j][k].prevu[1] = (0);
 			HydroGrid[i][j][k].prevu[2] = (0);			
+			
 		}
 		HydroGrid[i][j][k].prevu[0]  =  cosh(kappa);
 	}
@@ -460,14 +449,14 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
  		DECLp5u4;
  		DECLePPIa;
 		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + A1;
-        HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
-        HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + A3;
-        HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
+		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
+		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + A3;
+		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
 	}
 }
 #endif
@@ -486,7 +475,7 @@ void init(double tau, double ts)
 	
 	for(  i = 0 ; i< XCM; i++)
 	for(  j = 0 ; j< YCM; j++)
-	for(  k = 0 ; k< ZCMA; k++)
+	for(  k = 0 ; k< ZCM; k++)
 	{
 		HydroGrid[i][j][k].X = XCORDWB(i);
 		HydroGrid[i][j][k].Y = YCORDWB(j);
@@ -499,22 +488,40 @@ void init(double tau, double ts)
 	ir=il+XCMA;
 	jr=jl+YCMA;
 	
+
+#if !defined LBI
+	kl=BORDER;
+	kr=kl+ZCMA;
+#else 
+	kl=0;
+	kr=1;
+#endif
+
 	for(i = 0; i< XCM; i++)
 	for(j = 0; j< YCM; j++)
-	for(k = 0; k< ZCMA; k++)
+	for(k = 0; k< ZCM; k++)
 	{	
 		if( (i >= il && i<ir ) &&
-			(j >= jl && j<jr )  
+			(j >= jl && j<jr ) &&
+			(k >= kl && k<kr ) 
 			)
 			HydroGrid[i][j][k].RELEVANT=true;			
 		else
 		if( (i < il || i>=ir ) &&
-			(j >= jl && j<jr )  
+			(j >= jl && j<jr ) &&
+			(k >= kl && k<kr ) 
 			)
 			HydroGrid[i][j][k].RELEVANT=true;
 		else
 		if( (j < jl || j >= jr ) &&
-			(i >= il && i < ir )  
+			(i >= il && i < ir ) &&
+			(k >= kl && k < kr ) 
+			)
+			HydroGrid[i][j][k].RELEVANT=true;
+		else
+		if( (k < kl || k >= kr ) &&
+			(i >= il && i < ir ) &&
+			(j >= jl && j < jr )  
 			)
 			HydroGrid[i][j][k].RELEVANT=true;
 		else			
@@ -532,8 +539,8 @@ void init(double tau, double ts)
 		cout<<"Number of Processors == ( "<<NPX<<" , "<<NPY << " , " <<1<<" ) == "<<NP<<endl;
 		cout<<"Points in total      == ( "<<GRIDXPOINTS<<" , "<<GRIDYPOINTS << " , " <<GRIDZPOINTS<<" )"<<endl;
 		cout<<"Points per process   == ( "<<XCMA<<" , "<<YCMA << " , " <<ZCMA<<" )"<<endl;		
-		cout<<"XCM,YCM,ZCMA         == ( "<<XCM<<" , "<<YCM << " , " <<ZCMA<<" )"<<endl;
-		cout<<"(il,jl,0).(ir,jr,ZCMA)== ( "<<il<<" , "<<jl << " , " <<0<<" )"<<".( "<<ir<<" , "<<jr << " , " <<ZCMA<<" )"<<endl<<endl<<endl<<endl;
+		cout<<"XCM,YCM,ZCM         == ( "<<XCM<<" , "<<YCM << " , " <<ZCM<<" )"<<endl;
+		cout<<"(il,jl,kl).(ir,jr,kr)== ( "<<il<<" , "<<jl << " , " <<kl<<" )"<<".( "<<ir<<" , "<<jr << " , " <<kr<<" )"<<endl<<endl<<endl<<endl;
 	}
 	
 	

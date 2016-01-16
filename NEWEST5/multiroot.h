@@ -9,23 +9,21 @@ void CheckRoot(GRID HydroGrid , double tau)
 	int i,j,k,l;
 
 	
-	double maxTT[9]={0,0,0,0,0,0,0,0,0};
-		
-	double sumTT[9]={0,0,0,0,0,0,0,0,0};
-	
+	double maxTT[9]={0,0,0,0,0,0,0,0,0};		
+	double sumTT[9]={0,0,0,0,0,0,0,0,0};	
 	double inavg[9]={0,0,0,0,0,0,0,0,0};
 	double outavg[9]={0,0,0,0,0,0,0,0,0};
 	
 		
 	struct {
-	double val;
-	int   rank;
+	double   val;
+	int  rank;
 	} in[9], out[9];
 	
 	int count=0;
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		count++;
 		double W = HydroGrid[i][j][k].T00;
@@ -62,7 +60,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
  
 		double u0 = HydroGrid[i][j][k].u[0];
@@ -77,10 +75,10 @@ void CheckRoot(GRID HydroGrid , double tau)
 		double p4 = HydroGrid[i][j][k].pi[3];
 		double p5 = HydroGrid[i][j][k].pi[4];
 		
-		double pi00 = -((2*p3*u1*u2 + p1*pow(u1,2) + p2*pow(u2,2) + pow(tau,2)*(2*(p4*u1 + p5*u2)*u3 - (p1 + p2)*pow(u3,2)))*pow(-pow(u0,2) + pow(tau,2)*pow(u3,2),-1));;
-		double pi01 = (p1*u1 + p3*u2 + p4*u3*pow(tau,2))*pow(u0,-1);
-		double pi02 = (p3*u1 + p2*u2 + p5*u3*pow(tau,2))*pow(u0,-1);
-		double pi03 = pow(u0,-1)*(2*p3*u1*u2*u3 + (p4*u1 + p5*u2 - (p1 + p2)*u3)*pow(u0,2) + p1*u3*pow(u1,2) + p2*u3*pow(u2,2) + p4*u1*pow(tau,2)*pow(u3,2) + p5*u2*pow(tau,2)*pow(u3,2))*pow(pow(u0,2) - pow(tau,2)*pow(u3,2),-1);
+		double pi00 = A1;
+		double pi01 = A2;
+		double pi02 = A3;
+		double pi03 = A4;
 		
 		double pi11 = p1;
 		double pi12 = p3;
@@ -89,7 +87,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		double pi22 = p2;
 		double pi23 = p5;
 		
-		double pi33 = -(pow(tau,-2)*(2*p3*u1*u2 + 2*(p4*u1 + p5*u2)*u3*pow(tau,2) - (p1 + p2)*pow(u0,2) + p1*pow(u1,2) + p2*pow(u2,2))*pow(-pow(u0,2) + pow(tau,2)*pow(u3,2),-1));;
+		double pi33 = A5;
 		
 		double r = HydroGrid[i][j][k].r;
 
@@ -169,37 +167,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		cout<<std::scientific<<"ROOT CHECK EQN 4 -- MAX "<< maxTT[3]<<" &     Avg "<< outavg[3]/NP<<endl;
 		fflush(stdout);
 	}	
-		
-	
-	//~ MPI_Barrier(mpi_grid);
-	
-	//~ if(rank==out[4].rank)
-	//~ {
-		//~ cout<<std::scientific<<"ROW 0 TRANSVERSALITY -- MAX "<< maxTT[4]<<" &     Avg "<< outavg[4]/NP<<endl;
-		//~ fflush(stdout);
-	//~ }	
-	//~ 
-	//~ MPI_Barrier(mpi_grid);
-	//~ if(rank==out[5].rank)
-	//~ {
-		//~ cout<<std::scientific<<"ROW 1 TRANSVERSALITY-- MAX "<< maxTT[5]<<" &     Avg "<< outavg[5]/NP<<endl;
-		//~ fflush(stdout);
-	//~ }	
-	//~ 
-	//~ MPI_Barrier(mpi_grid);
-	//~ if(rank==out[6].rank)
-	//~ {
-		//~ cout<<std::scientific<<"ROW 2 TRANSVERSALITY-- MAX "<< maxTT[6]<<" &     Avg "<< outavg[6]/NP<<endl;
-		//~ fflush(stdout);
-	//~ }	
-	//~ 
-	//~ MPI_Barrier(mpi_grid);
-	//~ if(rank==out[7].rank)
-	//~ {
-		//~ cout<<std::scientific<<"ROW 3 TRANSVERSALITY -- MAX "<< maxTT[7]<<" &     Avg "<< outavg[7]/NP<<endl;
-		//~ fflush(stdout);
-	//~ }	
-	//~ 
+		 
 	MPI_Barrier(mpi_grid);
 	if(rank==out[8].rank)
 	{
@@ -364,7 +332,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		
 		struct rparams p = { HydroGrid[i][j][k].T00,
@@ -411,7 +379,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	
 	
 		gsl_vector *result;
-		int iter = 0, max_iter = 100;
+		int iter = 0, max_iter = 150;
 		do
 	    {
 			iter++;
@@ -475,7 +443,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	int quit =0;
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		
 		double En = HydroGrid[i][j][k].En ;

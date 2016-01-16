@@ -8,13 +8,13 @@ void CalcDer4Vel(GRID HydroGrid, double tau, double tstep)
 	for(l=0;l<VARN;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 		HydroGrid[i][j][k].du[l][0]  =  (HydroGrid[i][j][k].u[l] - HydroGrid[i][j][k].prevu[l])/tstep; 
 	
  	
 	for(l=0;l<VARN;l++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		for(i=2;i<XCM-2;i++)
 		{
@@ -33,7 +33,7 @@ void CalcDer4Vel(GRID HydroGrid, double tau, double tstep)
 	
 	for(l=0;l<VARN;l++)
 	for(i=il;i<ir;i++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		for(j=2;j<YCM-2;j++)
 		{
@@ -55,13 +55,13 @@ void CalcDer4Vel(GRID HydroGrid, double tau, double tstep)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	{
-		for(k=0;k<ZCMA;k++)
+		for(k=0;k<ZCM;k++)
 		{
 			double  qm2,qm1, qc,qp1,qp2;
 			
 			qc=HydroGrid[i][j][k].u[l];
 			
-			if(k>1 && k<ZCMA-2)
+			if(k>1 && k<ZCM-2)
 			{			
 				qm1=HydroGrid[i][j][k-1].u[l];
 				qm2=HydroGrid[i][j][k-2].u[l];
@@ -80,13 +80,13 @@ void CalcDer4Vel(GRID HydroGrid, double tau, double tstep)
 				qp1 = HydroGrid[i][j][k+1].u[l];
 				qp2 = HydroGrid[i][j][k+2].u[l];
 			}
-			else if(k==ZCMA-2)
+			else if(k==ZCM-2)
 			{	
 				qm1=HydroGrid[i][j][k-1].u[l];
 				qm2=HydroGrid[i][j][k-2].u[l];
 				qp2=qp1=HydroGrid[i][j][k+1].u[l]; 
 			}
-			else if(k==ZCMA-1)
+			else if(k==ZCM-1)
 			{			
 				qm1=HydroGrid[i][j][k-1].u[l];
 				qm2=HydroGrid[i][j][k-2].u[l];
@@ -114,7 +114,7 @@ void AddVorticity(GRID HydroGrid, double tau)
 		   
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		
 		DECLp5u4; 
@@ -154,7 +154,7 @@ void AddVorticity(GRID HydroGrid, double tau)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	for(l=0;l<Npi;l++)
 		  HydroGrid[i][j][k].Source[VARN+l] += HydroGrid[i][j][k].Vort[l];
 		  
@@ -178,7 +178,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
  
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 
 		DECLePPIa;
@@ -194,7 +194,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 #ifdef CON
 /*Xderivatives*/
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	for(i=il;i<ir;i++)
 	{
 		double q0[5];
@@ -227,7 +227,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 	} 
 
 /* Y derivatives*/
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	{		
@@ -268,7 +268,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 	
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++)
 	{
 		
 		DECLp5u4;
@@ -350,7 +350,7 @@ void ZeroInit(GRID HydroGrid, double tau, double ts)
 
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		for(l=0;l<Npi;l++)
 			HydroGrid[i][j][k].pi[l] = 0;		
@@ -374,13 +374,13 @@ void CalcDer4VelNS(GRID HydroGrid, double tau, double tstep)
 	for(l=0; l<VARN; l++)
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 		HydroGrid[i][j][k].du[l][0]  =  (HydroGrid[i][j][k].u[l] - HydroGrid[i][j][k].prevu[l])/tstep; 
 	
  	
 	for(l=0;l<VARN;l++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		for(i=2;i<XCM-2;i++)
 		{
@@ -399,7 +399,7 @@ void CalcDer4VelNS(GRID HydroGrid, double tau, double tstep)
 	
 	for(l=0;l<VARN;l++)
 	for(i=0;i<XCM;i++) 
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		for(j=2;j<YCM-2;j++)
 		{
@@ -422,7 +422,7 @@ void CalcDer4VelNS(GRID HydroGrid, double tau, double tstep)
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	{
-		for(k=2;k<ZCMA-2;k++)
+		for(k=2;k<ZCM-2;k++)
 		{
 			double  qm2,qm1, qc,qp1,qp2;
 			
@@ -452,7 +452,7 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 		   
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		DECLp5u4;
 		DECLcoord;
@@ -519,7 +519,7 @@ void NSInit(GRID HydroGrid, double tau, double ts)
 	
 	for(i=0;i<XCM;i++) 
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		
 		for(l=0;l<Npi;l++)

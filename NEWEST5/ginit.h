@@ -857,7 +857,7 @@ void ginit(GRID HydroGrid, double tau)
 	 
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=0;k<ZCM;k++)
 	{
 		double EV[NM];
 		X =	HydroGrid[i][j][k].X;
@@ -877,6 +877,7 @@ void ginit(GRID HydroGrid, double tau)
 		double EtaF = 4; //flat part of eta
 		double sig = 1;		
 		double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
+		//~ cutoff =  1 ;
 
 		double ee = eps[ii][jj];
 		double dt = 100*ee;

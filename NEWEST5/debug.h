@@ -3,26 +3,7 @@ int CFLRank;
 double DebugMSG(GRID HydroGrid)
 {
 	int i,j,k,l,m;
-	double step = XS;	
-
-	int IL,IR,JL,JR,KL,KR;
-
-	IL=JL=KL=BORDER;
-	IR=XCMA;
-	JR=YCMA;
-	KR=ZCMA;
-
-	int offsetz = 0;
-	int offsetxy = 0;
-
-	IL+=offsetxy;
-	JL+=offsetxy;
- 	KL+=offsetz;
-
-	IR-=offsetxy;
-	JR-=offsetxy;
- 	KR-=offsetz;
-
+	double step = XS; 
 	double rts = ts;
 	
 	
@@ -45,7 +26,7 @@ double DebugMSG(GRID HydroGrid)
 		
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++) 
 	{
 
 		tvx = HydroGrid[i][j][k].Vx;
@@ -140,7 +121,7 @@ double DebugMSG(GRID HydroGrid)
 	for(l=0;l<SVAR;l++)
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
-	for(k=0;k<ZCMA;k++)
+	for(k=kl;k<kr;k++) 
 	{
 		s = HydroGrid[i][j][k].Source[l];
 
