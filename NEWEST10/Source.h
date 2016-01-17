@@ -652,13 +652,17 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 		+ ((2*SH*u0*u2*(pow(tau,-2) - 2*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[2][0]) + ((2*SH*u1*u2*(pow(tau,-2) - 2*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[2][1]) + ((2*SH*(pow(tau,-2)*(1 + pow(u2,2)) + (1 - 2*pow(u2,2))*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[2][2]) + ((-4*SH*u2*(u3*pow(tau,-2) + pow(u3,3)))/3.)*(HydroGrid[i][j][k].du[2][3])
 		+ ((-4*SH*u0*(u3 + tau2*pow(u3,3)))/3.)*(HydroGrid[i][j][k].du[3][0]) + ((-4*SH*u1*(u3 + tau2*pow(u3,3)))/3.)*(HydroGrid[i][j][k].du[3][1]) + ((-4*SH*u2*(u3 + tau2*pow(u3,3)))/3.)*(HydroGrid[i][j][k].du[3][2]) + ((-4*SH*(pow(tau,-2) + 2*pow(u3,2) + tau2*pow(u3,4)))/3.)*(HydroGrid[i][j][k].du[3][3])  
 		);
-			   
-		 HydroGrid[i][j][k].nsPI =  (  ( -(BU*u0*pow(tau,-1)) )
+
+#ifdef BULK
+		HydroGrid[i][j][k].nsPI=  (  ( -(BU*u0*pow(tau,-1)) )
 		+ (-BU)*(HydroGrid[i][j][k].du[0][0]) + (0)*(HydroGrid[i][j][k].du[0][1]) + (0)*(HydroGrid[i][j][k].du[0][2]) + (0)*(HydroGrid[i][j][k].du[0][3])
 		+ (0)*(HydroGrid[i][j][k].du[1][0]) + (-BU)*(HydroGrid[i][j][k].du[1][1]) + (0)*(HydroGrid[i][j][k].du[1][2]) + (0)*(HydroGrid[i][j][k].du[1][3])
 		+ (0)*(HydroGrid[i][j][k].du[2][0]) + (0)*(HydroGrid[i][j][k].du[2][1]) + (-BU)*(HydroGrid[i][j][k].du[2][2]) + (0)*(HydroGrid[i][j][k].du[2][3])
-		+ (0)*(HydroGrid[i][j][k].du[3][0]) + (0)*(HydroGrid[i][j][k].du[3][1]) + (0)*(HydroGrid[i][j][k].du[3][2]) + (-BU)*(HydroGrid[i][j][k].du[3][3])  
-		);					   		 
+		+ (0)*(HydroGrid[i][j][k].du[3][0]) + (0)*(HydroGrid[i][j][k].du[3][1]) + (0)*(HydroGrid[i][j][k].du[3][2]) + (-BU)*(HydroGrid[i][j][k].du[3][3]) );
+#else
+		HydroGrid[i][j][k].nsPI= 0;
+#endif
+					   		 
 	}
 }
 

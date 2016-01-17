@@ -555,6 +555,7 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 #else
 		HydroGrid[i][j][k].nsPI= 0;
 #endif
+					   		 
 	}
 }
 

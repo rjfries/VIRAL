@@ -40,7 +40,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		double M2 = (Ttx-pi2)*(Ttx-pi2) + (Tty-pi3)*(Tty-pi3) + tau*tau*(Tte-pi4)*(Tte-pi4);
 	
 		
-		double res =  eps - (Ttt-pi1)  + ( M2 / ( (Ttt-pi1) + EOS(eps,r)- PI));
+		double res =  eps - (Ttt-pi1)  + ( M2 / ( (Ttt-pi1) + EOS(eps)- PI));
 		
 		
 		if(fabs(res)>maxTT[0])
@@ -237,7 +237,7 @@ double feps(double eps, void * params)
 
 	double M2 = (Ttx-pi2)*(Ttx-pi2) + (Tty-pi3)*(Tty-pi3) + tau*tau*(Tte-pi4)*(Tte-pi4);
 	
-	double res =  eps - (Ttt-pi1)  + ( M2 / ( (Ttt-pi1) + EOS(eps,r)- PI));
+	double res =  eps - (Ttt-pi1)  + ( M2 / ( (Ttt-pi1) + EOS(eps )- PI));
 
 	return(	res) ;
 
@@ -278,7 +278,7 @@ double dfeps(double eps, void * params)
 	double M2 = (Ttx-pi2)*(Ttx-pi2) + (Tty-pi3)*(Tty-pi3) + tau*tau*(Tte-pi4)*(Tte-pi4);
 	double r = HG[i][j][k].r;
 	
-	double res =  1 - ( ( M2 / pow( Ttt - pi1 + EOS(eps , r) - PI, 2) )*DPDE(eps, r) );
+	double res =  1 - ( ( M2 / pow( Ttt - pi1 + EOS(eps  ) - PI, 2) )*DPDE(eps ) );
 	
 	return(	res) ;
 
@@ -365,8 +365,8 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		
 		HydroGrid[i][j][k].En = r;    //find the new energy from root finding algorithm
 		
-		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r);
-		HydroGrid[i][j][k].P = 	EOS(HydroGrid[i][j][k].En , HydroGrid[i][j][k].r) ;		
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].P = 	EOS(HydroGrid[i][j][k].En ) ;		
 	}
 	
 	int quit =0;

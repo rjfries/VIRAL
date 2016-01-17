@@ -270,7 +270,7 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 			HydroGrid[i][j][k].pi[l] =   0;
 			
  		DECLePPIa;
- 		DECLp10u4;		 
+		DECLp5u4;		
 
         HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
         HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
@@ -376,7 +376,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		{
 			double temp = buf[nvar*i+0];
 			HydroGrid[i][j][k0].En = FEnFromTemp(temp);	
-			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En , HydroGrid[i][j][k0].r);
+			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En);
 			HydroGrid[i][j][k0].pi[0] = buf[nvar*i+1]; //pitautau
 			HydroGrid[i][j][k0].pi[1] = buf[nvar*i+2]; //pitauX
 			HydroGrid[i][j][k0].pi[2] = buf[nvar*i+3]; //pitauY
@@ -464,9 +464,9 @@ void initGubser(GRID HydroGrid, double tau, double ts)
  		DECLp10u4;
  		DECLePPIa;
 		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
-        HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
-        HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
-        HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + p4;
+		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
+		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
+		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + p4;
 	}
 }
 #endif
@@ -599,6 +599,7 @@ void init(double tau, double ts)
 #ifdef BULKTEST
 		initBulktest(HydroGrid,tau,ts);
 #endif
+	
 	
 #ifdef NSINIT
 		NSInit(HydroGrid,tau,ts);

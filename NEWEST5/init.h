@@ -376,7 +376,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		{
 			double temp = buf[nvar*i+0];
 			HydroGrid[i][j][k0].En = FEnFromTemp(temp);	
-			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En );			
+			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En);			
 			HydroGrid[i][j][k0].pi[0] = buf[nvar*i+4];//piXX
 			HydroGrid[i][j][k0].pi[1] = buf[nvar*i+6];//piYY
 			HydroGrid[i][j][k0].pi[2] = buf[nvar*i+5];//piXY
@@ -487,6 +487,8 @@ void init(double tau, double ts)
 		HydroGrid[i][j][k].Y = YCORDWB(j);
 		HydroGrid[i][j][k].eta = ZCORDWB(k);		
 		HydroGrid[i][j][k].r = sqrt(HydroGrid[i][j][k].X*HydroGrid[i][j][k].X + HydroGrid[i][j][k].Y*HydroGrid[i][j][k].Y);
+		
+
 	}
 		
 		
@@ -536,6 +538,8 @@ void init(double tau, double ts)
 
 
 	fflush(stdout);
+
+
 	MPI_Barrier(mpi_grid);
 	
 	if(!rank)
@@ -564,6 +568,8 @@ void init(double tau, double ts)
 #else	
 	k0 = int(-(ZSTART)/ZS + OFF); 
 #endif
+
+	
 	if(!rank)
 		cout<<"k0 is  "<<k0<<endl;
 	
