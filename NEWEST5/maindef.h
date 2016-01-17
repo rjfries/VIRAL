@@ -33,7 +33,11 @@ double tau;
 #if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST) 
 	//~ #define NSINIT
 	//~ #define ZEROINIT   
-	#define LBI
+	//~ #define LBI
+
+#ifdef SHAS
+	#define CON
+#endif
 
 	#define NPX  1
 	#define NPY  1 
@@ -41,9 +45,9 @@ double tau;
 
 	#define TAUSTART 0.60 
 	#define TS 0.002
-	#define XL 1
+	#define XL 4
 	#define XS 0.1
-	#define YL 1
+	#define YL 4
 	#define YS 0.1
 	
 #ifdef LBI
@@ -54,7 +58,7 @@ double tau;
 	#define ZS 0.1
 #endif	
 	
-	#define PFREQ 0.1
+	#define PFREQ 0.01
 	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
 	
@@ -82,6 +86,10 @@ double tau;
 
 #if defined BULKTEST
 	#define BULK 
+
+#ifdef SHAS
+	#define CON
+#endif
 	
 	#define NPX  1
 	#define NPY  1
@@ -97,7 +105,7 @@ double tau;
 	#define ZS 0.1
 	 
 
-	#define PFREQ 0.2	
+	#define PFREQ 0.1	
 	#define FREQ ((int)2)
 	#define FREQZ ((int)1) 
 	
@@ -125,6 +133,11 @@ double tau;
 
 
 #if defined(BJORKEN)
+
+#ifdef SHAS
+	#define CON
+#endif
+
 	#define NPX  1
 	#define NPY  1 
 	#define NP (NPX*NPY*1)
@@ -165,36 +178,39 @@ double tau;
 
 
 #if defined(GINIT)  
-	#define BULK
+	//~ #define BULK
 	#define S95P
-	#define VORT
-	 
-	
+	//~ #define VORT 
+
+#ifdef SHAS
+		#define CON
+#endif
+
 	#define PEDESTAL 0 	
 	
 	#define NOS  6 //per side	for ginit.h
-	#define NPX  4
-	#define NPY  4
+	#define NPX  1
+	#define NPY  1
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0.1
 	#define TS 0.002
-	#define XL 5
+	#define XL 4
 	#define XS 0.1
-	#define YL 5
+	#define YL 4
 	#define YS 0.1
 	
 #ifdef LBI
 	#define ZL 0
 	#define ZS 0.1
 #else
-	#define ZL 2
+	#define ZL 5
 	#define ZS 0.1
 #endif	
 
-	#define PFREQ 0.1
-	#define FREQ ((int)2)
-	#define FREQZ ((int)5)
+	#define PFREQ 0.01
+	#define FREQ ((int)1)
+	#define FREQZ ((int)1)
 	
 	inline double EOS(double en )                                       {return (s95p_p(en)                    );}	
 	inline double DPDE(double en )                                      {return (s95p_a(en)                    );}	 

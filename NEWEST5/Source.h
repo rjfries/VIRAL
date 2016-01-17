@@ -172,8 +172,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 	double tau4 = tau2*tau2;	
 	double tau5 = tau2*tau3;	
 	double tau6 = tau3*tau3;	
-		   
-		   
+		    
 //Geometical Source terms
  
 	for(i=il;i<ir;i++)
@@ -191,7 +190,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 	
 	}
 	
-#ifdef CON
+#if defined CON 
 /*Xderivatives*/
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)
@@ -206,7 +205,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		for(i=t-2;i<=t+2;i++)
 		{
 			DECLePPIa;
-			DECLp10u4;	
+			DECLp5u4;	
 				
 			q0[i-t+2] = -tau*(           0					  );
 			q1[i-t+2] = -tau*(P-PI - (u1/u0)*A2         + p1  );
@@ -240,12 +239,12 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		for(j=t-2;j<=t+2;j++)
 		{ 
 			DECLePPIa;
-			DECLp10u4;	
+			DECLp5u4;	
 				
-			q0[j-t+2] = -tau*(       0					 	  );
-			q1[j-t+2] = -tau*(	   - (u2/u0)*A2         + p3  );
-			q2[j-t+2] = -tau*(P-PI - (u2/u0)*A3         + p2  );
-			q3[j-t+2] = -tau*(     - (u2/u0)*A4         + p5  );
+			q0[j-t+2] = -tau*(       0                                )
+			q1[j-t+2] = -tau*(	   - (u2/u0)*A2         + p3      );
+			q2[j-t+2] = -tau*(P-PI - (u2/u0)*A3         + p2          );
+			q3[j-t+2] = -tau*(     - (u2/u0)*A4         + p5          );
 		}
 		j=t;
 		 
@@ -261,7 +260,56 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		HydroGrid[i][j][k].Source[3] += temp3;	
 	}
 
+
+
+#if !defined LBI
+/* ETA derivatives*/
+ 
+
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl;k<kr;k++)
+	{		
+		double q0[5];
+		double q1[5];
+		double q2[5]; 
+		double q3[5];
+		
+		int t=k;
+		for(k=t-2;k<=t+2;k++)
+		{ 
+			DECLePPIa;
+			DECLp5u4;	
+				
+			q0[k-t+2] = -tau*(                       0					 	  );
+			q1[k-t+2] = -tau*(	               - (u3/u0)*A2         + p4  );
+			q2[k-t+2] = -tau*(                     - (u3/u0)*A3         + p5  );
+			q3[k-t+2] = -tau*( (P-PI)/(tau*tau)    - (u3/u0)*A4         + A5  );
+		}
+		k=t;
+		 
+		
+		double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],ZS);
+		double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],ZS);
+		double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],ZS);
+		double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],ZS);
+		
+		HydroGrid[i][j][k].Source[0] += temp0;
+		HydroGrid[i][j][k].Source[1] += temp1;
+		HydroGrid[i][j][k].Source[2] += temp2;
+		HydroGrid[i][j][k].Source[3] += temp3;	
+	}
 #endif
+
+
+
+#endif
+
+
+
+
+
+
 
 	CalcDer4Vel(HydroGrid, tau, ts);   
 	
@@ -271,11 +319,8 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 	for(k=kl;k<kr;k++)
 	{
 		
-		DECLp5u4;
-		DECLcoord;
-		DECLePPIa; 
-			
-		
+		DECLePPIa;
+		DECLp5u4;		
 
 		double T = FT(e );	
 		double s = FS(e, P, T);		
@@ -342,6 +387,8 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 
  
  
+ //For zero pi and PI initialisation
+ 
 void ZeroInit(GRID HydroGrid, double tau, double ts)
 {
 	
@@ -358,10 +405,11 @@ void ZeroInit(GRID HydroGrid, double tau, double ts)
 		
 		DECLp5u4;
 		DECLePPIa;		
-		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
-		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;
-		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
-		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + p4;
+		
+		HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + A1;
+		HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
+		HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + A3;
+		HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
 	}
 }
 
@@ -449,6 +497,7 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 	double tau3 = tau*tau2;	
 	double tau4 = tau2*tau2;	
 	double tau5 = tau2*tau3;	
+	CalcDer4Vel(HydroGrid, tau, ts); //du[4][4] is computed
 		   
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
@@ -497,7 +546,7 @@ void CalcNS(GRID HydroGrid, double tau, double ts)
 		+ (-(SH*u0*u3*(3 + 4*pow(u2,2)))/3.)*(HydroGrid[i][j][k].du[2][0]) + (-(SH*u1*u3*(3 + 4*pow(u2,2)))/3.)*(HydroGrid[i][j][k].du[2][1]) + ((-4*SH*u2*u3*(1 + pow(u2,2)))/3.)*(HydroGrid[i][j][k].du[2][2]) + (-(SH*pow(tau,-2)*(3 + 3*tau2*pow(u3,2) + pow(u2,2)*(3 + 4*tau2*pow(u3,2))))/3.)*(HydroGrid[i][j][k].du[2][3])
 		+ ((SH*(u0*u2*u3*pow(tau,-1)*(3 + 4*tau2*pow(u3,2)) - u0*u2*(tau + u3)*pow(tau,-1)*(3 + 4*tau2*pow(u3,2))))/3.)*(HydroGrid[i][j][k].du[3][0]) + (-(SH*u1*u2*(3 + 4*tau2*pow(u3,2)))/3.)*(HydroGrid[i][j][k].du[3][1]) + ((SH*(-3 - 3*tau2*pow(u3,2) - pow(u2,2)*(3 + 4*tau2*pow(u3,2))))/3.)*(HydroGrid[i][j][k].du[3][2]) + ((SH*(4*u0*u2*u3*pow(tau,-1)*(1 + tau2*pow(u3,2)) - 4*(tau + u0)*u2*u3*pow(tau,-1)*(1 + tau2*pow(u3,2))))/3.)*(HydroGrid[i][j][k].du[3][3])  );       
 
-#ifdef BULK		
+#ifdef BULK
 		HydroGrid[i][j][k].nsPI=  (  ( -(BU*u0*pow(tau,-1)) )
 		+ (-BU)*(HydroGrid[i][j][k].du[0][0]) + (0)*(HydroGrid[i][j][k].du[0][1]) + (0)*(HydroGrid[i][j][k].du[0][2]) + (0)*(HydroGrid[i][j][k].du[0][3])
 		+ (0)*(HydroGrid[i][j][k].du[1][0]) + (-BU)*(HydroGrid[i][j][k].du[1][1]) + (0)*(HydroGrid[i][j][k].du[1][2]) + (0)*(HydroGrid[i][j][k].du[1][3])
@@ -517,7 +566,7 @@ void NSInit(GRID HydroGrid, double tau, double ts)
 	
 	int i,j,k,l; 
 	
-	for(i=0;i<XCM;i++) 
+	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{

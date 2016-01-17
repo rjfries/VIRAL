@@ -92,6 +92,7 @@ void PackToRight(GRID HydroGrid)
 				rightY[4*VARN+Npi+NPI][m][ii][kk] =	HydroGrid[i][jr-m-1][k].P;
 			}
 		}
+ 
 	}
 }
 
@@ -177,6 +178,7 @@ void UnPackFromLeft(GRID HydroGrid)
 								
 			}
 		}
+ 
 	}
 }
 
@@ -256,6 +258,7 @@ void PackToLeft(GRID HydroGrid)
 				leftY[4*VARN+Npi+NPI][m][ii][kk] =	HydroGrid[i][jl+m][k].P;
 			}
 		}
+ 
 	}
 }
 
@@ -339,6 +342,7 @@ void UnPackFromRight(GRID HydroGrid)
 				HydroGrid[i][j][k].P  = rightY[4*VARN+Npi+NPI][m][ii][kk];				
 			}
 		}
+ 
 	}
 }
 

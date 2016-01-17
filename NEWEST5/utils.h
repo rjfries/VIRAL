@@ -97,6 +97,7 @@ inline double genminmod(double um, double u, double up, double dx, double gminv 
 	return((left-right)/dx);
 }
 
+  
 
 inline double genWENOR(double qm2, double qm1, double qc, double qp1, double qp2  )
 { 	 
@@ -220,6 +221,13 @@ inline double phi(double r, int method)
 }
 
 
+
+
+
+
+
+
+
 void CheckPhysics(GRID HydroGrid, int stage )
 {
 	int i,j,k;
@@ -229,6 +237,7 @@ void CheckPhysics(GRID HydroGrid, int stage )
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)
 	{
+
 		double vx = HydroGrid[i][j][k].Vx;
 		double vy = HydroGrid[i][j][k].Vy;
 		double ve = HydroGrid[i][j][k].Ve;
@@ -248,6 +257,7 @@ void CheckPhysics(GRID HydroGrid, int stage )
 	MPI_Barrier(mpi_grid);
 }
 
+ 
 
 
 inline double MaxTempGev(GRID HydroGrid)

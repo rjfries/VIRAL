@@ -178,7 +178,11 @@ void XYBoundaryCopy(GRID HydroGrid)
 	
 	
 }
- 
+
+
+
+
+#if !defined LBI
 
 void ZBoundaryCopy(GRID HydroGrid)
 {
@@ -255,12 +259,18 @@ void ZBoundaryCopy(GRID HydroGrid)
 	}
 }
 
+#endif
+
+
+
 void boundary(GRID HydroGrid)
 {
 	XYBoundaryCopy(HydroGrid);
 	
+	
 #if !defined LBI
 	ZBoundaryCopy(HydroGrid);	
 #endif
+
 }
 

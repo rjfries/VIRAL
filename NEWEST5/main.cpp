@@ -42,24 +42,20 @@
 #include <fenv.h> 
 #endif
 
-
-#ifdef SHAS
-	#define CON
-#endif
+ 
 #define GEVFM 0.1973 
 #define PIE 3.141592653589793
 
 
 using namespace std; 
+ 
 #include "s95p.h" 
 #include "maindef.h"
-
-
 #include "alloc.h"
 #include "init.h"
 
 #ifdef GINIT
-#include "ginit.h"
+	#include "ginit.h"
 #endif
 
 #include "utils.h"
@@ -69,16 +65,17 @@ using namespace std;
 #include "Source.h"
 #include "write.h"
 #include "multiroot.h"
+
 #ifdef SHAS
-#include "hydroshasta.h"
+	#include "hydroshasta.h"
 #endif
 
 #ifdef ZAL
-#include "hydrozalesak.h"
+	#include "hydrozalesak.h"
 #endif
 
 #ifdef KT
-#include "hydroKT.h"
+	#include "hydroKT.h"
 #endif
 
 
@@ -178,16 +175,17 @@ int main(int argc, char* argv[])
 #ifdef LBI
 		if( fabs( (tau-tauPrint) - printFreq) < 1e-6)
 		{	tauPrint += printFreq;	WriteResultsXY(tau,HydroGrid);}//WriteTempXYCom(tau,HydroGrid) ;}//WriteResultsXYCom(tau,HydroGrid);}//	WriteTempXYCom(tau,HydroGrid) ;}//
-		if( tau<(0.25+1E-6)   &&  fabs(100*tau - int(100*tau+1E-6))<1E-6 )
-		{	WriteResultsXY(tau,HydroGrid);}
+		//~ if( tau<(0.25+1E-6)   &&  fabs(100*tau - int(100*tau+1E-6))<1E-6 )
+		//~ {	WriteResultsXY(tau,HydroGrid);}
+		if( fabs( (tau-(TAUSTART+TS))) < 1e-6 )
+		{	tauPrint += printFreq;	 WriteResultsXY(tau,HydroGrid);}
 #else
-		if( fabs( (tau-tauPrint) - printFreq) < 1e-6)// || fabs( (tau-(TAUSTART+TS))) < 1e-6 )
-		{	tauPrint += printFreq;	 WriteResults(tau,HydroGrid);}
-		
-	
+		if( fabs( (tau-tauPrint) - printFreq) < 1e-6   )
+		{	tauPrint += printFreq;	 WriteResults(tau,HydroGrid);}		
+		if(  fabs( (tau-(TAUSTART+TS))) < 1e-6 )
+		{	 WriteResults(tau,HydroGrid);}	
 #endif
-		l++;
-		
+		l++;		
 		
 #ifdef GUBSER
 		if(tau>9)
@@ -221,5 +219,6 @@ int main(int argc, char* argv[])
 	
 	if(!rank)
 		cout<<endl<<"*************************************** The End ******************************************************"<<endl;
+		
 	MPI_Finalize();
  }

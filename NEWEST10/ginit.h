@@ -853,7 +853,8 @@ void ginit(GRID HydroGrid, double tau)
 	double maxTrIFluid=0;
 	double maxTrPIFluid=0;
 	double maxTrpiFluid=0;
-	
+
+	 
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
@@ -862,13 +863,21 @@ void ginit(GRID HydroGrid, double tau)
 		X =	HydroGrid[i][j][k].X;
 		Y = HydroGrid[i][j][k].Y;
 		
+		double eta = HydroGrid[i][j][k].eta;
+		
 		int ii = i+NOS*BORDER;
 		int jj = j+NOS*BORDER;
 			
 		EV[0]=X;
 		EV[1]=Y;
-		EV[2]=0;
+		EV[2]=eta;
 		EV[3]=eps[ii][jj];
+		
+		double AbsE = fabs(eta);
+		double EtaF = 4; //flat part of eta
+		double sig = 1;		
+		double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
+		//~ cutoff =  1 ;
 
 		double ee = eps[ii][jj];
 		double dt = 100*ee;
@@ -897,8 +906,11 @@ void ginit(GRID HydroGrid, double tau)
 		Tmunu[3][2] =  Tmunu[2][3];
 		Tmunu[3][3] =  -ee/(tau02)+ 0.125*(-2*Le+3*dt);
 		
-		
-		
+		for(int  a=0;a<4;a++)
+		for(int  b=0;b<4;b++)	
+			Tmunu[a][b] *= cutoff;
+			
+			
 		for(int  a=0;a<4;a++)
 		for(int  b=0;b<4;b++)
 			TField[a][b][ii][jj] = Tmunu[a][b]; 
@@ -919,8 +931,8 @@ void ginit(GRID HydroGrid, double tau)
 		
 		
 		HydroGrid[i][j][k].En = eps;
-		HydroGrid[i][j][k].Temp = FT(eps, HydroGrid[i][j][k].r);
-		HydroGrid[i][j][k].P = EOS(eps, HydroGrid[i][j][k].r);
+		HydroGrid[i][j][k].Temp = FT(eps );
+		HydroGrid[i][j][k].P = EOS(eps );
 		HydroGrid[i][j][k].Vx=VX;
 		HydroGrid[i][j][k].Vy=VY;
 		HydroGrid[i][j][k].Ve=VE;
@@ -928,6 +940,8 @@ void ginit(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].u[1] = HydroGrid[i][j][k].u[0]*VX;
 		HydroGrid[i][j][k].u[2] = HydroGrid[i][j][k].u[0]*VY;
 		HydroGrid[i][j][k].u[3] = HydroGrid[i][j][k].u[0]*VE;
+		
+		
 		
 		DECLePPIa;
 		DECLu4;
@@ -939,6 +953,8 @@ void ginit(GRID HydroGrid, double tau)
 			HydroGrid[i][j][k].prevu[3] = u3;
 			continue;
 		}
+		
+		
 		
 		double tid[4][4];
 		double PImat[4][4];

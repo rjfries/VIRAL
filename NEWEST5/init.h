@@ -31,6 +31,7 @@ int debug = 0;
 #define iEND	(iSTART+(XCMA-1))
 #define jSTART  ( ycord*(YCMA))
 #define jEND	(jSTART+(YCMA-1))
+ 
 
 #define iSTARTWB   (iSTART)
 #define iENDWB	(iEND+2*(BORDER))
@@ -39,6 +40,7 @@ int debug = 0;
 
 inline int MYGLOBALi(int i)   {return(iSTARTWB+i);}
 inline int MYGLOBALj(int j)   {return(jSTARTWB+j);}
+ 
 inline int MYGLOBALiWB(int i)   {return(iSTART+(i-BORDER)); }
 inline int MYGLOBALjWB(int j)   {return(jSTART+(j-BORDER)); }
 
@@ -96,8 +98,11 @@ inline int RANK(int i, int j,int k)
 #define MYYLEFT ((!ycord)?BOUNDARY:RANK(xcord,ycord-1,zcord) )
 #define MYYRIGHT ((!(ycord-(NPY-1))?BOUNDARY:RANK(xcord,ycord+1,zcord) ))
 
+
+
 #define MYXLYL (     (MYXLEFT != BOUNDARY && MYYLEFT != BOUNDARY )?  RANK(xcord-1,ycord-1,zcord) : BOUNDARY  )
 #define MYXLYR (     (MYXLEFT != BOUNDARY && MYYRIGHT != BOUNDARY )?  RANK(xcord-1,ycord+1,zcord) : BOUNDARY  ) 
+
 
 #define MYXRYL (     (MYXRIGHT != BOUNDARY && MYYLEFT != BOUNDARY )?  RANK(xcord+1,ycord-1,zcord) : BOUNDARY  )
 #define MYXRYR (     (MYXRIGHT != BOUNDARY && MYYRIGHT != BOUNDARY )?  RANK(xcord+1,ycord+1,zcord) : BOUNDARY  ) 
@@ -108,6 +113,7 @@ inline int RANK(int i, int j,int k)
 
 void initvar(GRID HydroGrid);
 void ginit(GRID HydroGrid, double tau);
+
 
 void mpi_init()
 {
@@ -154,7 +160,7 @@ void initvar(GRID HydroGrid, double tau, double ts)
 		double r =  HydroGrid[i][j][k].r;
 		
 		
-		HydroGrid[i][j][k].En = 16;
+		HydroGrid[i][j][k].En = 16*exp(-x*x-y*y);
 		double AbsE = fabs(eta);
 		double EtaF = 4; //flat part of eta
 		double sig = 1;		

@@ -56,10 +56,11 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 void ClearResultVariable(GRID HydroGrid)
 {
 	int i,j,k,l;
+	
+	for( int l=0; l<SVAR; l++)
 	for( int i=0; i<XCM ; i++)
 	for( int j=0; j<YCM ; j++)
 	for( int k=0; k<ZCM ; k++)
-	for( int l=0; l<SVAR; l++)
 		HydroGrid[i][j][k].Result[l] = 0;
 }
 

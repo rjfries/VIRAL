@@ -412,7 +412,6 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar1( HydroGrid,ts);		
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts);  
 	UpdatePrevU(HydroGrid);
-	
 	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
 	
 	
@@ -433,7 +432,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar2RK3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar2(HydroGrid,  tau+ts/2.0);  
-    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2.0); 
+    	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts/2.0); 
     	
 
 
@@ -455,7 +454,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar3(HydroGrid,  tau+ts);  
-    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+    	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 		
 	pack(HydroGrid);

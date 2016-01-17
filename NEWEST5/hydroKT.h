@@ -71,9 +71,9 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
   		HydroGrid[i][j][k].Fz[0] =  tau*(  A4 + u3*u0*(e+P-PI)                     );
 		HydroGrid[i][j][k].Fz[1] =  tau*(  p4 + u3*u1*(e+P-PI)                     );
 		HydroGrid[i][j][k].Fz[2] =  tau*(  p5 + u3*u2*(e+P-PI)                     );
-		HydroGrid[i][j][k].Fz[3] =  tau*(  A5 + ((P-PI)/(tau*tau)) + u3*u3*(e+P-PI)     );	
+		HydroGrid[i][j][k].Fz[3] =  tau*(  A5 + ( (P-PI)/(tau*tau) ) + u3*u3*(e+P-PI)     );	
 #endif
-		HydroGrid[i][j][k].Fz[4]=  (p1*u3)/u0;
+	HydroGrid[i][j][k].Fz[4]=  (p1*u3)/u0;
         HydroGrid[i][j][k].Fz[5]=  (p2*u3)/u0;
         HydroGrid[i][j][k].Fz[6]=  (p3*u3)/u0;
         HydroGrid[i][j][k].Fz[7]=  (p4*u3)/u0;
@@ -81,6 +81,8 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
         HydroGrid[i][j][k].Fz[9]=  (PI*u3)/u0;
 	}	
 }
+
+
 
 
 #define WENOX(VAR )\
@@ -152,6 +154,10 @@ WENOX(Var);
 WENOY(Var);
 WENOX(Ax );
 WENOY(Ay );
+  	
+		
+
+		
 void FindEigenValuesX(GRID HydroGrid, double tau)
 {
 
@@ -164,7 +170,6 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 	{
 		DECLePPIa;
 		DECLp5u4;
-		DECLTmu0;
 		
 
 #if defined CON
@@ -174,14 +179,9 @@ void FindEigenValuesX(GRID HydroGrid, double tau)
 							(   -u0*(2*p2*u0+P*u1)   + a*(e*u0*u1+2*p2*(-1+u0*u0-2*u1*u1) ))
 							/
 							(     ( (e+P-PI)*(u0*u0)*(-u0*u0 + a*(-1+u0*u0) )  )           )
-					   ) 
-					; 
-		
+					   ); 
 #else
-		HydroGrid[i][j][k].Ax[0] = u1/u0;
-		continue;
-	 
-
+		HydroGrid[i][j][k].Ax[0] = u1/u0; 
 #endif
 
 	}
@@ -197,11 +197,9 @@ void FindEigenValuesY(GRID HydroGrid, double tau)
 	{
 		DECLePPIa;
 		DECLp5u4;
-		DECLTmu0;
-		
 
 #if defined CON
-		HydroGrid[i][j][k].Ay[0]=u2/u0;
+		HydroGrid[i][j][k].Ay[0]= u2/u0;
 		HydroGrid[i][j][k].Ay[1]=(u2/u0) 
 					+  (  (-u0*(2*p3*u0+P*u2)   + a*(e*u0*u2+2*p3*(-1+u0*u0-2*u2*u2) ))
 							/
@@ -228,13 +226,11 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 	for(k=kl;k<kr;k++)
 	{
 		DECLePPIa;
-		DECLp5u4;
-		DECLTmu0;
-		
+		DECLp5u4; 
 		
 #if defined CON
-		HydroGrid[i][j][k].Az[0]=u3/u0;
-		HydroGrid[i][j][k].Az[1]= (u3/u0) +
+		HydroGrid[i][j][k].Az[0]= u3/u0;
+		HydroGrid[i][j][k].Az[1]= u3/u0 +
 							( 
 							  ( (-P + p1 + a*(e+p1)-(1+a)*p1*PI)*u3   ) 
 							/ ( (e+P-PI)*(u0)*(-u0*u0+a*(-1+u0*u0) )  ) 
@@ -341,7 +337,7 @@ void CFL(GRID HydroGrid, double tau, double taustep)
 	double timesug = XS/(8*maxflowgrid);
 	double mintime;
 	
-    MPI_Reduce(&timesug, &mintime, 1, MPI_DOUBLE,MPI_MIN, 0, MPI_COMM_WORLD);
+    	MPI_Reduce(&timesug, &mintime, 1, MPI_DOUBLE,MPI_MIN, 0, MPI_COMM_WORLD);
     
 	if(!rank && mintime<TS)
 		cout<<std::scientific<<"The time step based on CFL should be "<<mintime<<endl;
@@ -404,9 +400,10 @@ void hydroExplicit(GRID HydroGrid, double tau, double taustep)
 	FindEigenValuesZ(HydroGrid, tau);
 #endif
 
+	Reconstruct(HydroGrid);	
 
-	Reconstruct(HydroGrid);
 	FindMaxEigenValueXYZ(HydroGrid);
+	
 	
 	fvX( HydroGrid, tau );
 	AddPartialResultToFinalResult( HydroGrid);

@@ -460,12 +460,12 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		
 		if( sqrt(vx*vx+vy*vy+ve*ve) >= 1 || En <=0 )
 		{
-			 cout<<" violations of SOL / -ve energy in multiroot.h -  2nd place"<<endl;
-			 cout<<"HELL BROKE LOOSE X "<<HydroGrid[i][j][k].X <<"  Y " << HydroGrid[i][j][k].Y<< "  E "<<HydroGrid[i][j][k].eta << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
-			 cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
-			 cout<<"HELL BROKE LOOSE Energy  "<<En<<endl;
-			 quit = 1;
-			 exit(quit);
+			 //~ cout<<" violations of SOL / -ve energy in multiroot.h -  2nd place"<<endl;
+			 //~ cout<<"HELL BROKE LOOSE X "<<HydroGrid[i][j][k].X <<"  Y " << HydroGrid[i][j][k].Y<< "  E "<<HydroGrid[i][j][k].eta << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
+			 //~ cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
+			 //~ cout<<"HELL BROKE LOOSE Energy  "<<En<<endl;
+			 //~ quit = 1;
+			 //~ exit(quit);
 		 }
 		 		
 		HydroGrid[i][j][k].Vx = vx;

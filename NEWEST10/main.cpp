@@ -40,24 +40,20 @@
 #include <fenv.h> 
 #endif
 
+ 
+#define GEVFM 0.1973 
+#define PIE 3.141592653589793
 
-#ifdef SHAS
-	#define CON
-#endif
 
-using namespace std;
-
+using namespace std; 
+ 
+#include "s95p.h" 
 #include "maindef.h"
-
-#ifdef S95P
-#include "s95p.h"
-#endif
-#include "thermo.h"
 #include "alloc.h"
 #include "init.h"
 
 #ifdef GINIT
-#include "ginit.h"
+	#include "ginit.h"
 #endif
 
 #include "utils.h"
@@ -67,16 +63,17 @@ using namespace std;
 #include "Source.h"
 #include "write.h"
 #include "root.h"
+
 #ifdef SHAS
-#include "hydroshasta.h"
+	#include "hydroshasta.h"
 #endif
 
 #ifdef ZAL
-#include "hydrozalesak.h"
+	#include "hydrozalesak.h"
 #endif
 
 #ifdef KT
-#include "hydroKT.h"
+	#include "hydroKT.h"
 #endif
 
 
@@ -118,13 +115,14 @@ int main(int argc, char* argv[])
 	double derPrint = TAUSTART;
 
 	init(tau,ts);
-
-	WriteResultsXY(tau,HydroGrid);	
-	//~ WriteResultsXYCom(tau,HydroGrid);	
-	//~ WriteTempXYCom(tau,HydroGrid);	
-	//~ WriteSourceXY(tau,HydroGrid);
 	
-#ifdef BJORKEN
+#ifdef LBI
+	WriteResultsXY(tau,HydroGrid);	
+#else
+	WriteResults(tau,HydroGrid);	 
+#endif	
+	
+#if defined BJORKEN || BULKTEST
 		ofstream myfile;
 		myfile.open ("temp.txt");
 #endif		
@@ -144,7 +142,12 @@ int main(int argc, char* argv[])
 #endif		
 
 #ifdef BJORKEN
-		myfile<<tau<< "  "<< fmtoMev(FT(HydroGrid[XCM/2][YCM/2][ZCM/2].En , HydroGrid[XCM/2][YCM/2][ZCM/2].r))/1000<<endl;
+		myfile<<tau<< "  "<< fmtoMev(FT(HydroGrid[XCM/2][YCM/2][ZCMA/2].En))/1000<<endl;
+#endif
+		 
+		
+#ifdef BULKTEST
+		myfile<<tau<< "  "<<  HydroGrid[XCM/2][YCM/2][ZCMA/2].PI<<endl;
 #endif
 		 
 		
@@ -153,7 +156,7 @@ int main(int argc, char* argv[])
 		CheckRoot( HydroGrid ,  tau);
 		
 		//~ if(rank==root)
-			//~ cout<<NP*sizeof(cell)*XCM*YCM*ZCM/(1024*1024) <<" mega bytes"<<endl;
+		//~ cout<<NP*sizeof(cell)*XCM*YCM*ZCMA/(1024*1024) <<" mega bytes"<<endl;
 			
 		double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
 		
@@ -167,20 +170,20 @@ int main(int argc, char* argv[])
 			fflush(stdout);
 		}	
 
+#ifdef LBI
 		if( fabs( (tau-tauPrint) - printFreq) < 1e-6)
 		{	tauPrint += printFreq;	WriteResultsXY(tau,HydroGrid);}//WriteTempXYCom(tau,HydroGrid) ;}//WriteResultsXYCom(tau,HydroGrid);}//	WriteTempXYCom(tau,HydroGrid) ;}//
-		if( tau<(0.25+1E-6)   &&  fabs(100*tau - int(100*tau+1E-6))<1E-6 )
-		{	WriteResultsXY(tau,HydroGrid);}
-		
-		
-		if( fabs( (tau-sourcePrint) - sourceFreq) < 1e-6 )
-		{	sourcePrint += sourceFreq;				}//WriteSourceXY(tau-ts,HydroGrid);}
-
-		if( fabs( (tau-ts-derPrint) - derFreq) < 1e-6 )
-			derPrint += derFreq;	
-						
-		l++;
-		
+		//~ if( tau<(0.25+1E-6)   &&  fabs(100*tau - int(100*tau+1E-6))<1E-6 )
+		//~ {	WriteResultsXY(tau,HydroGrid);}
+		if( fabs( (tau-(TAUSTART+TS))) < 1e-6 )
+		{	tauPrint += printFreq;	 WriteResultsXY(tau,HydroGrid);}
+#else
+		if( fabs( (tau-tauPrint) - printFreq) < 1e-6   )
+		{	tauPrint += printFreq;	 WriteResults(tau,HydroGrid);}		
+		if(  fabs( (tau-(TAUSTART+TS))) < 1e-6 )
+		{	 WriteResults(tau,HydroGrid);}	
+#endif
+		l++;		
 		
 #ifdef GUBSER
 		if(tau>9)
@@ -192,11 +195,26 @@ int main(int argc, char* argv[])
 			break;
 #endif
 
+#if defined BJORKEN || BULKTEST
+		if(tau>10)
+			break;
+#endif
+
 		if(tau>25.3)
 			break;
 	}
 	
+#if defined BJORKEN || BULKTEST 
+		myfile.close();
+#endif		
 
+	
+	FreeFromHeap();
+	if(!rank)
+		cout<<endl<<"***********************************  Memory Freed from Heap    ***********************************"<<endl;
+	
+	MPI_Barrier(mpi_grid);
+	
 	if(!rank)
 		cout<<endl<<"*************************************** The End ******************************************************"<<endl;
 		

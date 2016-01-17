@@ -92,43 +92,7 @@ void PackToRight(GRID HydroGrid)
 				rightY[4*VARN+Npi+NPI][m][ii][kk] =	HydroGrid[i][jr-m-1][k].P;
 			}
 		}
-
-		//~ if(MYZRIGHT != BOUNDARY)
-		//~ {
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii=i-il;
-				//~ jj=j-jl;
-//~ 
-//~ 
-				//~ rightZ[0][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T00;
-				//~ rightZ[1][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T10;
-				//~ rightZ[2][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T20;
-				//~ rightZ[3][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T30;
-				//~ 
-				//~ rightZ[4][m][ii][jj] =	HydroGrid[i][j][kr-m-1].En;
-				//~ rightZ[5][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vx;
-				//~ rightZ[6][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vy;
-				//~ rightZ[7][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Ve;
-				//~ 
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ rightZ[2*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].u[l];
-					//~ rightZ[3*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].prevu[l];
-				//~ }
-				//~ 
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ rightZ[4*VARN+l][m][ii][jj] =  HydroGrid[i][j][kr-m-1].pi[l];
-					//~ 
-				//~ rightZ[4*VARN+Npi][m][ii][jj] =	HydroGrid[i][j][kr-m-1].PI;
-				//~ rightZ[4*VARN+Npi+NPI][m][ii][jj] =	HydroGrid[i][j][kr-m-1].P;
-				//~ 
-			//~ }
-		//~ }
+ 
 	}
 }
 
@@ -214,42 +178,7 @@ void UnPackFromLeft(GRID HydroGrid)
 								
 			}
 		}
-
-		//~ if(MYZLEFT!= BOUNDARY)
-		//~ {
-//~ 
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii = i-il;
-				//~ jj = j-jl;
-				//~ k = kl-1-m;
-				//~ 
-				//~ HydroGrid[i][j][k].T00 = leftZ[0][m][ii][jj];
-				//~ HydroGrid[i][j][k].T10 = leftZ[1][m][ii][jj];
-				//~ HydroGrid[i][j][k].T20 = leftZ[2][m][ii][jj];
-				//~ HydroGrid[i][j][k].T30 = leftZ[3][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].En = leftZ[4][m][ii][jj]; 
-				//~ HydroGrid[i][j][k].Vx = leftZ[5][m][ii][jj];
-				//~ HydroGrid[i][j][k].Vy = leftZ[6][m][ii][jj];
-				//~ HydroGrid[i][j][k].Ve = leftZ[7][m][ii][jj];
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ HydroGrid[i][j][k].u[l] = leftZ[2*VARN+l][m][ii][jj];
-					//~ HydroGrid[i][j][k].prevu[l] = leftZ[3*VARN+l][m][ii][jj];
-				//~ }
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ HydroGrid[i][j][k].pi[l] = leftZ[4*VARN+l][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].PI = leftZ[4*VARN+Npi][m][ii][jj];	
-				//~ HydroGrid[i][j][k].P = leftZ[4*VARN+Npi+NPI][m][ii][jj];	
-				//~ 
-			//~ }
-		//~ }
+ 
 	}
 }
 
@@ -329,41 +258,7 @@ void PackToLeft(GRID HydroGrid)
 				leftY[4*VARN+Npi+NPI][m][ii][kk] =	HydroGrid[i][jl+m][k].P;
 			}
 		}
-
-		//~ if(MYZLEFT != BOUNDARY)
-		//~ {
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii=i-il;
-				//~ jj=j-jl;
-//~ 
-				//~ leftZ[0][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T00;
-				//~ leftZ[1][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T10;
-				//~ leftZ[2][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T20;
-				//~ leftZ[3][m][ii][jj] =	HydroGrid[i][j][kr-m-1].T30;
-				//~ 
-				//~ leftZ[4][m][ii][jj] =	HydroGrid[i][j][kr-m-1].En;
-				//~ leftZ[5][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vx;
-				//~ leftZ[6][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Vy;
-				//~ leftZ[7][m][ii][jj] =	HydroGrid[i][j][kr-m-1].Ve;
-				//~ 
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ leftZ[2*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].u[l];
-					//~ leftZ[3*VARN+l][m][ii][jj] =	HydroGrid[i][j][kr-m-1].prevu[l];
-				//~ }
-				//~ 
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ leftZ[4*VARN+l][m][ii][jj] =  HydroGrid[i][j][kr-m-1].pi[l];
-					//~ 
-				//~ rightZ[4*VARN+Npi][m][ii][jj] =	HydroGrid[i][j][kr-m-1].PI;
-				//~ rightZ[4*VARN+Npi+NPI][m][ii][jj] =	HydroGrid[i][j][kr-m-1].P ;
-			//~ }
-		//~ }
+ 
 	}
 }
 
@@ -447,42 +342,7 @@ void UnPackFromRight(GRID HydroGrid)
 				HydroGrid[i][j][k].P  = rightY[4*VARN+Npi+NPI][m][ii][kk];				
 			}
 		}
-
-		//~ if(MYZRIGHT!= BOUNDARY)
-		//~ {
-			//~ for(m=0;m<BORDER;m++)
-			//~ for(i=il;i<ir;i++)
-			//~ for(j=jl;j<jr;j++)
-			//~ {
-				//~ ii=i-il;
-				//~ jj=j-jl;
-				//~ k = kr+m;
-//~ 
-				//~ HydroGrid[i][j][k].T00 = rightZ[0][m][ii][jj];
-				//~ HydroGrid[i][j][k].T10 = rightZ[1][m][ii][jj];
-				//~ HydroGrid[i][j][k].T20 = rightZ[2][m][ii][jj];
-				//~ HydroGrid[i][j][k].T30 = rightZ[3][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].En = rightZ[4][m][ii][jj]; 
-				//~ HydroGrid[i][j][k].Vx = rightZ[5][m][ii][jj];
-				//~ HydroGrid[i][j][k].Vy = rightZ[6][m][ii][jj];
-				//~ HydroGrid[i][j][k].Ve = rightZ[7][m][ii][jj];
-				//~ 
-				//~ for(l=0;l<VARN;l++)
-				//~ {
-					//~ HydroGrid[i][j][k].u[l] = rightZ[2*VARN+l][m][ii][jj];
-					//~ HydroGrid[i][j][k].prevu[l] = rightZ[3*VARN+l][m][ii][jj];
-				//~ }
-				//~ 
-				//~ for(l=0;l<Npi;l++)
-					//~ HydroGrid[i][j][k].pi[l] = rightZ[4*VARN+l][m][ii][jj];
-				//~ 
-				//~ HydroGrid[i][j][k].PI = rightZ[4*VARN+Npi][m][ii][jj];
-				//~ HydroGrid[i][j][k].P  = rightZ[4*VARN+Npi+NPI][m][ii][jj];
-				//~ 
-			//~ 
-			//~ }
-		//~ }
+ 
 	}
 }
 
@@ -856,10 +716,7 @@ void pack(GRID HydroGrid )
 		MPI_Isend(rightY,CHUNKY,MPI_DOUBLE,MYYRIGHT,tag,mpi_grid,&req );		
 	}
 	
-	//~ if(MYZRIGHT != BOUNDARY)
-	//~ {
-		//~ MPI_Isend(rightZ,CHUNKZ,MPI_DOUBLE,MYZRIGHT,tag,mpi_grid,&req );		
-	//~ }
+	 
 
 //If a process to my left, then it must have sent so
 // receive from left and unpack
@@ -873,11 +730,7 @@ void pack(GRID HydroGrid )
 	{
 		MPI_Irecv(leftY,CHUNKY,MPI_DOUBLE,MYYLEFT,tag,mpi_grid,&reqLtoR[1]);		
 	}
-
-	//~ if(MYZLEFT != BOUNDARY)
-	//~ {
-		//~ MPI_Irecv(leftZ,CHUNKZ,MPI_DOUBLE,MYZLEFT,tag,mpi_grid,&reqLtoR[2]);		
-	//~ }
+ 
 
 
 	 
@@ -902,10 +755,7 @@ void pack(GRID HydroGrid )
 	{
 		MPI_Isend(leftY,CHUNKY,MPI_DOUBLE,MYYLEFT,tag,mpi_grid,&req );		
 	}
-	//~ if(MYZLEFT != BOUNDARY)
-	//~ {
-		//~ MPI_Isend(leftZ,CHUNKZ,MPI_DOUBLE,MYZLEFT,tag,mpi_grid,&req );		
-	//~ }
+ 
  
 // If a process to my right, then it must have sent so
 // receive from right and unpack
@@ -918,10 +768,7 @@ void pack(GRID HydroGrid )
 	{
 		MPI_Irecv(rightY,CHUNKY,MPI_DOUBLE,MYYRIGHT,tag,mpi_grid,&reqRtoL[1]);		
 	}
-	//~ if(MYZRIGHT!= BOUNDARY)
-	//~ {
-		//~ MPI_Irecv(rightZ,CHUNKZ,MPI_DOUBLE,MYZRIGHT,tag,mpi_grid,&reqRtoL[2]);		
-	//~ }
+ 
 	
 
 	MPI_Waitall(3,reqRtoL,status);

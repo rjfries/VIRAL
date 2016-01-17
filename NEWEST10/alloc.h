@@ -36,3 +36,18 @@ void StoreInHeap()
 }
 
 
+void FreeFromHeap()
+{
+	delete[] leftX;
+	delete[] rightX;
+	delete[] leftY;
+	delete[] rightY;
+	delete[] leftZ;
+	delete[] rightZ;
+	
+
+
+	
+	delete[] HydroGrid;
+}
+
