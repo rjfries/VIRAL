@@ -65,7 +65,6 @@ using namespace std;
 #include "Source.h"
 #include "write.h"
 #include "multiroot.h"
-
 #ifdef SHAS
 	#include "hydroshasta.h"
 #endif

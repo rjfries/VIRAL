@@ -18,9 +18,9 @@ void CalcNumVel(GRID HydroGrid, double tau)
 		
 		if(l==0)
 		{
-			HydroGrid[i][j][k].NVx[l] = (  u1*u0*(e+P ) )/HydroGrid[i][j][k].T00;
-			HydroGrid[i][j][k].NVy[l] = (  u2*u0*(e+P ) )/HydroGrid[i][j][k].T00;
-			HydroGrid[i][j][k].NVz[l] = (  u3*u0*(e+P ) )/HydroGrid[i][j][k].T00;		
+			HydroGrid[i][j][k].NVx[l] = (   u1*u0*(e+P) )/HydroGrid[i][j][k].T00;
+			HydroGrid[i][j][k].NVy[l] = (   u2*u0*(e+P) )/HydroGrid[i][j][k].T00;
+			HydroGrid[i][j][k].NVz[l] = (   u3*u0*(e+P) )/HydroGrid[i][j][k].T00;		
 		}
 		else
 		{
@@ -43,7 +43,7 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Var[0]= HydroGrid[i][j][k].T00;
 		HydroGrid[i][j][k].Var[1]= HydroGrid[i][j][k].T10;
 		HydroGrid[i][j][k].Var[2]= HydroGrid[i][j][k].T20;
-		HydroGrid[i][j][k].Var[3]= HydroGrid[i][j][k].T30; 
+		HydroGrid[i][j][k].Var[3]= HydroGrid[i][j][k].T30;
 	}
 }
 
@@ -51,10 +51,11 @@ void CopyPrimaryVariablesToVar(GRID HydroGrid, double tau)
 void ClearResultVariable(GRID HydroGrid)
 {
 	int i,j,k,l;
+	
+	for( int l=0; l<SVAR; l++)
 	for( int i=0; i<XCM ; i++)
 	for( int j=0; j<YCM ; j++)
 	for( int k=0; k<ZCM ; k++)
-	for( int l=0; l<SVAR; l++)
 		HydroGrid[i][j][k].Result[l] = 0;
 }
 

@@ -1,6 +1,4 @@
-
 #define PRINTVAR (12)//4+5+1+1+1   
-
 
 /*********Write out only XY plane*********/
 inline int OFFSETXYALLVARS(int gi)  
@@ -91,8 +89,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].P;
 			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Vx;
 			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].Vy;
-			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;
-			
+			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;	
 			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].pi[0];
 			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[1];
 			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[2];

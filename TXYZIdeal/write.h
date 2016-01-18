@@ -1,5 +1,3 @@
-
-
 #define PRINTVAR (6) 
 
 /*********Write out only XY plane*********/
@@ -46,6 +44,7 @@ inline int OFFSETXYALLVARS(int gi , int size)
 		return -1;
 	}
 }
+
  
 
 
@@ -90,7 +89,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].P;
 			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Vx;
 			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].Vy;
-			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve; 	
+			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;	
 		}
 
 
@@ -105,7 +104,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 	}
 	
 	MPI_File_close(&fh);
-	delete [] buf;
+	delete buf;
 
 }
  
@@ -122,7 +121,7 @@ inline int OFFSET(int gi, int gj)
 		int zpoints = GRIDZPOINTS/FREQZ;
 		gi /= FREQ;
 		gj /= FREQ;
-		return((gi*ypoints*zpoints + gj*zpoints + (kSTART/FREQZ)) * sizeline);
+		return((gi*ypoints*zpoints + gj*zpoints) * sizeline);
 	}	
 	else
 	{
@@ -151,16 +150,15 @@ void WriteResults(double tau, GRID HydroGrid)
 
 	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.3ffm.bin",tau); 
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 	
 	MPI_File_open(mpi_grid, str,  MPI_MODE_WRONLY|MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
-	double *buf;
+	delete str;
+	
   
 
 	int  chunk = ZCMA*PRINTVAR/FREQZ; 
-	 
-	
-	buf = new double [chunk];
+	double *buf = new double [chunk];
 	
 	for(i=il;i<ir;i=i+FREQ)
 	for(j=jl;j<jr;j=j+FREQ)
@@ -171,16 +169,14 @@ void WriteResults(double tau, GRID HydroGrid)
 		offset=OFFSET(gi,gj);
 
 		for(k=kl;k<kr;k=k+FREQZ)
-		{ 	
-			int kk=k-kl;
-			kk=kk/FREQZ; 
- 
-			buf[kk*PRINTVAR+0]=HydroGrid[i][j][k].En;
+		{ 
+			int kk = (k-kl)/FREQZ;
+			buf[kk*PRINTVAR+0]=HydroGrid[i][j][k].En;	
 			buf[kk*PRINTVAR+1]=HydroGrid[i][j][k].Temp;
-			buf[kk*PRINTVAR+2]=HydroGrid[i][j][k].P;	
+			buf[kk*PRINTVAR+2]=HydroGrid[i][j][k].P;						
 			buf[kk*PRINTVAR+3]=HydroGrid[i][j][k].Vx;
 			buf[kk*PRINTVAR+4]=HydroGrid[i][j][k].Vy;
-			buf[kk*PRINTVAR+5]=HydroGrid[i][j][k].Ve;  
+			buf[kk*PRINTVAR+5]=HydroGrid[i][j][k].Ve;
 						
 		}
 
@@ -196,9 +192,8 @@ void WriteResults(double tau, GRID HydroGrid)
 		}
 	}
 
- 
 	MPI_File_close(&fh);
-	delete [] buf ; 
+	delete buf;
 }
 
 

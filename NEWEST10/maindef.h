@@ -31,7 +31,7 @@ double tau;
 
 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST) 
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST)  && !defined(FLUCT) 
 	//~ #define NSINIT
 	//~ #define ZEROINIT   
 	//~ #define LBI
@@ -85,9 +85,74 @@ double tau;
 #endif
 
 
-#if defined BULKTEST
-	#define BULK 
 
+
+
+
+
+#if defined FLUCT 
+	#define LBI
+
+#ifdef SHAS
+	#define CON
+#endif
+
+	#define NPX  4
+	#define NPY  4 
+	#define NP (NPX*NPY*1)
+
+	#define TAUSTART 0.60 
+	#define TS 0.002
+	#define XL 5
+	#define XS 0.1
+	#define YL 5
+	#define YS 0.1
+	 
+#ifdef LBI
+	#define ZL 0
+	#define ZS 0.1
+#else
+	#define ZL 5
+	#define ZS 0.1
+#endif	
+	
+	#define PFREQ 0.01
+	#define FREQ ((int)1)
+	#define FREQZ ((int)1)
+	
+	inline double EOS(double en )                                       {return (en/3.0                        );}	
+	inline double DPDE(double en )                                      {return (1.0/3.0                       );}	 
+	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
+	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
+	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
+
+	#define SCALE_VIS 1
+	#define SCALE_TPI 1	
+	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
+	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
+
+#ifdef BULK
+	#define SCALE_BULK_VIS 1
+	#define SCALE_BULK_TPI 1	
+	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
+	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
+#endif
+
+	
+#endif
+
+
+
+
+
+
+
+
+
+
+
+#if defined BULKTEST
+	#define BULK  
 #ifdef SHAS
 	#define CON
 #endif
@@ -426,6 +491,7 @@ inline double fmtoMev(double temp)
 	ret = temp*GEVFM; //converts from 1/fm to Gev	
 	return 1000*ret;	
 }
+
 
 #define DECLTmu0      double T00 = HydroGrid[i][j][k].T00;double T10 = HydroGrid[i][j][k].T10;double T20 = HydroGrid[i][j][k].T20;double T30 = HydroGrid[i][j][k].T30
 #define DECLePPIa     double e = HydroGrid[i][j][k].En;double P = HydroGrid[i][j][k].P;double PI = HydroGrid[i][j][k].PI;double a = DPDE(HydroGrid[i][j][k].P )

@@ -276,7 +276,6 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar1( HydroGrid,ts);		
 	UpdatePrimaryVariablesFromVar1(HydroGrid,  tau+ts);  
 	UpdatePrevU(HydroGrid);
-	
 	RootSearchForEnVelUsingDerivatives(HydroGrid , tau + ts);    
 	
 	

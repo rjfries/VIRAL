@@ -20,10 +20,10 @@
 
 
 #if defined LBI 
-	#define ZCM  1 
+	#define ZCM 1
 	#define ZCMA 1
 #else 
-	#define ZCM ((int)(2*(ZL/ZS)+2*BORDER+OFF+1)) 
+	#define ZCM ((int)(2*(ZL/ZS)+OFF+1+2*BORDER)) 
 	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
 #endif
 
@@ -32,20 +32,24 @@ double tau;
 
 
 
-#if  !defined(BJORKEN) 
+#if  !defined(FLUCT) 
+#ifdef SHAS
+	#define CON
+#endif
+
 	#define NPX  1
 	#define NPY  1
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0 
-	#define TS 0.01
-	#define XL 0.6
+	#define TS 0.004
+	#define XL 0.4
 	#define XS 0.1
-	#define YL 0.6
+	#define YL 0.4
 	#define YS 0.1
 	
 	#define ZL 4
-	#define ZS 0.1
+	#define ZS 0.02
 
 	#define PFREQ 0.2
 	#define FREQ ((int)1)
@@ -61,16 +65,20 @@ double tau;
 
 
 
-#if defined(BJORKEN)
-	#define NPX  1
-	#define NPY  1 
+#if defined(FLUCT)
+	#define LBI
+#ifdef SHAS
+	#define CON
+#endif
+	#define NPX  4
+	#define NPY  4 
 	#define NP (NPX*NPY*1)
 
-	#define TAUSTART 0.60 
+	#define TAUSTART 0.0 
 	#define TS 0.01
-	#define XL 1
+	#define XL 4
 	#define XS 0.1
-	#define YL 1
+	#define YL 4
 	#define YS 0.1
 	#define ZL 2
 	#define ZS 0.1
@@ -174,7 +182,7 @@ typedef double (*PCKY) [BORDER][XCMA][ZCMA];
 typedef double (*PCKZ) [BORDER][XCMA][YCMA];
 typedef double (*PCKXY) [BORDER][BORDER][ZCMA];
 
-
+ 
 
 #define WOODSAXON(r , width, loc)   (1.0/(1 + exp( (r - loc)/width) ) )
 #define HeaviSideTheta(num)   ( (num>=0)?1:0) 
@@ -192,4 +200,3 @@ inline double fmtoMev(double temp)
 #define DECLePa     double e = HydroGrid[i][j][k].En;double P = HydroGrid[i][j][k].P; double a = DPDE(HydroGrid[i][j][k].P )
 #define DECLu4        double u0 = HydroGrid[i][j][k].u[0]; double u1 = HydroGrid[i][j][k].u[1]; double u2 = HydroGrid[i][j][k].u[2];double u3 = HydroGrid[i][j][k].u[3]
 #define DECLcoord     double X = HydroGrid[i][j][k].X;     double Y = HydroGrid[i][j][k].Y;     double eta = HydroGrid[i][j][k].eta;double r = HydroGrid[i][j][k].r
-       

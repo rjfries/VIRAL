@@ -22,7 +22,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 	
 	}
 	
-#ifdef SHAS
+#if defined CON 
 /*Xderivatives*/
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)
@@ -46,10 +46,16 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		}
 		i=t;
 		 
-		double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],XS);
-		double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],XS);
-		double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],XS);
-		double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],XS);
+		//~ double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],XS);
+		//~ double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],XS);
+		//~ double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],XS);
+		//~ double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],XS);
+		
+		double temp0 = genminmod(q0[1],q0[2],q0[3],XS,1.1);
+		double temp1 = genminmod(q1[1],q1[2],q1[3],XS,1.1);
+		double temp2 = genminmod(q2[1],q2[2],q2[3],XS,1.1);
+		double temp3 = genminmod(q3[1],q3[2],q3[3],XS,1.1);
+		
 		
 		HydroGrid[i][j][k].Source[0] += temp0;
 		HydroGrid[i][j][k].Source[1] += temp1;
@@ -81,10 +87,17 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 		j=t;
 		 
 		
-		double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],YS);
-		double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],YS);
-		double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],YS);
-		double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],YS);
+		//~ double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],YS);
+		//~ double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],YS);
+		//~ double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],YS);
+		//~ double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],YS);
+		
+		
+		double temp0 = genminmod(q0[1],q0[2],q0[3],YS,1.1);
+		double temp1 = genminmod(q1[1],q1[2],q1[3],YS,1.1);
+		double temp2 = genminmod(q2[1],q2[2],q2[3],YS,1.1);
+		double temp3 = genminmod(q3[1],q3[2],q3[3],YS,1.1);
+		
 		
 		HydroGrid[i][j][k].Source[0] += temp0;
 		HydroGrid[i][j][k].Source[1] += temp1;
@@ -114,10 +127,15 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 			q3[k-t+2] = -(           P					  );
 		}
 		k=t;
-		double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],ZS);
-		double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],ZS);
-		double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],ZS);
-		double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],ZS);
+		//~ double temp0 = genWENOder(q0[0],q0[1],q0[2],q0[3],q0[4],ZS);
+		//~ double temp1 = genWENOder(q1[0],q1[1],q1[2],q1[3],q1[4],ZS);
+		//~ double temp2 = genWENOder(q2[0],q2[1],q2[2],q2[3],q2[4],ZS);
+		//~ double temp3 = genWENOder(q3[0],q3[1],q3[2],q3[3],q3[4],ZS);
+		
+		double temp0 = genminmod(q0[1],q0[2],q0[3],ZS,1.1);
+		double temp1 = genminmod(q1[1],q1[2],q1[3],ZS,1.1);
+		double temp2 = genminmod(q2[1],q2[2],q2[3],ZS,1.1);
+		double temp3 = genminmod(q3[1],q3[2],q3[3],ZS,1.1);
 		
 		HydroGrid[i][j][k].Source[0] += temp0;
 		HydroGrid[i][j][k].Source[1] += temp1;

@@ -24,3 +24,4 @@ module load ictce
 
 # launch MPI program using the hydra launcher
 mpiexec.hydra ./hydro
+ 

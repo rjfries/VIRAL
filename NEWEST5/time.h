@@ -183,8 +183,7 @@ void UpdatePrevU( GRID HydroGrid)
 void Rescalepi(GRID HydroGrid, double tau)
 {
 	
-	int i,j,k,l;
- 
+	int i,j,k,l; 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)

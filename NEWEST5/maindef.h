@@ -16,6 +16,8 @@
 
 #define XCMA ((int)(XL/XS+OFF))
 #define YCMA ((int)(YL/YS+OFF))
+  
+
 
 #if defined LBI 
 	#define ZCM 1
@@ -27,10 +29,11 @@
 
 double ts;
 double tau;
+ 
 
 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST) 
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER) && !defined(BULKTEST)  && !defined(FLUCT) 
 	//~ #define NSINIT
 	//~ #define ZEROINIT   
 	//~ #define LBI
@@ -84,9 +87,74 @@ double tau;
 #endif
 
 
-#if defined BULKTEST
-	#define BULK 
 
+
+
+
+
+#if defined FLUCT 
+	#define LBI
+
+#ifdef SHAS
+	#define CON
+#endif
+
+	#define NPX  4
+	#define NPY  4 
+	#define NP (NPX*NPY*1)
+
+	#define TAUSTART 0.60 
+	#define TS 0.002
+	#define XL 5
+	#define XS 0.1
+	#define YL 5
+	#define YS 0.1
+	 
+#ifdef LBI
+	#define ZL 0
+	#define ZS 0.1
+#else
+	#define ZL 5
+	#define ZS 0.1
+#endif	
+	
+	#define PFREQ 0.01
+	#define FREQ ((int)1)
+	#define FREQZ ((int)1)
+	
+	inline double EOS(double en )                                       {return (en/3.0                        );}	
+	inline double DPDE(double en )                                      {return (1.0/3.0                       );}	 
+	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
+	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
+	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
+
+	#define SCALE_VIS 0.01
+	#define SCALE_TPI 1	
+	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
+	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
+
+#ifdef BULK
+	#define SCALE_BULK_VIS 1
+	#define SCALE_BULK_TPI 1	
+	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
+	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
+#endif
+
+	
+#endif
+
+
+
+
+
+
+
+
+
+
+
+#if defined BULKTEST
+	#define BULK  
 #ifdef SHAS
 	#define CON
 #endif
@@ -276,6 +344,7 @@ double tau;
 	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
 	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
 #endif
+
 #endif 
 	
 	
@@ -293,6 +362,9 @@ double tau;
 #define DIM 3
 #define WENOP 2
 #define WENOEPS 1E-6
+
+
+
 
 #ifdef SHAS
 #define BORDER 3
@@ -385,11 +457,7 @@ typedef struct
 	double AyLY[EVAR], AyRY[EVAR]; //reconstruct all of the center eigen values
 	double AzLZ[EVAR], AzRZ[EVAR]; //reconstruct all of the center eigen values
  
- 
-	double RightZeroFz[SVAR];
-	double RightZeroVar[SVAR];
-	double RightZeroAz[EVAR];
-	
+  
 	double AxLXMAX, AxRXMAX;
 	double AyLYMAX, AyRYMAX;
 	double AzLZMAX, AzRZMAX;
@@ -411,8 +479,7 @@ typedef double (*PCKY) [BORDER][XCMA][ZCMA];
 typedef double (*PCKZ) [BORDER][XCMA][YCMA];
 typedef double (*PCKXY) [BORDER][BORDER][ZCMA];
 
-
-typedef double (*CAPXY) [XCM][YCM];
+ 
 
 #define WOODSAXON(r , width, loc)   (1.0/(1 + exp( (r - loc)/width) ) )
 #define HeaviSideTheta(num)   ( (num>=0)?1:0)

@@ -454,8 +454,8 @@ void fvY(GRID HydroGrid, double tau)
  
 	 	
 	for( l=0; l<SVAR; l++)
-	for( i=il; i< ir;  i++)
-	for( k=kl; k< kr;  k++)
+	for( i=il; i<ir;  i++)
+	for( k=kl; k<kr; k++)
 	for( j=jl-1 ; j<jr; j++)
 		HydroGrid[i][j][k].fluxT[l] =   0.5*( HydroGrid[i][j][k].FyLY[l] + HydroGrid[i][j][k].FyRY[l] )
 				- 0.5 *(  MAX( fabs( HydroGrid[i][j][k].AyLYMAX  ), fabs(  HydroGrid[i][j][k].AyRYMAX ) ) ) * ( HydroGrid[i][j][k].VarRY[l] - HydroGrid[i][j][k].VarLY[l] ); 
@@ -487,7 +487,11 @@ void fvZ(GRID HydroGrid,  double tau)
 	for( j=jl; j< jr; j++)
 	for( k=kl; k< kr; k++)
 		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j][k-1].fluxT[l]);
+		
 }
+
+
+
 
 /*
 for( l=0; l<SVAR; l++)
@@ -523,3 +527,4 @@ for( l=0; l<SVAR; l++)
 		HydroGrid[i][j][0].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][0].fluxT[l] - FluxT[l][i][j]);
 }
 */
+

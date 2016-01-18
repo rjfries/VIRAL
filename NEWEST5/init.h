@@ -107,6 +107,8 @@ inline int RANK(int i, int j,int k)
 #define MYXRYL (     (MYXRIGHT != BOUNDARY && MYYLEFT != BOUNDARY )?  RANK(xcord+1,ycord-1,zcord) : BOUNDARY  )
 #define MYXRYR (     (MYXRIGHT != BOUNDARY && MYYRIGHT != BOUNDARY )?  RANK(xcord+1,ycord+1,zcord) : BOUNDARY  ) 
 
+
+
 #define MYZLEFT  ( BOUNDARY )
 #define MYZRIGHT ( BOUNDARY )
 
@@ -139,11 +141,11 @@ void mpi_init()
 	root=0;
 
 }
-
+ double FluctuatingEn(double x, double y);
  
 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)&& !defined(FLUCT)
 void initvar(GRID HydroGrid, double tau, double ts)
 {
 	int i,j,k,l;
@@ -153,29 +155,25 @@ void initvar(GRID HydroGrid, double tau, double ts)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		double step = 16;
-		double x =  HydroGrid[i][j][k].X;
-		double y =  HydroGrid[i][j][k].Y;
-		double eta =  HydroGrid[i][j][k].eta;
-		double r =  HydroGrid[i][j][k].r;
-		
-		
-		HydroGrid[i][j][k].En = 16*exp(-x*x-y*y);
+		DECLcoord;	
+		 
+		HydroGrid[i][j][k].En = 16*exp(-r*r); 	
 		double AbsE = fabs(eta);
 		double EtaF = 4; //flat part of eta
 		double sig = 1;		
 		double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
 		HydroGrid[i][j][k].En *= cutoff;
-		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En  );
+		
+		
+		
+		
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
 	
 		
 		HydroGrid[i][j][k].Vx= 0;
 		HydroGrid[i][j][k].Vy= 0;
-		HydroGrid[i][j][k].Ve= 0;	
-				
-		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
-		
-		
+		HydroGrid[i][j][k].Ve= 0;
 		
 		HydroGrid[i][j][k].u[0]= 1.0/(sqrt(1 - HydroGrid[i][j][k].Vx*HydroGrid[i][j][k].Vx
 											 - HydroGrid[i][j][k].Vy*HydroGrid[i][j][k].Vy
@@ -217,6 +215,71 @@ void initvar(GRID HydroGrid, double tau, double ts)
 #endif
 
 
+
+
+#ifdef FLUCT
+void initFluct(GRID HydroGrid, double tau, double ts)
+{
+	int i,j,k,l;
+	
+//define your initial conditions
+	for(i=0;i<XCM;i++)
+	for(j=0;j<YCM;j++)
+	for(k=0;k<ZCM;k++)
+	{
+		DECLcoord;
+		
+		HydroGrid[i][j][k].En = FluctuatingEn(X,Y);	
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
+	
+		HydroGrid[i][j][k].Vx= 0;
+		HydroGrid[i][j][k].Vy= 0;
+		HydroGrid[i][j][k].Ve= 0;	
+				
+		
+		
+		
+		HydroGrid[i][j][k].u[0]= 1.0/(sqrt(1 - HydroGrid[i][j][k].Vx*HydroGrid[i][j][k].Vx
+											 - HydroGrid[i][j][k].Vy*HydroGrid[i][j][k].Vy
+											 - tau*tau*HydroGrid[i][j][k].Ve*HydroGrid[i][j][k].Ve
+											 )
+									 );
+		HydroGrid[i][j][k].u[1] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Vx;
+		HydroGrid[i][j][k].u[2] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Vy;
+		HydroGrid[i][j][k].u[3] =  HydroGrid[i][j][k].u[0]*HydroGrid[i][j][k].Ve;	
+		
+		DECLu4;
+		HydroGrid[i][j][k].prevu[0] = u0; //value 1 "ts" earlier
+		HydroGrid[i][j][k].prevu[1] = u1; //value 1 "ts" earlier
+		HydroGrid[i][j][k].prevu[2] = u2; //value 1 "ts" earlier
+		HydroGrid[i][j][k].prevu[3] = u3; //value 1 "ts" earlier
+	} 
+	
+	for(i=0;i<XCM;i++)
+	for(j=0;j<YCM;j++)
+	for(k=0;k<ZCM;k++)
+	{
+		HydroGrid[i][j][k].PI =   0;
+		for(l=0;l<Npi;l++)
+			HydroGrid[i][j][k].pi[l] =   0;
+			
+ 		DECLePPIa;
+		DECLp5u4;
+
+        HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + A1;
+        HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + A2;
+        HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + A3;
+        HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + A4;
+	}
+}
+#endif
+
+
+
+
+
+
 #ifdef BJORKEN
 void initBjorken(GRID HydroGrid, double tau, double ts)
 {
@@ -233,13 +296,12 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 		double r =  HydroGrid[i][j][k].r;
 		
 		HydroGrid[i][j][k].En = 30/GEVFM;		
-		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En ); 
+		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
 	
 		HydroGrid[i][j][k].Vx= 0;
 		HydroGrid[i][j][k].Vy= 0;
-		HydroGrid[i][j][k].Ve= 0;	
-				
-		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].Ve= 0;	 
 		
 		
 		
@@ -298,12 +360,11 @@ void initBulktest(GRID HydroGrid, double tau, double ts)
 		
 		HydroGrid[i][j][k].En = 30/GEVFM;		
 		HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
 	
 		HydroGrid[i][j][k].Vx= 0;
 		HydroGrid[i][j][k].Vy= 0;
-		HydroGrid[i][j][k].Ve= 0;	
-				
-		HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En );
+		HydroGrid[i][j][k].Ve= 0;	 
 		
 		
 		
@@ -468,8 +529,6 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 #endif
 
 
-
-
 void init(double tau, double ts)
 {
 
@@ -575,7 +634,7 @@ void init(double tau, double ts)
 	
 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)&& !defined(FLUCT)
 		initvar(HydroGrid,tau, ts);
 #endif
 	
@@ -588,6 +647,10 @@ void init(double tau, double ts)
 		initBjorken(HydroGrid,tau, ts);
 #endif
 	
+#ifdef FLUCT		
+		initFluct(HydroGrid,tau, ts);
+#endif
+	
 #ifdef GUBSER
 		initGubser(HydroGrid,tau,ts);
 #endif
@@ -595,7 +658,6 @@ void init(double tau, double ts)
 #ifdef BULKTEST
 		initBulktest(HydroGrid,tau,ts);
 #endif
-	
 	
 #ifdef NSINIT
 		NSInit(HydroGrid,tau,ts);
