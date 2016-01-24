@@ -73,12 +73,12 @@ void CalcCentreFlux(GRID HydroGrid, double tau)
 		HydroGrid[i][j][k].Fz[2] =  tau*(  p5 + u3*u2*(e+P-PI)                     );
 		HydroGrid[i][j][k].Fz[3] =  tau*(  A5 + ( (P-PI)/(tau*tau) ) + u3*u3*(e+P-PI)     );	
 #endif
-	HydroGrid[i][j][k].Fz[4]=  (p1*u3)/u0;
-        HydroGrid[i][j][k].Fz[5]=  (p2*u3)/u0;
-        HydroGrid[i][j][k].Fz[6]=  (p3*u3)/u0;
-        HydroGrid[i][j][k].Fz[7]=  (p4*u3)/u0;
-        HydroGrid[i][j][k].Fz[8]=  (p5*u3)/u0;
-        HydroGrid[i][j][k].Fz[9]=  (PI*u3)/u0;
+		HydroGrid[i][j][k].Fz[4]=  tau*(p1*u3)/u0;
+        HydroGrid[i][j][k].Fz[5]=  tau*(p2*u3)/u0;
+        HydroGrid[i][j][k].Fz[6]=  tau*(p3*u3)/u0;
+        HydroGrid[i][j][k].Fz[7]=  tau*(p4*u3)/u0;
+        HydroGrid[i][j][k].Fz[8]=  tau*(p5*u3)/u0;
+        HydroGrid[i][j][k].Fz[9]=  tau*(PI*u3)/u0;
 	}	
 }
 
@@ -236,7 +236,7 @@ void FindEigenValuesZ(GRID HydroGrid, double tau)
 							/ ( (e+P-PI)*(u0)*(-u0*u0+a*(-1+u0*u0) )  ) 
 							) ;		
 #else
-		HydroGrid[i][j][k].Az[0] = u3/u0; 
+		HydroGrid[i][j][k].Az[0] = tau*u3/u0; 
 #endif
 
 	}
@@ -489,42 +489,3 @@ void fvZ(GRID HydroGrid,  double tau)
 		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j][k-1].fluxT[l]);
 		
 }
-
-
-
-
-/*
-for( l=0; l<SVAR; l++)
-	for( i=il; i< ir; i++)
-	for( j=jl; j< jr; j++)
-	{ 	
-		double AzLZMAX=0;
-		double AzRZMAX=0;
-		
-		for(int m=0;m<EVAR;m++)
-		{
-			if( fabs(AzLZ[m][i][j]) > AzLZMAX)
-				AzLZMAX = fabs(AzLZ[m][i][j]) ;
-								
-			if( fabs(AzRZ[m][i][j]) > AzRZMAX)
-				AzRZMAX = fabs(AzRZ[m][i][j]) ;
-		}	
-		FluxT[l][i][j] = 0.5*(FzLZ[l][i][j]+FzRZ[l][i][j]) - 0.5 *(  MAX(AzLZMAX,AzRZMAX ) )* ( VarRZ[l][i][j] -  VarLZ[l][i][j] ); 
-	}
-	
-	
-	
-	for( l=0; l<SVAR; l++)
-	for( i=il; i< ir; i++)
-	for( j=jl; j< jr; j++)
-	for( k=1; k<ZCMA ; k++) 
-		HydroGrid[i][j][k].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][k].fluxT[l] - HydroGrid[i][j][k-1].fluxT[l]);
-		
-		
-	for( l=0; l<SVAR; l++)
-	for( i=il; i< ir; i++)
-	for( j=jl; j< jr; j++)
-		HydroGrid[i][j][0].PartialResult[l] =  -(1.0/ZS)*(HydroGrid[i][j][0].fluxT[l] - FluxT[l][i][j]);
-}
-*/
-

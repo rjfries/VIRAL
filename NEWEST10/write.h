@@ -1,11 +1,9 @@
-
 #define PRINTVAR (17)//4+10+1+1+1   
 
-
 /*********Write out only XY plane*********/
-inline int OFFSETXYALLVARS(int gi)  
+inline int OFFSETXYALLVARS(int gi, int size)  
 {
-	double sizeline=sizeof(double)*PRINTVAR;
+	double sizeline=sizeof(double)*size;
 	 
 	
 	if( (gi%FREQ)==0   )
@@ -22,7 +20,7 @@ inline int OFFSETXYALLVARS(int gi)
 } 
 
 
-inline int OFFSETXYALLVARS(int gi , int size)  
+inline int OFFSETXYALLVARSCOM(int gi , int size)  
 {
 	double sizeline=sizeof(double)*size;
 	
@@ -76,7 +74,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 	for(i=il;i<ir;i=i+f)
 	{
 		gi = MYGLOBALiWB(i);		
-		offset = OFFSETXYALLVARS(gi); //(in bytes)
+		offset = OFFSETXYALLVARS(gi, PRINTVAR); //(in bytes)
 	
 		MPI_File_seek(fh,offset,MPI_SEEK_SET);	//takes offset in bytes
 
@@ -91,8 +89,7 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 			buf[jj*PRINTVAR+2]=HydroGrid[i][j][k0+off].P;
 			buf[jj*PRINTVAR+3]=HydroGrid[i][j][k0+off].Vx;
 			buf[jj*PRINTVAR+4]=HydroGrid[i][j][k0+off].Vy;
-			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;
-			
+			buf[jj*PRINTVAR+5]=HydroGrid[i][j][k0+off].Ve;	
 			buf[jj*PRINTVAR+6]=HydroGrid[i][j][k0+off].pi[0];
 			buf[jj*PRINTVAR+7]=HydroGrid[i][j][k0+off].pi[1];
 			buf[jj*PRINTVAR+8]=HydroGrid[i][j][k0+off].pi[2];
@@ -123,12 +120,72 @@ void WriteResultsXY(double tau, GRID HydroGrid)
 }
 
 
+void WriteNSXY(double tau, GRID HydroGrid)
+{
+
+	int len = snprintf(0,0,"res/NStau%2.3ffm.bin",tau);
+	char *str = new char[len+3];
+	sprintf(str,"res/NStau%2.3ffm.bin",tau);
+
+	MPI_Offset offset;
+	int i,j;
+	int gi;
+	MPI_Status ierr;
+	MPI_File fh;	
+	
+	MPI_File_open(mpi_grid, str,  MPI_MODE_WRONLY |MPI_MODE_CREATE, MPI_INFO_NULL, &fh);
+	double *buf;
+
+	int f = FREQ;
+	
+	int nvar = 11;
+	int chunk = nvar*YCMA/f;
+	
+	buf = new double [chunk];
+	int off=0;
+	
+	for(i=il;i<ir;i=i+f)
+	{
+		gi = MYGLOBALiWB(i);		
+		offset = OFFSETXYALLVARS(gi, nvar); //(in bytes)
+	
+		MPI_File_seek(fh,offset,MPI_SEEK_SET);	//takes offset in bytes
+
+		
+		for(j=jl;j<jr;j=j+f) 
+		{
+			int jj=j-jl;
+			jj=jj/f;
+		
+			for(int l=0;l<10;l++)
+				buf[jj*nvar+l]=HydroGrid[i][j][k0].nspi[l];
+		
+			buf[jj*nvar+10]=HydroGrid[i][j][k0].nsPI;
+		}
+
+
+		int error = MPI_File_write(fh, (void*)buf, chunk, MPI_DOUBLE, &ierr);
+		
+		if(error!=MPI_SUCCESS)
+		{
+			cout<<"hell0"<<endl;
+			MPI_Finalize();
+			exit(0);
+		}
+	}
+	
+	MPI_File_close(&fh);
+	delete buf;
+
+}
+
+
 void WriteResultsXYCom(double tau, GRID HydroGrid)
 {
 
-	int len = snprintf(0,0,"res/tau%2.2ffm.bin",tau);
+	int len = snprintf(0,0,"res/tau%2.3ffm.bin",tau);
 	char *str = new char[len+3];
-	sprintf(str,"res/tau%2.2ffm.bin",tau);
+	sprintf(str,"res/tau%2.3ffm.bin",tau);
 
 	MPI_Offset offset;
 	int i,j;
@@ -164,7 +221,7 @@ void WriteResultsXYCom(double tau, GRID HydroGrid)
 	for(i=IL;i<IR;i=i+f)
 	{
 		gi = MYGLOBALi(i);		
-		offset = OFFSETXYALLVARS(gi, PRINTVAR); //(in bytes)
+		offset = OFFSETXYALLVARSCOM(gi, PRINTVAR); //(in bytes)
 	
 		MPI_File_seek(fh,offset,MPI_SEEK_SET);	//takes offset in bytes
 

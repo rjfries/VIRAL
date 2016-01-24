@@ -217,12 +217,16 @@ int conservation_f (const gsl_vector * x, void *params, gsl_vector * f)
 	double tau = ((struct rparams *) params)->tau;
 	double r = ((struct rparams *) params)->r;
 
-	const double e = gsl_vector_get (x, 0);
+	 double e = gsl_vector_get (x, 0);
 	const double u1 = gsl_vector_get (x, 1);
 	const double u2 = gsl_vector_get (x, 2);
 	const double u3 = gsl_vector_get (x, 3);
 
+	if (e  <= 0)
+		e=1e-6;
 	double P = EOS(e );
+	
+	 
 
 	const double y0 = -(u1*X) - u2*Y - u3*Z*pow(tau,2) + (-e + W)*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),0.5);
 	const double y1 = -(e*u1) - u2*(p3 + (e + P - PI)*u1*u2) - u3*(p4 + (e + P - PI)*u1*u3)*pow(tau,2) - u1*(P + p1 - PI + (e + P - PI)*pow(u1,2)) + X*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),0.5);
@@ -256,14 +260,20 @@ int conservation_df  (const gsl_vector * x, void *params, gsl_matrix * J)
 	double tau = ((struct rparams *) params)->tau;
 	double r = ((struct rparams *) params)->r;
 
-	const double e = gsl_vector_get (x, 0);
+	double e = gsl_vector_get (x, 0);
+	if (e  <= 0)
+		e=1e-6;
+		
 	const double u1 = gsl_vector_get (x, 1);
 	const double u2 = gsl_vector_get (x, 2);
 	const double u3 = gsl_vector_get (x, 3);
-
+ 
+		
 	double P = EOS(e);
 	double a = DPDE(e);
 
+	 
+	 
 	const double df00 =  -pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),0.5);
 	const double df01 =  -X + u1*(-e + W)*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),-0.5) ;
 	const double df02 =  -Y + u2*(-e + W)*pow(1 + pow(u1,2) + pow(u2,2) + pow(tau,2)*pow(u3,2),-0.5) ;
@@ -416,6 +426,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		{		
 			HydroGrid[i][j][k].En = gsl_vector_get(result, 0);    //find the new energy from root finding algorithm
 			HydroGrid[i][j][k].Temp = FT(HydroGrid[i][j][k].En);
+			HydroGrid[i][j][k].P = EOS(HydroGrid[i][j][k].En);	
 			HydroGrid[i][j][k].u[1] = gsl_vector_get(result, 1);    //find the new u1 from root finding algorithm
 			HydroGrid[i][j][k].u[2] = gsl_vector_get(result, 2);    //find the new u2 from root finding algorithm
 			HydroGrid[i][j][k].u[3] = gsl_vector_get(result, 3);    //find the new u3 from root finding algorithm
@@ -450,31 +461,78 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		double u0 = HydroGrid[i][j][k].u[0];
 		double u1 = HydroGrid[i][j][k].u[1];
 		double u2 = HydroGrid[i][j][k].u[2];
-		double u3 = HydroGrid[i][j][k].u[3];	
-
-		double r = HydroGrid[i][j][k].r;
+		double u3 = HydroGrid[i][j][k].u[3];	 
 		
 		double vx = u1/u0;
 		double vy = u2/u0;
 		double ve = u3/u0;
 		
-		if( sqrt(vx*vx+vy*vy+ve*ve) >= 1 || En <=0 )
+		DECLcoord;
+		
+		//~ double AbsE = fabs(eta);
+		//~ double EtaF = FLAT; //flat part of eta
+		//~ double sig = 0.75;		
+		//~ double cutoff =  exp(     -pow((AbsE-(EtaF/2))/(sqrt(2)*sig), 2)*HeaviSideTheta(    (AbsE-(EtaF/2))) );
+		
+		//~ vx *= cutoff;
+		//~ vy *= cutoff;
+		
+		if( sqrt(vx*vx + vy*vy + tau*tau*ve*ve) >= 1 || En <=0 )
 		{
-			 //~ cout<<" violations of SOL / -ve energy in multiroot.h -  2nd place"<<endl;
-			 //~ cout<<"HELL BROKE LOOSE X "<<HydroGrid[i][j][k].X <<"  Y " << HydroGrid[i][j][k].Y<< "  E "<<HydroGrid[i][j][k].eta << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
-			 //~ cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
-			 //~ cout<<"HELL BROKE LOOSE Energy  "<<En<<endl;
-			 //~ quit = 1;
-			 //~ exit(quit);
+			 cout<<" violations of SOL / -ve energy in multiroot.h -  2nd place"<<endl;
+			 cout<<"HELL BROKE LOOSE X "<<HydroGrid[i][j][k].X <<"  Y " << HydroGrid[i][j][k].Y<< "  E "<<HydroGrid[i][j][k].eta << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
+			 cout<<"HELL BROKE LOOSE vX "<<vx <<"  vY " << vy<< "  vE "<<ve << "  "<<sqrt(vx*vx+vy*vy+ve*ve)<<endl;
+			 cout<<std::scientific<<"HELL BROKE LOOSE Energy  "<<En<<endl;
+			 quit = 1;
+			 exit(quit);
 		 }
 		 		
 		HydroGrid[i][j][k].Vx = vx;
 		HydroGrid[i][j][k].Vy = vy;
-		HydroGrid[i][j][k].Ve = ve;
-		HydroGrid[i][j][k].P = EOS(En );		
+		HydroGrid[i][j][k].Ve = ve;	
 	}
 	
 	
+	
+	//~ for(i=il;i<ir;i++)
+	//~ for(j=jl;j<jr;j++)
+	//~ for(k=kl; k<kr ;k++)
+	//~ {
+		//~ if(k==k0)
+			//~ continue;
+			
+		//~ double u0,u1,u2,u3;
+		//~ double vx,vy,ve;
+		
+		//~ HydroGrid[i][j][k].Ve =  HydroGrid[i][j][k0].Ve;
+		//~ HydroGrid[i][j][k].Vx =  HydroGrid[i][j][k0].Vx;
+		//~ HydroGrid[i][j][k].Vy =  HydroGrid[i][j][k0].Vy;
+		//~ ve =  HydroGrid[i][j][k].Ve;			
+		//~ vx =  HydroGrid[i][j][k].Vx;
+		//~ vy =  HydroGrid[i][j][k].Vy;
+	
+		//~ u0 = 1.0/sqrt(1.0 - vx*vx - vy*vy - tau*tau*ve*ve);
+		 
+		 
+		//~ HydroGrid[i][j][k].u[0]=u0;
+		//~ HydroGrid[i][j][k].u[1]=u0*vx;
+		//~ HydroGrid[i][j][k].u[2]=u0*vy;
+		//~ HydroGrid[i][j][k].u[3]=u0*ve;
+	
+	//~ }
+	 	 
+	 	 
 	if(quit)
 		exit(quit);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 }

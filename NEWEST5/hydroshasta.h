@@ -26,7 +26,7 @@ void CalcNumVel(GRID HydroGrid, double tau)
 		{
 			HydroGrid[i][j][k].NVx[l] = u1/u0; 
 			HydroGrid[i][j][k].NVy[l] = u2/u0;
-			HydroGrid[i][j][k].NVz[l] = u3/u0;		
+			HydroGrid[i][j][k].NVz[l] = tau*(u3/u0);		
 		}
 	}
 }

@@ -2,10 +2,11 @@ void StoreInHeap();
 void NSInit(GRID HydroGrid, double tau, double ts);
 void ZeroInit(GRID HydroGrid, double tau, double ts);
 void CheckRoot(GRID HydroGrid , double tau);
-double DebugMSG(GRID HydroGrid);
+double DebugMSG(GRID HydroGrid , double tau);
 double MaxTempGev(GRID HydroGrid);
 int k0;
 
+void WriteNSXY(double tau, GRID HydroGrid);
 //PARALLEL STUFFS
 int rank, size, root=0;
 
@@ -107,6 +108,8 @@ inline int RANK(int i, int j,int k)
 #define MYXRYL (     (MYXRIGHT != BOUNDARY && MYYLEFT != BOUNDARY )?  RANK(xcord+1,ycord-1,zcord) : BOUNDARY  )
 #define MYXRYR (     (MYXRIGHT != BOUNDARY && MYYRIGHT != BOUNDARY )?  RANK(xcord+1,ycord+1,zcord) : BOUNDARY  ) 
 
+
+
 #define MYZLEFT  ( BOUNDARY )
 #define MYZRIGHT ( BOUNDARY )
 
@@ -154,13 +157,8 @@ void initvar(GRID HydroGrid, double tau, double ts)
 	for(k=0;k<ZCM;k++)
 	{
 		DECLcoord;	
-		
-		double step = 16;
-		
-		
-		HydroGrid[i][j][k].En = 16*exp(-r*r); 
-		
-		
+		 
+		HydroGrid[i][j][k].En = 16*exp(-r*r); 	
 		double AbsE = fabs(eta);
 		double EtaF = 4; //flat part of eta
 		double sig = 1;		
@@ -176,7 +174,7 @@ void initvar(GRID HydroGrid, double tau, double ts)
 		
 		HydroGrid[i][j][k].Vx= 0;
 		HydroGrid[i][j][k].Vy= 0;
-		HydroGrid[i][j][k].Ve= 0;	  
+		HydroGrid[i][j][k].Ve= 0;
 		
 		HydroGrid[i][j][k].u[0]= 1.0/(sqrt(1 - HydroGrid[i][j][k].Vx*HydroGrid[i][j][k].Vx
 											 - HydroGrid[i][j][k].Vy*HydroGrid[i][j][k].Vy
@@ -634,26 +632,32 @@ void init(double tau, double ts)
 #if defined LBI
 	k0 = int(-(ZSTART)/ZS );
 #else	
-	k0 = int(-(ZSTART)/ZS + OFF); 
+	k0 = int( (ZCM-1)/2 ); 
 #endif
 
 	
 	if(!rank)
-		cout<<"k0 is  "<<k0<<endl;
+		cout<<"k0 is  "<<k0<<" at eta = " << ZCORD(k0)<<"  "<<ZCORDWB(k0)<<endl;
 	
 
 
-#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)
+#if !defined(GINIT) && !defined(BJORKEN)&& !defined(GUBSER)&& !defined(FLUCT)
 		initvar(HydroGrid,tau, ts);
 #endif
 	
 #ifdef GINIT
-		ginit(HydroGrid,tau-ts);
-		ginit(HydroGrid,tau);		
+		ginit(HydroGrid,tau-ts); 
+		ginit(HydroGrid,tau);	
+		CalcNS(HydroGrid,tau,ts);	
+		WriteNSXY(tau,HydroGrid);
 #endif
 
 #ifdef BJORKEN		
 		initBjorken(HydroGrid,tau, ts);
+#endif
+	
+#ifdef FLUCT		
+		initFluct(HydroGrid,tau, ts);
 #endif
 	
 #ifdef GUBSER
@@ -672,7 +676,7 @@ void init(double tau, double ts)
 		ZeroInit(HydroGrid,tau,ts);
 #endif
 
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid , tau);
 	double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
 	if(rank==root)
 	{

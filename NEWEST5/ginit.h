@@ -874,8 +874,8 @@ void ginit(GRID HydroGrid, double tau)
 		EV[3]=eps[ii][jj];
 		
 		double AbsE = fabs(eta);
-		double EtaF = 4; //flat part of eta
-		double sig = 2;		
+		double EtaF = FLAT; //flat part of eta
+		double sig = 1;		
 		double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
 		//~ cutoff =  1 ;
 

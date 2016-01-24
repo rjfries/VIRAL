@@ -2,7 +2,7 @@ void StoreInHeap();
 void NSInit(GRID HydroGrid, double tau, double ts);
 void ZeroInit(GRID HydroGrid, double tau, double ts);
 void CheckRoot(GRID HydroGrid , double tau);
-double DebugMSG(GRID HydroGrid);
+double DebugMSG(GRID HydroGrid , double tau);
 double MaxTempGev(GRID HydroGrid);
 int k0;
 
@@ -529,6 +529,8 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 #endif
 
 
+
+
 void init(double tau, double ts)
 {
 
@@ -625,12 +627,12 @@ void init(double tau, double ts)
 #if defined LBI
 	k0 = int(-(ZSTART)/ZS );
 #else	
-	k0 = int(-(ZSTART)/ZS + OFF); 
+	k0 = int( (ZCM-1)/2 ); 
 #endif
 
 	
 	if(!rank)
-		cout<<"k0 is  "<<k0<<endl;
+		cout<<"k0 is  "<<k0<<" at eta = " << ZCORD(k0)<<"  "<<ZCORDWB(k0)<<endl;
 	
 
 
@@ -639,7 +641,7 @@ void init(double tau, double ts)
 #endif
 	
 #ifdef GINIT
-		ginit(HydroGrid,tau-ts);
+		ginit(HydroGrid,tau-ts); 
 		ginit(HydroGrid,tau);		
 #endif
 
@@ -659,6 +661,7 @@ void init(double tau, double ts)
 		initBulktest(HydroGrid,tau,ts);
 #endif
 	
+	
 #ifdef NSINIT
 		NSInit(HydroGrid,tau,ts);
 #endif
@@ -666,7 +669,7 @@ void init(double tau, double ts)
 		ZeroInit(HydroGrid,tau,ts);
 #endif
 
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid , tau);
 	double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
 	if(rank==root)
 	{

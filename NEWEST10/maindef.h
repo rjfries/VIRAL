@@ -16,6 +16,8 @@
 
 #define XCMA ((int)(XL/XS+OFF))
 #define YCMA ((int)(YL/YS+OFF))
+  
+
 
 #if defined LBI 
 	#define ZCM 1
@@ -246,6 +248,7 @@ double tau;
 #if defined(GINIT)  
 	//~ #define BULK
 	#define S95P
+	//~ #define LBI 
 	//~ #define VORT 
 
 #ifdef SHAS
@@ -253,17 +256,19 @@ double tau;
 #endif
 
 	#define PEDESTAL 0 	
+	#define FLAT 4 	
 	
-	#define NOS  6 //per side	for ginit.h
-	#define NPX  1
-	#define NPY  1
+	#define NOS  6 //per side for ginit.h
+	#define NPX  10
+	#define NPY  10
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0.1
 	#define TS 0.002
-	#define XL 4
+	
+	#define XL 3
 	#define XS 0.1
-	#define YL 4
+	#define YL 3 
 	#define YS 0.1
 	
 #ifdef LBI
@@ -274,8 +279,8 @@ double tau;
 	#define ZS 0.1
 #endif	
 
-	#define PFREQ 0.01
-	#define FREQ ((int)1)
+	#define PFREQ 0.05
+	#define FREQ ((int)5)
 	#define FREQZ ((int)1)
 	
 	inline double EOS(double en )                                       {return (s95p_p(en)                    );}	

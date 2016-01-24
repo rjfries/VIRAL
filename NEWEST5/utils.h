@@ -228,7 +228,7 @@ inline double phi(double r, int method)
 
 
 
-void CheckPhysics(GRID HydroGrid, int stage )
+void CheckPhysics(GRID HydroGrid, double tau, int stage )
 {
 	int i,j,k;
 	bool error = false;
@@ -241,11 +241,11 @@ void CheckPhysics(GRID HydroGrid, int stage )
 		double vx = HydroGrid[i][j][k].Vx;
 		double vy = HydroGrid[i][j][k].Vy;
 		double ve = HydroGrid[i][j][k].Ve;
-		double b = sqrt(vx*vx+vy*vy+ve*ve);
+		double b = sqrt(vx*vx+vy*vy+ tau*tau*ve*ve);
 		double en = HydroGrid[i][j][k].En;
 		if(b >=1)
 		{
-		 	cout<<"stage "<< stage<< " Causality violated ---> ( "<< vx<< ", "<<vy<< ","<<ve<< ") @ "<<  HydroGrid[i][j][k].X<< ", "<< HydroGrid[i][j][k].Y<< ","<< HydroGrid[i][j][k].eta<<endl;
+		 	cout<<"stage "<< stage<< " Causality violated ---> ( "<< vx<< ", "<<vy<< ","<<tau*ve<< ") @ "<<  HydroGrid[i][j][k].X<< ", "<< HydroGrid[i][j][k].Y<< ","<< HydroGrid[i][j][k].eta<<endl;
 			 error=true;
 		}		
 		if(en<=0)
@@ -254,7 +254,7 @@ void CheckPhysics(GRID HydroGrid, int stage )
 			 error=true;
 		}		
 	}
-	MPI_Barrier(mpi_grid);
+	//~ MPI_Barrier(mpi_grid);
 }
 
  

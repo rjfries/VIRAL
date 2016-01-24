@@ -740,7 +740,7 @@ void pack(GRID HydroGrid )
 	UnPackFromLeft( HydroGrid);
 
 
-	MPI_Barrier(mpi_grid);
+	//~ MPI_Barrier(mpi_grid);
 	
 	
 //
@@ -776,7 +776,7 @@ void pack(GRID HydroGrid )
 	
 
 
-	MPI_Barrier(mpi_grid);
+	//~ MPI_Barrier(mpi_grid);
 
 
 
@@ -788,77 +788,77 @@ void pack(GRID HydroGrid )
 	 * Diagonal Communication
 	 */
 	
-	MPI_Request reqXL2XR[2],reqXR2XL[2];
+	//~ MPI_Request reqXL2XR[2],reqXR2XL[2];
   
-	for(int i=0;i<2;i++)
-	{
-		reqXL2XR[i]=MPI_REQUEST_NULL ;
-		reqXR2XL[i]=MPI_REQUEST_NULL ;
-	}
+	//~ for(int i=0;i<2;i++)
+	//~ {
+		//~ reqXL2XR[i]=MPI_REQUEST_NULL ;
+		//~ reqXR2XL[i]=MPI_REQUEST_NULL ;
+	//~ }
 
 
 
 	
-// Send from XL towards XR
+//~ // Send from XL towards XR
 
-	PackXL( HydroGrid );
+	//~ PackXL( HydroGrid );
 
-	if(MYXLYL != BOUNDARY)
-	{
-		MPI_Isend(xlyl,CHUNKXY,MPI_DOUBLE,MYXLYL,tag,mpi_grid,&req );
-	}
+	//~ if(MYXLYL != BOUNDARY)
+	//~ {
+		//~ MPI_Isend(xlyl,CHUNKXY,MPI_DOUBLE,MYXLYL,tag,mpi_grid,&req );
+	//~ }
 
-	if(MYXLYR != BOUNDARY)
-	{
-		MPI_Isend(xlyr,CHUNKXY,MPI_DOUBLE,MYXLYR,tag,mpi_grid,&req );		
-	}
+	//~ if(MYXLYR != BOUNDARY)
+	//~ {
+		//~ MPI_Isend(xlyr,CHUNKXY,MPI_DOUBLE,MYXLYR,tag,mpi_grid,&req );		
+	//~ }
 
-//Receive data into XR and unpack
-	if(MYXRYL!= BOUNDARY)
-	{
-		MPI_Irecv(xryl,CHUNKXY,MPI_DOUBLE,MYXRYL,tag,mpi_grid,&reqXL2XR[0]);
-	}
-	if(MYXRYR != BOUNDARY)
-	{
+//~ //Receive data into XR and unpack
+	//~ if(MYXRYL!= BOUNDARY)
+	//~ {
+		//~ MPI_Irecv(xryl,CHUNKXY,MPI_DOUBLE,MYXRYL,tag,mpi_grid,&reqXL2XR[0]);
+	//~ }
+	//~ if(MYXRYR != BOUNDARY)
+	//~ {
 		
-		MPI_Irecv(xryr,CHUNKXY,MPI_DOUBLE,MYXRYR,tag,mpi_grid,&reqXL2XR[1]);		
-	}
+		//~ MPI_Irecv(xryr,CHUNKXY,MPI_DOUBLE,MYXRYR,tag,mpi_grid,&reqXL2XR[1]);		
+	//~ }
  
-	MPI_Waitall(2,reqXL2XR,status);
-	UnpackXR(HydroGrid);
-	MPI_Barrier(mpi_grid);
-//Second half of diagonal communication
+	//~ MPI_Waitall(2,reqXL2XR,status);
+	//~ UnpackXR(HydroGrid);
+	//~ MPI_Barrier(mpi_grid);
+//~ //Second half of diagonal communication
 	
 	
-// Send from XR towards XL
+//~ // Send from XR towards XL
 
-	PackXR( HydroGrid );
+	//~ PackXR( HydroGrid );
 
-	if(MYXRYL != BOUNDARY)
-	{
-		MPI_Isend(xryl,CHUNKXY,MPI_DOUBLE,MYXRYL,tag,mpi_grid,&req );
-	}
+	//~ if(MYXRYL != BOUNDARY)
+	//~ {
+		//~ MPI_Isend(xryl,CHUNKXY,MPI_DOUBLE,MYXRYL,tag,mpi_grid,&req );
+	//~ }
 
-	if(MYXRYR != BOUNDARY)
-	{
+	//~ if(MYXRYR != BOUNDARY)
+	//~ {
 		
-		MPI_Isend(xryr,CHUNKXY,MPI_DOUBLE,MYXRYR,tag,mpi_grid,&req );		
-	}
+		//~ MPI_Isend(xryr,CHUNKXY,MPI_DOUBLE,MYXRYR,tag,mpi_grid,&req );		
+	//~ }
 
-//Receive data into XL and unpack
-	MPI_Barrier(mpi_grid);
-	if(MYXLYL!= BOUNDARY)
-	{
-		MPI_Irecv(xlyl,CHUNKXY,MPI_DOUBLE,MYXLYL,tag,mpi_grid,&reqXR2XL[0]);
-	}
+//~ //Receive data into XL and unpack
+	//~ MPI_Barrier(mpi_grid);
+	//~ if(MYXLYL!= BOUNDARY)
+	//~ {
+		//~ MPI_Irecv(xlyl,CHUNKXY,MPI_DOUBLE,MYXLYL,tag,mpi_grid,&reqXR2XL[0]);
+	//~ }
 	
-	if(MYXLYR != BOUNDARY)
-	{
-		MPI_Irecv(xlyr,CHUNKXY,MPI_DOUBLE,MYXLYR,tag,mpi_grid,&reqXR2XL[1]);		
-	}
+	//~ if(MYXLYR != BOUNDARY)
+	//~ {
+		//~ MPI_Irecv(xlyr,CHUNKXY,MPI_DOUBLE,MYXLYR,tag,mpi_grid,&reqXR2XL[1]);		
+	//~ }
  
-	MPI_Waitall(2,reqXR2XL,status);
-	UnpackXL(HydroGrid); 
+	//~ MPI_Waitall(2,reqXR2XL,status);
+	//~ UnpackXL(HydroGrid); 
 	
 	
 }

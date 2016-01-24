@@ -295,7 +295,7 @@ void FixTwo(GRID HydroGrid, double tau)
 void FirstOrder(GRID HydroGrid, double tau, double ts)
 {
 	
-	CheckPhysics(HydroGrid, 0);		
+	CheckPhysics(HydroGrid, tau, 0);		
 	
 	
 	
@@ -326,14 +326,14 @@ void FirstOrder(GRID HydroGrid, double tau, double ts)
 	FixTwo(HydroGrid,tau);	
 #endif
 
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid  ,   tau);
 }
 
 
 void TVDRK2(GRID HydroGrid, double tau, double ts)
 {
 	
-	CheckPhysics(HydroGrid, 0);				
+	CheckPhysics(HydroGrid,tau, 0);				
 	
 	
 
@@ -342,7 +342,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	CalcCentreFlux(HydroGrid, tau);  
 #endif
 #ifdef SHAS
-	CalcNumVel(HydroGrid, tau);
+	CalcNumVel(HydroGrid, tau); 
 #endif	
 	hydroExplicit(HydroGrid, tau, ts/2); //ts/2 is not used in KT and in SHAS it is used 	
 	CalcL0(HydroGrid);
@@ -369,7 +369,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	
 	
 	UpdatePrimaryVariablesFromVar2(HydroGrid,  tau+ts);  
-    MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+        MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 
 		
@@ -383,7 +383,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	FixTwo(HydroGrid,tau);	
 #endif
 	
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid  ,   tau );
 }
 
 
@@ -391,7 +391,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 
 void TVDRK3(GRID HydroGrid, double tau, double ts)
 {
-	CheckPhysics(HydroGrid, 0);		
+	CheckPhysics(HydroGrid,tau, 0);		
 	
 			
 	CalcSource(HydroGrid, tau, ts);	 
@@ -418,7 +418,10 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	
 	
 	pack(HydroGrid );     
-	boundary(HydroGrid);	 	
+	boundary(HydroGrid);	 
+	  
+	
+		
 	CalcSource(HydroGrid, tau+ts, ts);	
 #ifdef KT		
 	CalcCentreFlux(HydroGrid, tau+ts);  
@@ -440,7 +443,8 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	
 	
 	pack(HydroGrid );     
-	boundary(HydroGrid);	 	
+	boundary(HydroGrid);	 
+	 	
 	CalcSource(HydroGrid, tau+ts/2.0, ts/2.0);	
 #ifdef KT		
 	CalcCentreFlux(HydroGrid, tau+ts/2.0);  
@@ -453,7 +457,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	CalcVar3( HydroGrid,ts);	
 		
 	UpdatePrimaryVariablesFromVar3(HydroGrid,  tau+ts);  
-    	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
+	MultiRootSearchForEnVelUsingDerivatives(HydroGrid , tau+ts); 
     	
 		
 	pack(HydroGrid);
@@ -465,7 +469,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	FixTwo(HydroGrid,tau);	
 #endif
 
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid  ,   tau);
 }
 
 

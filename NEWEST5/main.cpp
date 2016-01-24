@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 		
 		tau += ts;
 
-		CheckRoot( HydroGrid ,  tau);
+		//~ CheckRoot( HydroGrid ,  tau);
 		
 		//~ if(rank==root)
 		//~ cout<<NP*sizeof(cell)*XCM*YCM*ZCMA/(1024*1024) <<" mega bytes"<<endl;

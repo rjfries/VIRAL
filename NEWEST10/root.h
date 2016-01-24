@@ -393,13 +393,13 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		double vy = (Tty-pi3)/(Ttt - pi1 + P - PI);
 		double ve = (Tte-pi4)/(Ttt - pi1 + P - PI);
 		
-		if(vx*vx+vy*vy+ve*ve >= 1 || (e <= 0) )
+		if(vx*vx+vy*vy+tau*tau*ve*ve >= 1 || (e <= 0) )
 		{
 			cout<<"HELL BROKE LOOSE vx "<<vx <<"  vy " << vy<< "  ve "<<ve << " & B--> "<<vx*vx+vy*vy+ve*ve<<endl;
 			cout<<std::scientific<<"HELL BROKE LOOSE Energy "<<e<<endl;
 			cout<<"HELL BROKE LOOSE X "<<X<<"  Y " << Y<< "  E "<<eta<< "  "<<endl;
 			quit=1;
-			continue;
+			//~ continue;
 		}	
 			
 		
@@ -417,7 +417,36 @@ void RootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 		HydroGrid[i][j][k].Ve = ve;
 
 	
-	if(quit)
-		exit(quit);
+		if(quit)
+			exit(quit);
+	}
+
+
+
+	for(i=il;i<ir;i++)
+	for(j=jl;j<jr;j++)
+	for(k=kl; k<kr ;k++)
+	{
+		if(k==k0)
+			continue;
+			
+		double u0,u1,u2,u3;
+		double vx,vy,ve;
+		
+		HydroGrid[i][j][k].Ve =  HydroGrid[i][j][k0].Ve;
+		HydroGrid[i][j][k].Vx =  HydroGrid[i][j][k0].Vx;
+		HydroGrid[i][j][k].Vy =  HydroGrid[i][j][k0].Vy;
+		ve =  HydroGrid[i][j][k].Ve;			
+		vx =  HydroGrid[i][j][k].Vx;
+		vy =  HydroGrid[i][j][k].Vy;
+	
+		u0 = 1.0/sqrt(1.0 - vx*vx - vy*vy - tau*tau*ve*ve);
+		 
+		HydroGrid[i][j][k].u[0]=u0;
+		HydroGrid[i][j][k].u[1]=u0*vx;
+		HydroGrid[i][j][k].u[2]=u0*vy;
+		HydroGrid[i][j][k].u[3]=u0*ve;
 	}
 }
+
+

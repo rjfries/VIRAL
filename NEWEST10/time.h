@@ -183,8 +183,7 @@ void UpdatePrevU( GRID HydroGrid)
 void Rescalepi(GRID HydroGrid, double tau)
 {
 	
-	int i,j,k,l;
- 
+	int i,j,k,l; 
 	for(i=il;i<ir;i++)
 	for(j=jl;j<jr;j++)
 	for(k=kl;k<kr;k++)
@@ -301,7 +300,7 @@ void FixTwo(GRID HydroGrid, double tau)
 void FirstOrder(GRID HydroGrid, double tau, double ts)
 {
 	
-	CheckPhysics(HydroGrid, 0);		
+	CheckPhysics(HydroGrid, tau, 0);		
 	
 	
 	
@@ -332,14 +331,14 @@ void FirstOrder(GRID HydroGrid, double tau, double ts)
 	FixTwo(HydroGrid,tau);	
 #endif
 
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid  ,   tau);
 }
 
 
 void TVDRK2(GRID HydroGrid, double tau, double ts)
 {
 	
-	CheckPhysics(HydroGrid, 0);				
+	CheckPhysics(HydroGrid,tau, 0);				
 	
 	
 
@@ -389,7 +388,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 	FixTwo(HydroGrid,tau);	
 #endif
 	
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid  ,   tau );
 }
 
 
@@ -397,7 +396,7 @@ void TVDRK2(GRID HydroGrid, double tau, double ts)
 
 void TVDRK3(GRID HydroGrid, double tau, double ts)
 {
-	CheckPhysics(HydroGrid, 0);		
+	CheckPhysics(HydroGrid,tau, 0);		
 	
 			
 	CalcSource(HydroGrid, tau, ts);	 
@@ -424,7 +423,10 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	
 	
 	pack(HydroGrid );     
-	boundary(HydroGrid);	 	
+	boundary(HydroGrid);	 
+	  
+	
+		
 	CalcSource(HydroGrid, tau+ts, ts);	
 #ifdef KT		
 	CalcCentreFlux(HydroGrid, tau+ts);  
@@ -446,7 +448,8 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	
 	
 	pack(HydroGrid );     
-	boundary(HydroGrid);	 	
+	boundary(HydroGrid);	 
+	 	
 	CalcSource(HydroGrid, tau+ts/2.0, ts/2.0);	
 #ifdef KT		
 	CalcCentreFlux(HydroGrid, tau+ts/2.0);  
@@ -471,7 +474,7 @@ void TVDRK3(GRID HydroGrid, double tau, double ts)
 	FixTwo(HydroGrid,tau);	
 #endif
 
-	DebugMSG(HydroGrid);
+	DebugMSG(HydroGrid  ,   tau);
 }
 
 
