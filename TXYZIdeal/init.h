@@ -155,15 +155,17 @@ void initvar(GRID HydroGrid, double tau, double ts)
 	{
 		DECLcoord;	
 		 
-		HydroGrid[i][j][k].En = 16*exp(-r*r); 	
-		double AbsE = fabs(eta);
-		double EtaF = 4; //flat part of eta
-		double sig = 1;		
-		double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
-		HydroGrid[i][j][k].En *= cutoff;
+		//~ HydroGrid[i][j][k].En = 16*exp(-r*r); 	
+		//~ double AbsE = fabs(eta);
+		//~ double EtaF = 4; //flat part of eta
+		//~ double sig = 1;		
+		//~ double cutoff =  exp(-  pow(  ( AbsE - (EtaF/2) ) / ( sqrt(2)*sig ),  2)*HeaviSideTheta(  ( AbsE - (EtaF/2) ) )     ) ;
+		//~ HydroGrid[i][j][k].En *= cutoff;
 		
 		double step = 16;
-		if(eta<0)
+		
+		
+		if(X<0 && Y<0)
 			HydroGrid[i][j][k].En = step;
 		else
 			HydroGrid[i][j][k].En = step/16;

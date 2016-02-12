@@ -3,7 +3,7 @@
 #BSUB -P 082858712092
 #BSUB -L /bin/bash
 #BSUB -W 240
-#BSUB -n 36
+#BSUB -n 100
 #BSUB -u sidharthsp@gmail.com
 #BSUB -M 2700    
 

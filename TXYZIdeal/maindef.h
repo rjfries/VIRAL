@@ -19,13 +19,6 @@
   
 
 
-#if defined LBI 
-	#define ZCM 1
-	#define ZCMA 1
-#else 
-	#define ZCM ((int)(2*(ZL/ZS)+OFF+1+2*BORDER)) 
-	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
-#endif
 
 double ts;
 double tau;
@@ -33,23 +26,34 @@ double tau;
 
 
 #if  !defined(FLUCT) 
+
+	#define LBI
+	
 #ifdef SHAS
 	#define CON
 #endif
 
-	#define NPX  1
-	#define NPY  1
+	#define NPX  4
+	#define NPY  4
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0 
-	#define TS 0.004
-	#define XL 0.4
-	#define XS 0.1
-	#define YL 0.4
-	#define YS 0.1
+	#define TS 0.002
+	#define XL 2 
+	#define XS 0.01
+	#define YL 2
+	#define YS 0.01
 	
-	#define ZL 4
+	#define ZL 1
 	#define ZS 0.02
+	
+#if defined LBI 
+	#define ZCM 1
+	#define ZCMA 1
+#else 
+	#define ZCM ((int)(2*(ZL/ZS)+OFF+1+2*BORDER)) 
+	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
+#endif
 
 	#define PFREQ 0.2
 	#define FREQ ((int)1)

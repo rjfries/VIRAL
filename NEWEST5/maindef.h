@@ -60,7 +60,7 @@ double tau;
 	#define ZL 5
 	#define ZS 0.1
 #endif	
-	
+	 
 	#define PFREQ 0.01
 	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
@@ -104,11 +104,11 @@ double tau;
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0.60 
-	#define TS 0.002
-	#define XL 5
-	#define XS 0.1
-	#define YL 5
-	#define YS 0.1
+	#define TS 0.005
+	#define XL 7
+	#define XS 0.05
+	#define YL 7
+	#define YS 0.05
 	 
 #ifdef LBI
 	#define ZL 0
@@ -118,7 +118,7 @@ double tau;
 	#define ZS 0.1
 #endif	
 	
-	#define PFREQ 0.01
+	#define PFREQ 0.5
 	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
 	
@@ -128,7 +128,7 @@ double tau;
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
 
-	#define SCALE_VIS 0.01
+	#define SCALE_VIS 1
 	#define SCALE_TPI 1	
 	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
 	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
