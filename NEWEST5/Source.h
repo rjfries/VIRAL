@@ -241,7 +241,7 @@ void CalcSource(GRID HydroGrid, double tau, double ts)
 			DECLePPIa;
 			DECLp5u4;	
 				
-			q0[j-t+2] = -tau*(       0                                )
+			q0[j-t+2] = -tau*(       0                                );
 			q1[j-t+2] = -tau*(	   - (u2/u0)*A2         + p3      );
 			q2[j-t+2] = -tau*(P-PI - (u2/u0)*A3         + p2          );
 			q3[j-t+2] = -tau*(     - (u2/u0)*A4         + p5          );
