@@ -1,8 +1,8 @@
 CC = mpiicpc
 GCC = g++
 WALL = -Wall
-O =   -O3 #-Ofast 
-PROFILE = -DRK3	-DKT -DGINIT   #-DGUBSER #
+O =   -O2 
+PROFILE = -DRK3	-DKT -DFLUCT  
 DEBUG =       -g
 INCLUDES =
 COMPILER = $(CC) $(WALL) $(O) $(PROFILE)  $(INCLUDES)
@@ -10,7 +10,7 @@ COMPILER = $(CC) $(WALL) $(O) $(PROFILE)  $(INCLUDES)
 COMPILERD = $(CC) $(WALL) $(DEBUG) $(INCLUDES) $(PROFILE) 
 
 INCLUDEL = -IC:/MinGW/include -IC:/MinGW/msys/1.0/local/include  
-COMPILERL = $(GCC) -g $(INCLUDEL) 
+COMPILERL = $(GCC) -g $(INCLUDEL)  
 
 LIBS = -lgsl -lgslcblas
 LIBPATH= 

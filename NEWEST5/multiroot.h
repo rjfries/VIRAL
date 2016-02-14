@@ -389,7 +389,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 	
 	
 		gsl_vector *result;
-		int iter = 0, max_iter = 150;
+		int iter = 0, max_iter = 100;
 		do
 	    {
 			iter++;
@@ -410,7 +410,7 @@ void MultiRootSearchForEnVelUsingDerivatives(GRID HydroGrid , double tau)
 			}
 			
 			result = gsl_multiroot_fdfsolver_root (s);
-			status = gsl_multiroot_test_delta (s->dx, s->x, 0, 1e-30);
+			status = gsl_multiroot_test_delta (s->dx, s->x, 0, 1e-16);
 			
 			if(status != GSL_SUCCESS && status != GSL_CONTINUE )
 			{	

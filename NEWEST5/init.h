@@ -408,15 +408,20 @@ void initBulktest(GRID HydroGrid, double tau, double ts)
 
 
 #ifdef GUBSER
+#define Sech(x) (1.0/cosh(x))
+
 void initGubser(GRID HydroGrid, double tau, double ts)
 {
 	int i,j,k,l;
+	
+	
+#ifndef COLDPLASMA
 	MPI_Offset offset;
 	MPI_Status ierr;
 	MPI_File fh;	
 	
-	MPI_File_open(mpi_grid,  "init/tempbin-15.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
-	//~ MPI_File_open(mpi_grid,  "init/tempbin-15F.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
+	//~ MPI_File_open(mpi_grid,  "init/tempbin-15.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
+	MPI_File_open(mpi_grid,  "init/tempbin-23F.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
 	//~ MPI_File_open(mpi_grid,  "init/tempbin-8.dat" ,  MPI_MODE_RDONLY  , MPI_INFO_NULL, &fh);	
 	
 	int nvar = 8;
@@ -436,8 +441,9 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		for(i=0 ; i < XCM ; i=i+f)
 		{
 			double temp = buf[nvar*i+0];
-			HydroGrid[i][j][k0].En = FEnFromTemp(temp);	
-			HydroGrid[i][j][k0].Temp = FT(HydroGrid[i][j][k0].En);			
+			HydroGrid[i][j][k0].Temp = temp;
+			HydroGrid[i][j][k0].En   = FEnFromTemp(temp);				
+			HydroGrid[i][j][k0].P     = EOS(HydroGrid[i][j][k0].En);
 			HydroGrid[i][j][k0].pi[0] = buf[nvar*i+4];//piXX
 			HydroGrid[i][j][k0].pi[1] = buf[nvar*i+6];//piYY
 			HydroGrid[i][j][k0].pi[2] = buf[nvar*i+5];//piXY
@@ -451,31 +457,23 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 		}
 	}
 	MPI_File_close(&fh);
-	
-	
-	double q =1;
-	
+#endif	 
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		//~ DECLcoord;
+		DECLcoord;		
 		
-		double X =  HydroGrid[i][j][k].X;
-		double Y =  HydroGrid[i][j][k].Y;
-		double eta =  HydroGrid[i][j][k].eta;
-		double r =  HydroGrid[i][j][k].r;
-		
-		 	
-		double kappa = atanh(  (2*q*q*tau*r)  / ( 1 + q*q*tau*tau + q*q*r*r)  );		
 			
-		
+		r +=1e-15;
+			 	
+		double zeta = atanh(  (2* tau*r)  / ( 1 +  tau*tau +  r*r)  );	
 		if( fabs(r) > 1e-7 )
 		{
-			HydroGrid[i][j][k].Vx   = (( X*tanh(kappa) )/(r+1e-15));
-			HydroGrid[i][j][k].Vy   = (( Y*tanh(kappa) )/(r+1e-15));
-			HydroGrid[i][j][k].u[1] = (( X*sinh(kappa) )/(r+1e-15));
-			HydroGrid[i][j][k].u[2] = (( Y*sinh(kappa) )/(r+1e-15));	
+			HydroGrid[i][j][k].Vx   = (( X*tanh(zeta) )/(r));
+			HydroGrid[i][j][k].Vy   = (( Y*tanh(zeta) )/(r));
+			HydroGrid[i][j][k].u[1] = (( X*sinh(zeta) )/(r));
+			HydroGrid[i][j][k].u[2] = (( Y*sinh(zeta) )/(r));	
 		}
 		else
 		{
@@ -483,12 +481,36 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 			HydroGrid[i][j][k].Vy   = 0;	
 			HydroGrid[i][j][k].u[1] = 0;
 			HydroGrid[i][j][k].u[2] = 0;
-		}		
-		HydroGrid[i][j][k].P        = EOS(HydroGrid[i][j][k].En   );		
-		HydroGrid[i][j][k].u[0]     = cosh(kappa);
-		HydroGrid[i][j][k].prevu[0] = HydroGrid[i][j][k].u[0];		
-		HydroGrid[i][j][k].prevu[1] = HydroGrid[i][j][k].u[1];
-		HydroGrid[i][j][k].prevu[2] = HydroGrid[i][j][k].u[2];		
+		}				
+		HydroGrid[i][j][k].u[0]     = cosh(zeta); 
+		
+		
+		 
+#ifdef 	COLDPLASMA
+		double FACT = (4.0/3.0)*(FACTOR); 
+		double  B = 1.21;
+		double  RHO = asinh( -(1-tau*tau+r*r)/(2*tau));
+		double  THETA = atan( (2*r)/(1+tau*tau-r*r)); 
+		
+		if( fabs(r) > 1e-8 )
+		{	
+			 HydroGrid[i][j][k].Temp   =   ( B*pow(cosh((4*log(cosh(RHO))*pow(5,-0.5))/3.),0.25)*pow(Sech(RHO),0.6666666666666666) ); 
+			 HydroGrid[i][j][k].En     =   (FEnFromTemp(HydroGrid[i][j][k].Temp));
+			 HydroGrid[i][j][k].P      =   (EOS(HydroGrid[i][j][k].En   )  );
+			 HydroGrid[i][j][k].pi[0]  =   ( -(FACT*pow(5,-0.5)*pow(B,4)*pow(r,-4)*pow(tau,-2)*pow(Sech(RHO),0.6666666666666666)*(4*pow(r,2)*pow(X,2)*pow(1 + pow(r,2) + pow(tau,2),2)*pow(pow(r,4) - 2*pow(r,2)*(-1 + pow(tau,2)) + pow(1 + pow(tau,2),2),-2) + pow(Y,2)*pow(sin(THETA),2))*sinh((4*log(cosh(RHO))*pow(5,-0.5))/3.))/2. );
+			 HydroGrid[i][j][k].pi[1]  =   ( -(FACT*pow(5,-0.5)*pow(B,4)*pow(r,-4)*pow(tau,-2)*pow(Sech(RHO),0.6666666666666666)*(4*pow(r,2)*pow(Y,2)*pow(1 + pow(r,2) + pow(tau,2),2)*pow(pow(r,4) - 2*pow(r,2)*(-1 + pow(tau,2)) + pow(1 + pow(tau,2),2),-2) + pow(X,2)*pow(sin(THETA),2))*sinh((4*log(cosh(RHO))*pow(5,-0.5))/3.))/2. );
+			 HydroGrid[i][j][k].pi[2]  =   ( -(FACT*X*Y*pow(5,-0.5)*pow(B,4)*pow(r,-4)*pow(tau,-2)*pow(Sech(RHO),0.6666666666666666)*(4*pow(r,2)*pow(1 + pow(r,2) + pow(tau,2),2)*pow(pow(r,4) - 2*pow(r,2)*(-1 + pow(tau,2)) + pow(1 + pow(tau,2),2),-2) - pow(sin(THETA),2))*sinh((4*log(cosh(RHO))*pow(5,-0.5))/3.))/2. ); 
+   		}
+		else
+		{ 
+			HydroGrid[i][j][k].Temp  =   ( B*pow(cosh((4*log(cosh(RHO))*pow(5,-0.5))/3.),0.25)*pow(Sech(RHO),0.6666666666666666) ); 
+			HydroGrid[i][j][k].En    =  FEnFromTemp(HydroGrid[i][j][k].Temp);
+			HydroGrid[i][j][k].P     = EOS(HydroGrid[i][j][k].En   );
+			HydroGrid[i][j][k].pi[0] = 0;
+			HydroGrid[i][j][k].pi[1] = 0;
+			HydroGrid[i][j][k].pi[2] = 0;
+		}			
+#endif
 	}
 	  
 	for(i=0;i<XCM;i++)
@@ -497,12 +519,12 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 	{
 		DECLcoord;
 		 	
-		double kappa = atanh(  (2*q*q*(tau-ts)*r)  / ( 1 + q*q*(tau-ts)*(tau-ts) + q*q*r*r)  );						
+		double zeta = atanh(  (2*(tau-ts)*r)  / ( 1 + (tau-ts)*(tau-ts) + r*r)  );						
 		
 		if( fabs(r) > 1e-7 )
 		{ 	
-			HydroGrid[i][j][k].prevu[1] = (( X*sinh(kappa) )/(r+1e-15));
-			HydroGrid[i][j][k].prevu[2] = (( Y*sinh(kappa) )/(r+1e-15));		
+			HydroGrid[i][j][k].prevu[1] = (( X*sinh(zeta) )/(r+1e-15));
+			HydroGrid[i][j][k].prevu[2] = (( Y*sinh(zeta) )/(r+1e-15));		
 		}
 		else
 		{
@@ -510,7 +532,7 @@ void initGubser(GRID HydroGrid, double tau, double ts)
 			HydroGrid[i][j][k].prevu[2] = (0);			
 			
 		}
-		HydroGrid[i][j][k].prevu[0]  =  cosh(kappa);
+		HydroGrid[i][j][k].prevu[0]  =  cosh(zeta);
 	}
 
 	

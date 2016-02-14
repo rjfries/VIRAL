@@ -1,8 +1,8 @@
 #BSUB -J hydro
 #BSUB -o stdout
-#BSUB -P 082858712092
+#BSUB -P 082858710254
 #BSUB -L /bin/bash
-#BSUB -W 240
+#BSUB -W 800
 #BSUB -n 100
 #BSUB -u sidharthsp@gmail.com
 #BSUB -M 2700    
@@ -10,7 +10,7 @@
 
 ## 20 cores/node
 
-#BSUB -R 'span[ptile=10]'
+#BSUB -R 'span[ptile=15]'
 
 # load intel toolchain
 module load GSL 

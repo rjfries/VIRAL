@@ -104,11 +104,11 @@ double tau;
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 0.60 
-	#define TS 0.002
-	#define XL 5
-	#define XS 0.1
-	#define YL 5
-	#define YS 0.1
+	#define TS 0.002 
+	#define XL 4
+	#define XS 0.05
+	#define YL 4
+	#define YS 0.05
 	 
 #ifdef LBI
 	#define ZL 0
@@ -118,7 +118,7 @@ double tau;
 	#define ZS 0.1
 #endif	
 	
-	#define PFREQ 0.01
+	#define PFREQ 0.2
 	#define FREQ ((int)1)
 	#define FREQZ ((int)1)
 	
@@ -127,9 +127,10 @@ double tau;
 	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
+ 
 
 	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
+	#define SCALE_TPI 1
 	inline double Feta( double s, double en)                            {return (SCALE_VIS*(s/(4.0*PIE))       );}
 	inline double Ftaupi( double eta , double  p, double en)			{return (1.5*SCALE_TPI*(eta/p)         );}
 
@@ -183,14 +184,10 @@ double tau;
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
 
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
 	inline double Feta( double s, double en)                            {return (0.2*s                         );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (0.01                          );}
+	inline double Ftaupi( double eta , double  p, double en)			{return (0.005                          );}
 
 #ifdef BULK
-	#define SCALE_BULK_VIS 1
-	#define SCALE_BULK_TPI 1	
 	inline double FZeta( double s, double en)                           {return (1                             );}
 	inline double FtauPI(double zeta , double  p, double en)            {return (0.1						   );}
 #endif
@@ -229,17 +226,8 @@ double tau;
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
 	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
 
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
 	inline double Feta( double s, double en)                            {return (0.2*s                         );}
-	inline double Ftaupi( double eta , double  p, double en)			{return (0.01                          );}
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 1
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
-#endif
+	inline double Ftaupi( double eta , double  p, double en)			{return (0.005                          );}
 
 #endif
 
@@ -309,7 +297,7 @@ double tau;
 
 #if defined(GUBSER) 
 	#define LBI
-	
+	//~ #define COLDPLASMA
 	
 	#define NPX  6
 	#define NPY  6

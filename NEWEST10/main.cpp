@@ -130,6 +130,16 @@ int main(int argc, char* argv[])
     
 	while(1)
 	{
+		
+#ifdef BJORKEN
+		myfile<<tau<< "  "<< fmtoMev(FT(HydroGrid[XCM/2][YCM/2][ZCMA/2].En))/1000<<endl;
+#endif
+		  
+		
+#ifdef BULKTEST
+		myfile<<tau<< "  "<<  HydroGrid[XCM/2][YCM/2][ZCMA/2].PI<<endl;
+#endif
+ 
 	
 #ifdef RK1	 
 		FirstOrder(HydroGrid, tau, ts);
@@ -141,15 +151,7 @@ int main(int argc, char* argv[])
 		TVDRK3(HydroGrid, tau, ts);
 #endif		
 
-#ifdef BJORKEN
-		myfile<<tau<< "  "<< fmtoMev(FT(HydroGrid[XCM/2][YCM/2][ZCMA/2].En))/1000<<endl;
-#endif
-		 
-		
-#ifdef BULKTEST
-		myfile<<tau<< "  "<<  HydroGrid[XCM/2][YCM/2][ZCMA/2].PI<<endl;
-#endif
-		 
+
 		
 		tau += ts;
 

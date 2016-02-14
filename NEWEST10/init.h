@@ -257,13 +257,20 @@ void initFluct(GRID HydroGrid, double tau, double ts)
 		HydroGrid[i][j][k].prevu[3] = u3; //value 1 "ts" earlier
 	} 
 	
+	
+	//~ CalcNS(HydroGrid,tau,ts);
+	
 	for(i=0;i<XCM;i++)
 	for(j=0;j<YCM;j++)
 	for(k=0;k<ZCM;k++)
 	{
-		HydroGrid[i][j][k].PI =   0;
+		#ifdef BULK
+			HydroGrid[i][j][k].PI =   HydroGrid[i][j][k].nsPI;
+		#endif
+		
+		
 		for(l=0;l<Npi;l++)
-			HydroGrid[i][j][k].pi[l] =   0;
+			HydroGrid[i][j][k].pi[l] =   HydroGrid[i][j][k].nspi[l];
 			
  		DECLePPIa;
 		DECLp10u4;
@@ -273,6 +280,8 @@ void initFluct(GRID HydroGrid, double tau, double ts)
         HydroGrid[i][j][k].T20 = (e + P - PI)*u0*u2 + p3;
         HydroGrid[i][j][k].T30 = (e + P - PI)*u0*u3 + p4;
 	}
+	
+	
 }
 #endif
 
@@ -333,7 +342,7 @@ void initBjorken(GRID HydroGrid, double tau, double ts)
 			HydroGrid[i][j][k].pi[l] =   0;
 			
  		DECLePPIa;
-		DECLp5u4;		
+		DECLp10u4;		
 
         HydroGrid[i][j][k].T00 = -P + PI + (e + P - PI)*pow(u0,2) + p1;
         HydroGrid[i][j][k].T10 = (e + P - PI)*u0*u1 + p2;

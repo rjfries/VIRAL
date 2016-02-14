@@ -19,14 +19,6 @@
   
 
 
-#if defined LBI 
-	#define ZCM 1
-	#define ZCMA 1
-#else 
-	#define ZCM ((int)(2*(ZL/ZS)+OFF+1+2*BORDER)) 
-	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
-#endif
-
 double ts;
 double tau;
  
@@ -309,44 +301,42 @@ double tau;
 #if defined(GUBSER) 
 	#define LBI
 	
-	
-	#define NPX  6
-	#define NPY  6
+	#define NPX  10
+	#define NPY  10
 	#define NP (NPX*NPY*1)
 
 	#define TAUSTART 1.00 
-	#define TS 0.005
-	#define XL 5
-	#define XS 0.05
-	#define YL 5
-	#define YS 0.05 
+	#define TS 0.001
+	#define XL 4.6
+	#define XS 0.025
+	#define YL 4.6
+	#define YS 0.025 
 	#define ZL 0
 	#define ZS 0.1 
 
 
-	#define PFREQ 0.1		
-	#define FREQ ((int)2)
+#if defined LBI 
+	#define ZCM 1
+	#define ZCMA 1
+#else 
+	#define ZCM ((int)(2*(ZL/ZS)+OFF+1+2*BORDER)) 
+	#define ZCMA ((int)(2*(ZL/ZS)+OFF+1)) 
+#endif
+
+
+
+	#define PFREQ 0.5		
+	#define FREQ ((int)4)
 	#define FREQZ ((int)1) 
 	
 	inline double EOS(double en )                                       {return (en/3.0                        );}	
 	inline double DPDE(double en )                                      {return (1.0/3.0                       );}	 
 	inline double FEnFromTemp(double temp)                              {return (FACTOR*pow(temp,4)            );}
 	inline double FT(double en)                                         {return (pow(en/FACTOR,0.25)           );}
-	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );}
-
-	#define SCALE_VIS 1
-	#define SCALE_TPI 1	
+	inline double FS( double en, double Pr, double T)                   {return ((en+Pr)*pow(T,-1)             );} 
+	
 	inline double Feta( double s, double en)                            {return (0.2*s                         );}
 	inline double Ftaupi( double eta , double  p, double en)			{return (5*eta/(en+p) 			       );}
-
-
-#ifdef BULK
-	#define SCALE_BULK_VIS 0.01
-	#define SCALE_BULK_TPI 1	
-	inline double FZeta( double s, double en)                           {return (SCALE_BULK_VIS*(s/(4.0*PIE))  );}
-	inline double FtauPI(double zeta , double  p, double en)            {return (1.5*SCALE_TPI_BULK*zeta/p     );}
-#endif
-
 #endif 
 	
 	
