@@ -128,7 +128,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 	for(l=0;l<9;l++)
 	{
 		in[l].val = maxTT[l];
-		in[l].rank = rank; 
+		in[l].rank = ::rank; 
 		sumTT[l] /= count;
 		inavg[l] = sumTT[l];
 	}
@@ -140,7 +140,7 @@ void CheckRoot(GRID HydroGrid , double tau)
 		MPI_Allreduce(&inavg[l],&outavg[l],1,MPI_DOUBLE,MPI_SUM,mpi_grid);
 	
 	
-	if(rank==out[0].rank)
+	if(::rank==out[0].rank)
 	{
 		cout<<endl<<endl;
 		cout<<std::scientific<<"ROOT CHECK EQN 1 -- MAX "<< maxTT[0]<<" &     Avg "<< outavg[0]/NP<<endl;
@@ -148,28 +148,28 @@ void CheckRoot(GRID HydroGrid , double tau)
 	}	
 	
 	MPI_Barrier(mpi_grid);
-	if(rank==out[1].rank)
+	if(::rank==out[1].rank)
 	{ 
 		cout<<std::scientific<<"ROOT CHECK EQN 2 -- MAX "<< maxTT[1]<<" &     Avg "<< outavg[1]/NP<<endl;
 		fflush(stdout);
 	}
 	MPI_Barrier(mpi_grid);
 		
-	if(rank==out[2].rank)
+	if(::rank==out[2].rank)
 	{ 
 		cout<<std::scientific<<"ROOT CHECK EQN 3 -- MAX "<< maxTT[2]<<" &     Avg "<< outavg[2]/NP<<endl;
 		fflush(stdout);
 	}	
 	MPI_Barrier(mpi_grid);
 	
-	if(rank==out[3].rank)
+	if(::rank==out[3].rank)
 	{ 
 		cout<<std::scientific<<"ROOT CHECK EQN 4 -- MAX "<< maxTT[3]<<" &     Avg "<< outavg[3]/NP<<endl;
 		fflush(stdout);
 	}	
 		 
 	MPI_Barrier(mpi_grid);
-	if(rank==out[8].rank)
+	if(::rank==out[8].rank)
 	{
 		cout<<std::scientific<<"TRACE -- MAX "<< maxTT[8]<<" &    Avg "<< outavg[8]/NP<<endl;
 		fflush(stdout);

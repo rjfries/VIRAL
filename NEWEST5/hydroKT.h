@@ -339,7 +339,7 @@ void CFL(GRID HydroGrid, double tau, double taustep)
 	
     	MPI_Reduce(&timesug, &mintime, 1, MPI_DOUBLE,MPI_MIN, 0, MPI_COMM_WORLD);
     
-	if(!rank && mintime<TS)
+	if(!::rank && mintime<TS)
 		cout<<std::scientific<<"The time step based on CFL should be "<<mintime<<endl;
 }
 			

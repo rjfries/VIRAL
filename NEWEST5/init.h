@@ -124,7 +124,7 @@ void mpi_init()
 	int periods[3] = {0};
 	int reorder = 0; 
 
-	if(rank==0)
+	if(::rank==0)
 	if(NPX*NPY*1!=size)
 	{
 		cout<<"\n\n*****Run this simulation with " <<NPX*NPY*1<<" processors, not "<<size<<" processors.*****\n\n";
@@ -132,7 +132,7 @@ void mpi_init()
 	}
 
 	MPI_Cart_create(MPI_COMM_WORLD, DIM, dims , periods, reorder, &mpi_grid);
-	MPI_Cart_coords(mpi_grid, rank, DIM, coord);
+	MPI_Cart_coords(mpi_grid, ::rank, DIM, coord);
 
 	
 	xcord = coord[0];
@@ -625,7 +625,7 @@ void init(double tau, double ts)
 
 	MPI_Barrier(mpi_grid);
 	
-	if(!rank)
+	if(!::rank)
 	{
 		cout<<"From (-X,-Y,-Z)      == ( "<<-GRIDXMAX <<" , "<<-GRIDYMAX << " , " <<-GRIDZMAX<<" )"<<endl;
 		cout<<"To   ( X, Y, Z)      == ( "<<(-GRIDXMAX+(GRIDXPOINTS-1)*XS) <<" , "<<(-GRIDYMAX+(GRIDYPOINTS-1)*YS) << " , " <<(-GRIDZMAX+(GRIDZPOINTS-1)*ZS)<<" )"<<endl;
@@ -653,7 +653,7 @@ void init(double tau, double ts)
 #endif
 
 	
-	if(!rank)
+	if(!::rank)
 		cout<<"k0 is  "<<k0<<" at eta = " << ZCORD(k0)<<"  "<<ZCORDWB(k0)<<endl;
 	
 
@@ -693,7 +693,7 @@ void init(double tau, double ts)
 
 	DebugMSG(HydroGrid , tau);
 	double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
-	if(rank==root)
+	if(::rank==root)
 	{
 		cout<<"Time Step is "<<ts <<" @ "; 
 		cout<<std::fixed<<std::setprecision(4)<<" TempMax is "<< tmaxMev<<" MeV at TAU -->"<<tau;

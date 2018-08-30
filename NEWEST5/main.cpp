@@ -96,7 +96,7 @@ int main(int argc, char* argv[])
 		
 	
 	MPI_Init (&argc, &argv); 
-	MPI_Comm_rank (MPI_COMM_WORLD, &rank);
+	MPI_Comm_rank (MPI_COMM_WORLD, &::rank);
 	MPI_Comm_size (MPI_COMM_WORLD, &size); 
 	int i,j,k;
 	
@@ -161,7 +161,7 @@ int main(int argc, char* argv[])
 			
 		double tmaxMev = 1000*MaxTempGev(HydroGrid) ;
 		
-		if(rank==root)
+		if(::rank==root)
 		{
 			cout<<"Time Step is "<<ts <<" @ "; 
 			cout<<std::fixed<<std::setprecision(4)<<" TempMax is "<< tmaxMev<<" MeV at TAU -->"<<tau;
@@ -211,12 +211,12 @@ int main(int argc, char* argv[])
 
 	
 	FreeFromHeap();
-	if(!rank)
+	if(!::rank)
 		cout<<endl<<"***********************************  Memory Freed from Heap    ***********************************"<<endl;
 	
 	MPI_Barrier(mpi_grid);
 	
-	if(!rank)
+	if(!::rank)
 		cout<<endl<<"*************************************** The End ******************************************************"<<endl;
 		
 	MPI_Finalize();

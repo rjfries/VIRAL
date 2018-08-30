@@ -68,14 +68,14 @@ double DebugMSG(GRID HydroGrid,  double tau)
 	
 //max abs vel part
 	in.val = vmax;
-	in.rank = rank; 
+	in.rank = ::rank; 
 
 	MPI_Allreduce(&in,&out,1,MPI_DOUBLE_INT,MPI_MAXLOC,mpi_grid);
 	BMax =  out.val;
 	
-	if(rank==out.rank)
+	if(::rank==out.rank)
 	{
-		cout<<std::fixed<<"Max vel ( "<<vx<<" , "<<vy<<" , "<<tau*vz<<" ) & mag "<< out.val<<" @"<<" ( "<<XXV<<" , "<<YYV<<" , "<<ZZV<<" )in rank -> "<<rank<<endl;
+		cout<<std::fixed<<"Max vel ( "<<vx<<" , "<<vy<<" , "<<tau*vz<<" ) & mag "<< out.val<<" @"<<" ( "<<XXV<<" , "<<YYV<<" , "<<ZZV<<" )in rank -> "<<::rank<<endl;
 		fflush(stdout);
 	}	
 	//~ MPI_Barrier(mpi_grid);
@@ -83,13 +83,13 @@ double DebugMSG(GRID HydroGrid,  double tau)
 
 //max Energy part
 	in.val = emax;
-	in.rank = rank; 
+	in.rank = ::rank; 
 
 	MPI_Allreduce(&in,&out,1,MPI_DOUBLE_INT,MPI_MAXLOC,mpi_grid);
 	
-	if(rank==out.rank)
+	if(::rank==out.rank)
 	{
-		cout<<std::fixed<<"Max Energy ( "<<emax<<" ) @"<<" ( "<<XXE<<" , "<<YYE<<" , "<<ZZE<<" )in rank -> "<<rank<<endl;
+		cout<<std::fixed<<"Max Energy ( "<<emax<<" ) @"<<" ( "<<XXE<<" , "<<YYE<<" , "<<ZZE<<" )in rank -> "<<::rank<<endl;
 		fflush(stdout);
 	}
 	//~ MPI_Barrier(mpi_grid);
@@ -97,13 +97,13 @@ double DebugMSG(GRID HydroGrid,  double tau)
 
 //min Energy part
 	in.val = emin;
-	in.rank = rank; 
+	in.rank = ::rank; 
 
 	MPI_Allreduce(&in,&out,1,MPI_DOUBLE_INT,MPI_MINLOC,mpi_grid);
 	
-	if(rank==out.rank)
+	if(::rank==out.rank)
 	{
-		cout<<std::fixed<<"Min Energy ( "<<emin<<" ) @"<<" ( "<<XXEM<<" , "<<YYEM<<" , "<<ZZEM<<" )in rank -> "<<rank<<endl;
+		cout<<std::fixed<<"Min Energy ( "<<emin<<" ) @"<<" ( "<<XXEM<<" , "<<YYEM<<" , "<<ZZEM<<" )in rank -> "<<::rank<<endl;
 		fflush(stdout);
 	}
 	

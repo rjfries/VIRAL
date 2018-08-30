@@ -1,4 +1,4 @@
-CC = mpiicpc
+CC = mpiicpc 
 GCC = g++
 WALL = -Wall
 O =   -O2 #-Ofast 
