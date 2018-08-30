@@ -1,0 +1,3 @@
+module purge
+module load intel/2015B //This or whichever is the latest intel chain gccfort  compiler at the time
+module load GSL
