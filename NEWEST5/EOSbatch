@@ -1,0 +1,16 @@
+#PBS -l nodes=20:ppn=5
+#PBS -l mem=100gb
+#PBS -l walltime=3:00:00
+#PBS -l billto=022858711009  
+#PBS -N hydro
+#PBS -S /bin/bash
+#PBS -o stdout 
+#PBS -e stderr 
+
+
+
+cd $PBS_O_WORKDIR
+  
+
+mpirun ./hydro  
+ 
